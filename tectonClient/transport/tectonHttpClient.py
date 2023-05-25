@@ -23,9 +23,15 @@ class TectonHttpClient:
                                  api_key=self.API_PREFIX + " " + self.apiKey)
 
         self.client: httpx.Client = client or httpx.Client()
+        self.isClientClosed = False
 
     def close(self):
         self.client.close()
+        self.isClientClosed = True
+
+    def is_closed(self):
+        return self.isClientClosed
+
 
     def perform_request(self, endpoint, method, httpRequest):
         """
@@ -63,12 +69,13 @@ class TectonHttpClient:
             raise (TectonClientException(TectonErrorMessage.INVALID_KEY))
 
 
-if __name__ == '__main__':
-    httpClient = TectonHttpClient("https://app.tecton.ai/", "492dbdb681eb254b32f605324e14457")
-
-    endpoint = "api/v1/feature-service/get-features"
-    request = '{"params":{"feature_service_name":"fraud_detection_feature_service","join_key_map":{' \
-              '"user_id":"user_205125746682"},"request_context_map":{"merch_long":35.0,"amt":500.0,"merch_lat":30.0},' \
-              '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
-
-    httpClient.perform_request(endpoint, httpClient.methods.POST, request)
+# FOR TESTING ONLY:
+# if __name__ == '__main__':
+#     httpClient = TectonHttpClient("https://app.tecton.ai/", "492dbdb681eb254b32f605324e14457")
+#
+#     endpoint = "api/v1/feature-service/get-features"
+#     request = '{"params":{"feature_service_name":"fraud_detection_feature_service","join_key_map":{' \
+#               '"user_id":"user_205125746682"},"request_context_map":{"merch_long":35.0,"amt":500.0,"merch_lat":30.0},' \
+#               '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
+#
+#     httpClient.perform_request(endpoint, httpClient.methods.POST, request)
