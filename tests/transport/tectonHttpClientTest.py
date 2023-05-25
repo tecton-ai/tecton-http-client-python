@@ -27,7 +27,7 @@ def testPerformHttpRequestSuccess():
 def testPerformHttpRequestFailure():
 
     url = "https://app.tecton.ai/"
-    apiKey = "492dbdb681eb254b32f605324e14457"
+    apiKey = "dummy-key"
 
     httpClient = TectonHttpClient(url, apiKey)
 
