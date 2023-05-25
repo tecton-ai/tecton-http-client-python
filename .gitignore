@@ -1,4 +1,8 @@
 .DS_Store
 .idea/
+tests/.pytest_cache/
+tectonClient/__pycache__/
+tectonClient/exceptions/__pycache__/
+tectonClient/transport/__pycache__/
 
 
