@@ -1,0 +1,4 @@
+tecton
+httpx
+httpx_auth
+pytest_httpx
