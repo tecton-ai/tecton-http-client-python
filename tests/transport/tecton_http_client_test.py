@@ -1,5 +1,5 @@
-from tectonClient.exceptions.tectonServerException import TectonServerException
-from tectonClient.transport.tectonHttpClient import TectonHttpClient
+from tecton_client.exceptions.tecton_server_exception import TectonServerException
+from tecton_client.transport.tecton_http_client import TectonHttpClient
 
 url = "https://thisisaurl.ai"
 apiKey = "abcd1234"

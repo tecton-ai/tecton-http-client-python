@@ -1,9 +1,9 @@
 import httpx
 from enum import Enum
 from httpx_auth import HeaderApiKey
-from tectonClient.exceptions.tectonErrorMessage import TectonErrorMessage
-from tectonClient.exceptions.tectonClientException import TectonClientException
-from tectonClient.exceptions.tectonServerException import TectonServerException
+from tecton_client.exceptions.tecton_error_message import TectonErrorMessage
+from tecton_client.exceptions.tecton_client_exception import TectonClientException
+from tecton_client.exceptions.tecton_server_exception import TectonServerException
 
 
 class TectonHttpClient:
