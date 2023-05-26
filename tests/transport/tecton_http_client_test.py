@@ -1,17 +1,19 @@
 import httpx
+from pytest_httpx import HTTPXMock
 
-from tecton_client.exceptions.exceptions import TectonServerException
+from tecton_client.exceptions.exceptions import TectonServerException, TectonClientException
+from tecton_client.tecton_client import TectonClient
 from tecton_client.transport.tecton_http_client import TectonHttpClient
 import pytest
-
 
 url = "https://thisisaurl.ai"
 api_key = "abcd1234"
 
+
 @pytest.mark.asyncio
 async def test_http_client():
     http_client = TectonHttpClient(url, api_key)
-    assert http_client.isClientClosed is False
+    assert http_client.is_client_closed is False
     await http_client.close()
 
 
@@ -30,6 +32,7 @@ async def test_perform_http_request_success(httpx_mock):
     response = await http_client.perform_request(endpoint, http_client.methods.POST, request)
     assert type(response) == type({})
     await http_client.close()
+
 
 @pytest.mark.asyncio
 async def test_perform_http_request_failure(httpx_mock):
@@ -53,3 +56,28 @@ async def test_perform_http_request_failure(httpx_mock):
         assert type(e) == TectonServerException
 
     await http_client.close()
+
+
+def test_empty_url():
+    with pytest.raises(TectonClientException):
+        tectonClient = TectonClient("", "1234")
+
+
+def test_empty_key():
+    with pytest.raises(TectonClientException):
+        tectonClient = TectonClient(url, "")
+
+
+def test_none_key():
+    with pytest.raises(TectonClientException):
+        tectonClient = TectonClient("", None)
+
+
+def test_invalid_api_key(httpx_mock: HTTPXMock):
+    expectedMessage = "401 Unauthorized: invalid 'Tecton-key' authorization header. Note that newly created credentials may take up to 60 seconds to be usable."
+
+    try:
+        tectonClient = TectonClient(url, api_key)
+    except TectonServerException as e:
+        print(e)
+        assert e == expectedMessage

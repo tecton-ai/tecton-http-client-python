@@ -4,6 +4,8 @@ from enum import Enum
 import pytest
 from httpx_auth import HeaderApiKey
 
+from urllib.parse import urlparse
+
 from tecton_client.exceptions.exceptions import TectonServerException, TectonClientException
 from tecton_client.exceptions.tecton_error_message import TectonErrorMessage
 
@@ -19,21 +21,25 @@ class TectonHttpClient:
         CONTENT_TYPE = 'Content-Type'
 
     def __init__(self, url, api_key):
-        self.url = self.validate_url(url)
-        self.apiKey = self.validate_key(api_key)
+
+        self.validate_url(url)
+        self.validate_key(api_key)
+
+        self.url = url
+        self.api_key = api_key
 
         self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value,
-                                 api_key=API_PREFIX + " " + self.apiKey)
+                                 api_key=API_PREFIX + " " + self.api_key)
 
         self.client = httpx.AsyncClient()
-        self.isClientClosed = False
+        self.is_client_closed = False
 
     async def close(self):
         await self.client.aclose()
-        self.isClientClosed = True
+        self.is_client_closed = True
 
     def is_closed(self):
-        return self.isClientClosed
+        return self.is_client_closed
 
     async def perform_request(self, endpoint, method, http_request):
         """
@@ -58,16 +64,17 @@ class TectonHttpClient:
 
     @staticmethod
     def validate_url(url):
-        if url:
-            return url
-        else:
+        try:
+            if url:
+                urlparse(url)
+            else:
+                raise (TectonClientException(TectonErrorMessage.INVALID_URL))
+        except:
             raise (TectonClientException(TectonErrorMessage.INVALID_URL))
 
     @staticmethod
     def validate_key(api_key):
-        if api_key:
-            return api_key
-        else:
+        if not api_key:
             raise (TectonClientException(TectonErrorMessage.INVALID_KEY))
 
 
