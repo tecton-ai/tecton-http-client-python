@@ -1,43 +1,55 @@
-from tecton_client.exceptions.tecton_server_exception import TectonServerException
+import httpx
+
+from tecton_client.exceptions.exceptions import TectonServerException
 from tecton_client.transport.tecton_http_client import TectonHttpClient
+import pytest
+
 
 url = "https://thisisaurl.ai"
-apiKey = "abcd1234"
+api_key = "abcd1234"
 
-def testHttpClient():
+@pytest.mark.asyncio
+async def test_http_client():
+    http_client = TectonHttpClient(url, api_key)
+    assert http_client.isClientClosed is False
+    await http_client.close()
 
-    httpClient = TectonHttpClient(url, apiKey)
-    assert httpClient.isClientClosed == False
 
-def testPerformHttpRequestSuccess():
+@pytest.mark.asyncio
+async def test_perform_http_request_success(httpx_mock):
+    httpx_mock.add_response(
+        json={'result': {'features': ['1', 11292.571748310578, 'other', 35.6336, -99.2427, None, '5', '25']}})
 
-    url = "https://app.tecton.ai/"
-    apiKey = "492dbdb681eb254b32f605324e144571"
-
-    httpClient = TectonHttpClient(url, apiKey)
+    http_client = TectonHttpClient(url, api_key)
 
     endpoint = "api/v1/feature-service/get-features"
     request = '{"params":{"feature_service_name":"fraud_detection_feature_service","join_key_map":{' \
-                  '"user_id":"user_205125746682"},"request_context_map":{"merch_long":35.0,"amt":500.0,"merch_lat":30.0},' \
-                  '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
+              '"user_id":"user_205125746682"},"request_context_map":{"merch_long":35.0,"amt":500.0,"merch_lat":30.0},' \
+              '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
 
-    response = httpClient.perform_request(endpoint, httpClient.methods.POST, request)
+    response = await http_client.perform_request(endpoint, http_client.methods.POST, request)
     assert type(response) == type({})
+    await http_client.close()
 
-def testPerformHttpRequestFailure():
+@pytest.mark.asyncio
+async def test_perform_http_request_failure(httpx_mock):
+    httpx_mock.add_response(status_code=401, json={
+        "error": "invalid 'Tecton-key' authorization header. Note that newly created credentials may take up to 60 seconds to be usable.",
+        "message": "invalid 'Tecton-key' authorization header. Note that newly created credentials may take up to 60 seconds to be usable.",
+        "code": 16
+    })
 
-    url = "https://app.tecton.ai/"
-    apiKey = "dummy-key"
-
-    httpClient = TectonHttpClient(url, apiKey)
+    http_client = TectonHttpClient(url, api_key)
 
     endpoint = "api/v1/feature-service/get-features"
     request = '{"params":{"feature_service_name":"fraud_detection_feature_service","join_key_map":{' \
-                  '"user_id":"user_205125746682"},"request_context_map":{"merch_long":35.0,"amt":500.0,"merch_lat":30.0},' \
-                  '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
+              '"user_id":"user_205125746682"},"request_context_map":{"merch_long":35.0,"amt":500.0,"merch_lat":30.0},' \
+              '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
 
     try:
-        response = httpClient.perform_request(endpoint, httpClient.methods.POST, request)
+        response = await http_client.perform_request(endpoint, http_client.methods.POST, request)
 
     except Exception as e:
         assert type(e) == TectonServerException
+
+    await http_client.close()
