@@ -8,5 +8,3 @@ tests/transport/__pycache__/
 tecton_client/__pycache__/
 tecton_client/exceptions/__pycache__/
 tecton_client/transport/__pycache__/
-
-

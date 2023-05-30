@@ -1,13 +1,17 @@
+from typing import TypeVar, Type
+
 import httpx
 from enum import Enum
+import string
 
-import pytest
 from httpx_auth import HeaderApiKey
-
 from urllib.parse import urlparse
 
-from tecton_client.exceptions.exceptions import TectonServerException, TectonClientException
-from tecton_client.exceptions.tecton_error_message import TectonErrorMessage
+from tecton_client.exceptions.exceptions import TectonServerException
+from tecton_client.exceptions.exceptions import TectonClientException
+from tecton_client.exceptions.exceptions import TectonErrorMessage
+
+T = TypeVar('T', bound='TectonHttpClient')
 
 API_PREFIX = "Tecton-key"
 
@@ -20,7 +24,7 @@ class TectonHttpClient:
         ACCEPT = 'Accept'
         CONTENT_TYPE = 'Content-Type'
 
-    def __init__(self, url, api_key):
+    def __init__(self: T, url: string, api_key: string) -> None:
 
         self.validate_url(url)
         self.validate_key(api_key)
@@ -34,14 +38,16 @@ class TectonHttpClient:
         self.client = httpx.AsyncClient()
         self.is_client_closed = False
 
-    async def close(self):
+    async def close(self: T) -> None:
         await self.client.aclose()
         self.is_client_closed = True
 
-    def is_closed(self):
+    @property
+    def is_closed(self: T) -> bool:
         return self.is_client_closed
 
-    async def perform_request(self, endpoint, method, http_request):
+    async def perform_request(self: T, endpoint: string, method: Enum,
+                              http_request: string) -> string:
         """
         :param http_request: request data to be passed
         :param method: GET, PUT, POST etc.
@@ -53,44 +59,32 @@ class TectonHttpClient:
         if method == self.methods.POST:
             url = self.url + "/" + endpoint
 
-            response = await self.client.post(url, data=http_request, auth=self.auth)
+            response = await self.client.post(url, data=http_request,
+                                              auth=self.auth)
 
             if response.status_code == 200:
                 return response.json()
             else:
-                error_message = str(response.status_code) + " " + response.reason_phrase + ": " + response.json()[
-                    'message']
+                error_message = str(response.status_code) + " " \
+                                + response.reason_phrase + ": " \
+                                + response.json()['message']
                 raise TectonServerException(error_message)
+        else:
+            pass
 
     @staticmethod
-    def validate_url(url):
-        try:
-            if url:
+    def validate_url(url: string) -> None:
+        print("ENTERED VALIDATE_URL")
+        if url:
+            try:
                 urlparse(url)
-            else:
+            except Exception:
                 raise (TectonClientException(TectonErrorMessage.INVALID_URL))
-        except:
+        else:
             raise (TectonClientException(TectonErrorMessage.INVALID_URL))
 
     @staticmethod
-    def validate_key(api_key):
+    def validate_key(api_key: string) -> None:
+        print("ENTERED VALIDATE_KEY")
         if not api_key:
             raise (TectonClientException(TectonErrorMessage.INVALID_KEY))
-
-
-# FOR TESTING ONLY:
-# if __name__ == '__main__':
-
-@pytest.mark.asyncio
-async def test():
-    http_client = TectonHttpClient("https://app.tecton.ai/", "492dbdb681eb254b32f605324e144571")
-
-    endpoint = "api/v1/feature-service/get-features"
-    request = '{"params":{"feature_service_name":"fraud_detection_feature_service","join_key_map":{' \
-              '"user_id":"user_205125746682"},"request_context_map":{"merch_long":35.0,"amt":500.0,"merch_lat":30.0},' \
-              '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
-
-    response = await http_client.perform_request(endpoint, http_client.methods.POST, request)
-    print(response)
-
-    assert type(response) == type({})
