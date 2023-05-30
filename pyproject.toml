@@ -1,0 +1,56 @@
+[tool.black]
+line-length = 120
+exclude = "sdk/proto/.*"
+
+[tool.pycln]
+all = true
+
+[tool.pytest.ini_options]
+markers = [
+    "snowflake_compute",
+]
+
+[tool.pylint."messages control"]
+disable = ["all"]
+enable = [
+    "abstract-method",
+    "bad-staticmethod-argument",
+    "consider-merging-isinstance",
+    "function-redefined",
+    "undefined-variable",
+    "unused-private-member",
+]
+
+[tool.ruff]
+# Configure the line-length so Ruff knows how long to make any lines it
+# modifies.
+line-length = 120
+target-version = "py38"
+
+# TODO(brian): incrementally add in "E", "F" linters
+select = ["F", "E", "EM"]
+
+# NOTE: all of these are disabled for now since they need changing.
+#       They will be incrementally turned on.
+ignore = [
+  "F541", # f-string-missing-placeholders
+  "F841", # unused-variable
+  # E501 line length (we use black auto-formatter to handle line length)
+  "E501",
+
+  "E712", #	true-false-comparison
+  "E741", #	ambiguous-variable-name
+]
+
+# Avoid linting / modifying python files that we vendor and people's personal tools.
+extend-exclude = ["vendor", "tools/personal"]
+
+[tool.ruff.per-file-ignores]
+
+# Ignore F405 (undefined variable), since this happens from star imports of
+# `grafanalib.core`. Which is a common pattern currently used in our dashboard
+# files.
+"infrastructure/grafana/**/*.py" = ["F403", "F405"]
+
+# Ignore F401 (unused-import) in __init__.py files.
+"__init__.py" = ["F401", "F403"]

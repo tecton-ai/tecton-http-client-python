@@ -78,18 +78,11 @@ def test_empty_url() -> None:
         TectonClient("", "1234")
 
 
-def test_key(key) -> None:
+@pytest.mark.parametrize("key", ["", None])
+def test_empty_or_none_key(key: object) -> None:
     with pytest.raises(TectonClientException):
         TectonClient(url, key)
-"""
-Testing Empty Key
-"""
-test_key("")
 
-"""
-Testing None Key
-"""
-test_key(None)
 
 def test_invalid_api_key(httpx_mock: HTTPXMock) -> None:
     expectedMessage = "401 Unauthorized: invalid 'Tecton-key' " \

@@ -1,4 +1,4 @@
-from typing import TypeVar, Type
+from typing import TypeVar
 
 import httpx
 from enum import Enum
