@@ -79,7 +79,7 @@ class TectonHttpClient:
         return url
 
     @staticmethod
-    def validate_key(api_key: str) -> str:
+    def validate_key(api_key: Optional[str]) -> str:
         if not api_key:
             raise TectonClientException(INVALID_KEY)
 
