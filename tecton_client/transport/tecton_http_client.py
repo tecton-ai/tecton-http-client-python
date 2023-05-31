@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import Self
 
 import httpx
 from enum import Enum
@@ -11,8 +11,6 @@ from tecton_client.exceptions.exceptions import TectonServerException
 from tecton_client.exceptions.exceptions import TectonClientException
 from tecton_client.exceptions.exceptions import TectonErrorMessage
 
-T = TypeVar('T', bound='TectonHttpClient')
-
 API_PREFIX = "Tecton-key"
 
 
@@ -24,7 +22,7 @@ class TectonHttpClient:
         ACCEPT = 'Accept'
         CONTENT_TYPE = 'Content-Type'
 
-    def __init__(self: T, url: string, api_key: string) -> None:
+    def __init__(self: Self, url: string, api_key: string) -> None:
 
         self.validate_url(url)
         self.validate_key(api_key)
@@ -38,15 +36,15 @@ class TectonHttpClient:
         self.client = httpx.AsyncClient()
         self.is_client_closed = False
 
-    async def close(self: T) -> None:
+    async def close(self: Self) -> None:
         await self.client.aclose()
         self.is_client_closed = True
 
     @property
-    def is_closed(self: T) -> bool:
+    def is_closed(self: Self) -> bool:
         return self.is_client_closed
 
-    async def perform_request(self: T, endpoint: string, method: Enum,
+    async def perform_request(self: Self, endpoint: string, method: Enum,
                               http_request: string) -> string:
         """
         This is a method that performs a given HTTP request

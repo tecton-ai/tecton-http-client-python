@@ -73,14 +73,10 @@ async def test_perform_http_request_failure(httpx_mock: HTTPXMock) -> None:
     await http_client.close()
 
 
-def test_empty_url() -> None:
+@pytest.mark.parametrize("url", ["", None])
+def test_empty_url(url: object) -> None:
     with pytest.raises(TectonClientException):
-        TectonClient("", "1234")
-
-
-def test_none_url() -> None:
-    with pytest.raises(TectonClientException):
-        TectonClient(None, "1234")
+        TectonClient(url, "1234")
 
 
 @pytest.mark.parametrize("key", ["", None])
