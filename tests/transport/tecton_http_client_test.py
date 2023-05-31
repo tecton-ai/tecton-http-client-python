@@ -86,11 +86,11 @@ def test_empty_or_none_key(key: object) -> None:
 
 
 def test_invalid_api_key(httpx_mock: HTTPXMock) -> None:
-    expectedMessage = "401 Unauthorized: invalid 'Tecton-key' " \
+    expected_message = "401 Unauthorized: invalid 'Tecton-key' " \
                       "authorization header. Newly created credentials " \
                       "may take up to 60 seconds to be usable."
 
     try:
         TectonClient(url, api_key)
     except TectonServerException as e:
-        assert e == expectedMessage
+        assert e == expected_message
