@@ -93,5 +93,4 @@ def test_invalid_api_key(httpx_mock: HTTPXMock) -> None:
     try:
         TectonClient(url, api_key)
     except TectonServerException as e:
-        print(e)
         assert e == expectedMessage

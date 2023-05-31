@@ -23,14 +23,8 @@ target-version = "py38"
 
 select = ["F", "E", "EM"]
 
-# NOTE: all of these are disabled for now since they need changing.
-#       They will be incrementally turned on.
 ignore = [
-  "F541", # f-string-missing-placeholders
-  "F841", # unused-variable
-  # E501 line length (we use black auto-formatter to handle line length)
-  "E501",
 
-  "E712", #	true-false-comparison
+  "E501", # E501 line length (we use black auto-formatter to handle line length)
   "E741", #	ambiguous-variable-name
 ]

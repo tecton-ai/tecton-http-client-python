@@ -1,7 +1,4 @@
-from typing import TypeVar
 from enum import Enum
-
-T = TypeVar('T', bound='TectonException')
 
 
 class TectonException(Exception):
