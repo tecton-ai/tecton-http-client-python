@@ -1,18 +1,15 @@
-"""
-Basic HTTP Client class to send requests and receive responses
-"""
 from typing import Self
+from typing import Optional
 
 import httpx
 from enum import Enum
-import string
 
 from httpx_auth import HeaderApiKey
 from urllib.parse import urlparse
 
 from tecton_client.exceptions.exceptions import TectonServerException
+from tecton_client.exceptions.exceptions import INVALID_URL, INVALID_KEY
 from tecton_client.exceptions.exceptions import TectonClientException
-from tecton_client.exceptions.exceptions import TectonErrorMessage
 
 API_PREFIX = "Tecton-key"
 
@@ -25,13 +22,10 @@ class TectonHttpClient:
         ACCEPT = 'Accept'
         CONTENT_TYPE = 'Content-Type'
 
-    def __init__(self: Self, url: string, api_key: string) -> None:
+    def __init__(self: Self, url: str, api_key: str) -> None:
 
-        self.validate_url(url)
-        self.validate_key(api_key)
-
-        self.url = url
-        self.api_key = api_key
+        self.url = self.validate_url(url)
+        self.api_key = self.validate_key(api_key)
 
         self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value,
                                  api_key=API_PREFIX + " " + self.api_key)
@@ -47,15 +41,15 @@ class TectonHttpClient:
     def is_closed(self: Self) -> bool:
         return self.is_client_closed
 
-    async def perform_request(self: Self, endpoint: string, method: Enum,
-                              http_request: string) -> string:
+    async def execute_request(self: Self, endpoint: str, method: Enum,
+                              http_request: dict) -> str:
         """
         This is a method that performs a given HTTP request
         to an endpoint in the method passed by client
 
         :param http_request: request data to be passed
         :param method: GET, PUT, POST etc.
-        :param endpoint: Tecton endpoint to attach to the URL and query
+        :param endpoint: HTTP endpoint to attach to the URL and query
         :type http_request: String in JSON format
         :type endpoint: String
         :type method: Enum
@@ -78,18 +72,22 @@ class TectonHttpClient:
             pass
 
     @staticmethod
-    def validate_url(url: string) -> None:
+    def validate_url(url: Optional[str]) -> str:
 
         # If the URL is empty or None, raise an exception
         if not url:
-            raise TectonClientException(TectonErrorMessage.INVALID_URL)
+            raise TectonClientException(INVALID_URL)
         # Otherwise, try parsing the URL and raise an exception if it fails
         try:
             urlparse(url)
         except Exception:
-            raise TectonClientException(TectonErrorMessage.INVALID_URL)
+            raise TectonClientException(INVALID_URL)
+
+        return url
 
     @staticmethod
-    def validate_key(api_key: string) -> None:
+    def validate_key(api_key: str) -> str:
         if not api_key:
-            raise TectonClientException(TectonErrorMessage.INVALID_KEY)
+            raise TectonClientException(INVALID_KEY)
+
+        return api_key

@@ -27,14 +27,14 @@ async def test_perform_http_request_success(httpx_mock: HTTPXMock) -> None:
     http_client = TectonHttpClient(url, api_key)
 
     endpoint = "api/v1/feature-service/get-features"
-    request = '{"params":{"feature_service_name":' \
-              '"fraud_detection_feature_service",' \
-              '"join_key_map":{"user_id":"user_205125746682"},' \
-              '"request_context_map":{"merch_long":35.0,' \
-              '"amt":500.0,"merch_lat":30.0},' \
-              '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
+    params = dict(feature_service_name="fraud_detection_feature_service",
+                  join_key_map={"user_id": "user_205125746682"},
+                  request_context_map={"merch_long": 35.0, "amt": 500.0,
+                                       "merch_lat": 30.0},
+                  workspace_name="tecton-fundamentals-tutorial-live")
+    request = {"params": params}
 
-    response = await http_client.perform_request(
+    response = await http_client.execute_request(
         endpoint, http_client.methods.POST, request)
 
     assert type({}) == type(response)
@@ -56,15 +56,15 @@ async def test_perform_http_request_failure(httpx_mock: HTTPXMock) -> None:
     http_client = TectonHttpClient(url, api_key)
 
     endpoint = "api/v1/feature-service/get-features"
-    request = '{"params":{"feature_service_name":' \
-              '"fraud_detection_feature_service",' \
-              '"join_key_map":{"user_id":"user_205125746682"},' \
-              '"request_context_map":{"merch_long":35.0,' \
-              '"amt":500.0,"merch_lat":30.0},' \
-              '"workspace_name":"tecton-fundamentals-tutorial-live"}}'
+    params = dict(feature_service_name="fraud_detection_feature_service",
+                  join_key_map={"user_id": "user_205125746682"},
+                  request_context_map={"merch_long": 35.0, "amt": 500.0,
+                                       "merch_lat": 30.0},
+                  workspace_name="tecton-fundamentals-tutorial-live")
+    request = {"params": params}
 
     try:
-        await http_client.perform_request(
+        await http_client.execute_request(
             endpoint, http_client.methods.POST, request)
 
     except Exception as e:
@@ -87,8 +87,8 @@ def test_empty_or_none_key(key: object) -> None:
 
 def test_invalid_api_key(httpx_mock: HTTPXMock) -> None:
     expected_message = "401 Unauthorized: invalid 'Tecton-key' " \
-                      "authorization header. Newly created credentials " \
-                      "may take up to 60 seconds to be usable."
+                       "authorization header. Newly created credentials " \
+                       "may take up to 60 seconds to be usable."
 
     try:
         TectonClient(url, api_key)

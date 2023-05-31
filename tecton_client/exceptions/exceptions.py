@@ -1,4 +1,3 @@
-from enum import Enum
 
 
 class TectonException(Exception):
@@ -21,9 +20,5 @@ class TectonServerException(TectonException):
     """
 
 
-class TectonErrorMessage(str, Enum):
-    """
-     Class that declares all the different error messages
-    """
-    INVALID_KEY = "API Key cannot be empty"
-    INVALID_URL = "Cannot connect to Tecton because the URL is invalid"
+INVALID_KEY = "API Key cannot be empty"
+INVALID_URL = "Cannot connect to Tecton because the URL is invalid"
