@@ -6,9 +6,12 @@ T = TypeVar('T', bound='TectonException')
 
 
 class TectonException(Exception):
-    def __init__(self: T, message: string) -> None:
-        self.message = message
-        super().__init__(self.message)
+    """
+    Base class for all Tecton specific exceptions
+    """
+    # def __init__(self: T, message: string) -> None:
+    #     self.message = message
+    #     super().__init__(self.message)
 
 
 class TectonClientException(TectonException):
