@@ -35,7 +35,7 @@ async def test_perform_http_request_success(httpx_mock: HTTPXMock) -> None:
     request = {"params": params}
 
     response = await http_client.execute_request(
-        endpoint, http_client.methods.POST, request)
+        endpoint, request)
 
     assert type({}) == type(response)
     await http_client.close()
@@ -65,7 +65,7 @@ async def test_perform_http_request_failure(httpx_mock: HTTPXMock) -> None:
 
     try:
         await http_client.execute_request(
-            endpoint, http_client.methods.POST, request)
+            endpoint, request)
 
     except Exception as e:
         assert type(e) == TectonServerException
