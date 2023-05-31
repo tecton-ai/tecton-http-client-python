@@ -4,7 +4,4 @@
 
 # Python compiled byte-code files
 tests/.pytest_cache/
-tests/transport/__pycache__/
-tecton_client/__pycache__/
-tecton_client/exceptions/__pycache__/
-tecton_client/transport/__pycache__/
+__pycache__/

@@ -78,6 +78,11 @@ def test_empty_url() -> None:
         TectonClient("", "1234")
 
 
+def test_none_url() -> None:
+    with pytest.raises(TectonClientException):
+        TectonClient(None, "1234")
+
+
 @pytest.mark.parametrize("key", ["", None])
 def test_empty_or_none_key(key: object) -> None:
     with pytest.raises(TectonClientException):

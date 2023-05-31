@@ -49,6 +49,9 @@ class TectonHttpClient:
     async def perform_request(self: T, endpoint: string, method: Enum,
                               http_request: string) -> string:
         """
+        This is a method that performs a given HTTP request
+        to an endpoint in the method passed by client
+
         :param http_request: request data to be passed
         :param method: GET, PUT, POST etc.
         :param endpoint: Tecton endpoint to attach to the URL and query
