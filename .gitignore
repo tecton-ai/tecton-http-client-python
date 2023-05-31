@@ -3,5 +3,6 @@
 .idea/
 
 # Python compiled byte-code files
-tests/.pytest_cache/
+.pytest_cache/
 __pycache__/
+.ruff_cache/

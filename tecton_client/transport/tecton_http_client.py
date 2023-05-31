@@ -1,3 +1,6 @@
+"""
+Basic HTTP Client class to send requests and receive responses
+"""
 from typing import Self
 
 import httpx
@@ -71,6 +74,7 @@ class TectonHttpClient:
                                 + response.json()['message']
                 raise TectonServerException(error_message)
         else:
+            # Other methods like GET, PUT and DELETE are currently unsupported
             pass
 
     @staticmethod
@@ -79,16 +83,16 @@ class TectonHttpClient:
 
         # If the URL is empty or None, raise an exception
         if not url:
-            raise (TectonClientException(TectonErrorMessage.INVALID_URL))
+            raise TectonClientException(TectonErrorMessage.INVALID_URL)
 
         # Otherwise, try parsing the URL and raise an exception if it fails
         try:
             urlparse(url)
         except Exception:
-            raise (TectonClientException(TectonErrorMessage.INVALID_URL))
+            raise TectonClientException(TectonErrorMessage.INVALID_URL)
 
     @staticmethod
     def validate_key(api_key: string) -> None:
         print("ENTERED VALIDATE_KEY")
         if not api_key:
-            raise (TectonClientException(TectonErrorMessage.INVALID_KEY))
+            raise TectonClientException(TectonErrorMessage.INVALID_KEY)

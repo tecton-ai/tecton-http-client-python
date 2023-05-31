@@ -8,9 +8,6 @@ class TectonException(Exception):
     """
     Base class for all Tecton specific exceptions
     """
-    # def __init__(self: T, message: string) -> None:
-    #     self.message = message
-    #     super().__init__(self.message)
 
 
 class TectonClientException(TectonException):
