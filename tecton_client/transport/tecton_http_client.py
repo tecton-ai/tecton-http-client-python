@@ -76,12 +76,15 @@ class TectonHttpClient:
     @staticmethod
     def validate_url(url: string) -> None:
         print("ENTERED VALIDATE_URL")
-        if url:
-            try:
-                urlparse(url)
-            except Exception:
-                raise (TectonClientException(TectonErrorMessage.INVALID_URL))
-        else:
+
+        # If the URL is empty or None, raise an exception
+        if not url:
+            raise (TectonClientException(TectonErrorMessage.INVALID_URL))
+
+        # Otherwise, try parsing the URL and raise an exception if it fails
+        try:
+            urlparse(url)
+        except Exception:
             raise (TectonClientException(TectonErrorMessage.INVALID_URL))
 
     @staticmethod
