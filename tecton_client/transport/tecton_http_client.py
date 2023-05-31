@@ -15,14 +15,15 @@ API_PREFIX = "Tecton-key"
 
 
 class TectonHttpClient:
-    methods = Enum('methods', ['GET', 'POST', 'PUT', 'DELETE'])
+    methods = Enum('methods', ['POST'])
 
     class headers(Enum):
         AUTHORIZATION = 'Authorization'
         ACCEPT = 'Accept'
         CONTENT_TYPE = 'Content-Type'
 
-    def __init__(self: Self, url: str, api_key: str) -> None:
+    def __init__(self: Self, url: str, api_key: str,
+                 client: httpx.AsyncClient | None = None) -> None:
 
         self.url = self.validate_url(url)
         self.api_key = self.validate_key(api_key)
@@ -30,7 +31,7 @@ class TectonHttpClient:
         self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value,
                                  api_key=API_PREFIX + " " + self.api_key)
 
-        self.client = httpx.AsyncClient()
+        self.client: httpx.AsyncClient = client or httpx.AsyncClient()
         self.is_client_closed = False
 
     async def close(self: Self) -> None:
