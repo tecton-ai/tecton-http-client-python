@@ -1,4 +1,2 @@
-tecton
-httpx
-httpx_auth
-pytest_httpx
+httpx~=0.24.1
+pytest~=7.3.1

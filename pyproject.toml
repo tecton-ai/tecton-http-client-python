@@ -1,0 +1,30 @@
+[tool.black]
+line-length = 120
+
+[tool.pycln]
+all = true
+
+[tool.pylint."messages control"]
+disable = ["all"]
+enable = [
+    "abstract-method",
+    "bad-staticmethod-argument",
+    "consider-merging-isinstance",
+    "function-redefined",
+    "undefined-variable",
+    "unused-private-member",
+]
+
+[tool.ruff]
+# Configure the line-length so Ruff knows how long to make any lines it
+# modifies.
+line-length = 120
+target-version = "py38"
+
+select = ["F", "E", "EM"]
+
+ignore = [
+
+  "E501", # E501 line length (we use black auto-formatter to handle line length)
+  "E741", #	ambiguous-variable-name
+]
