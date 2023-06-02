@@ -27,7 +27,7 @@ class TectonHttpClient:
         self.api_key = self.validate_key(api_key)
 
         self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value,
-                                 api_key=f"{API_PREFIX}  {self.api_key}")
+                                 api_key=f"{API_PREFIX} {self.api_key}")
 
         self.client: httpx.AsyncClient = client or httpx.AsyncClient()
         self.is_client_closed = False
