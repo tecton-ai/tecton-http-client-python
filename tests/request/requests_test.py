@@ -1,6 +1,7 @@
 import pytest
 
-from tecton_client.exceptions.exceptions import TectonInvalidParameterException
+from tecton_client.exceptions.exceptions import TectonInvalidParameterException, \
+    TectonEmptyFieldsException
 from tecton_client.utils import MetadataOptions
 from tecton_client.request.requests import GetFeaturesRequest
 from tecton_client.request.requests_data import DEFAULT_METADATA_OPTIONS, \
@@ -34,7 +35,7 @@ def test_error_feature_service_name(feature_service: str) -> None:
 
 def test_empty_maps() -> None:
     empty_get_feature_request_data = GetFeatureRequestData()
-    with pytest.raises(TectonInvalidParameterException):
+    with pytest.raises(TectonEmptyFieldsException):
         GetFeaturesRequest(TEST_WORKSPACE_NAME, TEST_FEATURE_SERVICE_NAME,
                            default_metadata_options,
                            empty_get_feature_request_data)
