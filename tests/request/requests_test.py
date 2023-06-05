@@ -1,11 +1,10 @@
 import pytest
 
-from tecton_client.exceptions.exceptions import TectonClientException
-from tecton_client.model.metadata_option import MetadataOptions
-from tecton_client.request.get_feature_request_data import \
+from tecton_client.exceptions.exceptions import TectonInvalidParameterException
+from tecton_client.utils import MetadataOptions
+from tecton_client.request.requests import GetFeaturesRequest
+from tecton_client.request.requests_data import DEFAULT_METADATA_OPTIONS, \
     GetFeatureRequestData
-from tecton_client.request.get_features_request import GetFeaturesRequest
-from tecton_client.request.request_constants import DEFAULT_METADATA_OPTIONS
 
 TEST_WORKSPACE_NAME = "test_workspace_name"
 TEST_FEATURE_SERVICE_NAME = "test_feature_service_name"
@@ -19,7 +18,7 @@ default_get_feature_request_data = GetFeatureRequestData(
 
 @pytest.mark.parametrize("workspace", ["", None])
 def test_error_workspace_name(workspace: str) -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         GetFeaturesRequest(workspace, TEST_FEATURE_SERVICE_NAME,
                            default_metadata_options,
                            default_get_feature_request_data)
@@ -27,7 +26,7 @@ def test_error_workspace_name(workspace: str) -> None:
 
 @pytest.mark.parametrize("feature_service", ["", None])
 def test_error_feature_service_name(feature_service: str) -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         GetFeaturesRequest(TEST_WORKSPACE_NAME, feature_service,
                            default_metadata_options,
                            default_get_feature_request_data)
@@ -35,7 +34,7 @@ def test_error_feature_service_name(feature_service: str) -> None:
 
 def test_empty_maps() -> None:
     empty_get_feature_request_data = GetFeatureRequestData()
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         GetFeaturesRequest(TEST_WORKSPACE_NAME, TEST_FEATURE_SERVICE_NAME,
                            default_metadata_options,
                            empty_get_feature_request_data)
@@ -211,6 +210,5 @@ def test_json_with_all_metadata_options() -> None:
                     'request_context_map": {"test_key": "123.45"}, ' \
                     '"workspace_name": "test_workspace_name"}}'
     actual_json = get_features_request.request_to_json()
-    print(actual_json)
 
     assert actual_json == expected_json

@@ -1,7 +1,7 @@
 from pytest_httpx import HTTPXMock
 
-from tecton_client.exceptions.exceptions import TectonServerException
-from tecton_client.exceptions.exceptions import TectonClientException
+from tecton_client.exceptions.exceptions import TectonServerException, \
+    TectonInvalidParameterException
 from tecton_client.tecton_client import TectonClient
 from tecton_client.transport.tecton_http_client import TectonHttpClient
 import pytest
@@ -75,13 +75,13 @@ async def test_perform_http_request_failure(httpx_mock: HTTPXMock) -> None:
 
 @pytest.mark.parametrize("url", ["", None])
 def test_empty_url(url: object) -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         TectonClient(url, "1234")
 
 
 @pytest.mark.parametrize("key", ["", None])
 def test_empty_or_none_key(key: object) -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         TectonClient(url, key)
 
 

@@ -7,9 +7,9 @@ from enum import Enum
 from httpx_auth import HeaderApiKey
 from urllib.parse import urlparse
 
-from tecton_client.exceptions.exceptions import TectonServerException
+from tecton_client.exceptions.exceptions import TectonServerException, \
+    TectonInvalidParameterException
 from tecton_client.exceptions.exceptions import INVALID_URL, INVALID_KEY
-from tecton_client.exceptions.exceptions import TectonClientException
 
 API_PREFIX = "Tecton-key"
 
@@ -69,18 +69,18 @@ class TectonHttpClient:
 
         # If the URL is empty or None, raise an exception
         if not url:
-            raise TectonClientException(INVALID_URL)
+            raise TectonInvalidParameterException(INVALID_URL)
         # Otherwise, try parsing the URL and raise an exception if it fails
         try:
             urlparse(url)
         except Exception:
-            raise TectonClientException(INVALID_URL)
+            raise TectonInvalidParameterException(INVALID_URL)
 
         return url
 
     @staticmethod
     def validate_key(api_key: Optional[str]) -> str:
         if not api_key:
-            raise TectonClientException(INVALID_KEY)
+            raise TectonInvalidParameterException(INVALID_KEY)
 
         return api_key

@@ -1,27 +1,25 @@
-
 import pytest
 
-from tecton_client.exceptions.exceptions import TectonClientException
-from tecton_client.request.get_feature_request_data import \
-    GetFeatureRequestData
+from tecton_client.exceptions.exceptions import TectonInvalidParameterException
+from tecton_client.request.requests_data import GetFeatureRequestData
 
 default_get_feature_request_data = GetFeatureRequestData()
 
 
 @pytest.mark.parametrize("key", ["", None])
 def test_error_join_key(key: str) -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         default_get_feature_request_data.add_join_key(key, "testValue")
 
 
 @pytest.mark.parametrize("key", ["", None])
 def test_error_request_context_key(key: str) -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         default_get_feature_request_data.add_request_context(key, "test_value")
 
 
 def test_empty_join_value() -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         default_get_feature_request_data.add_join_key("test_key", "")
 
 
@@ -32,7 +30,7 @@ def test_none_join_value() -> None:
 
 @pytest.mark.parametrize("value", ["", None])
 def test_error_request_context_value(value: object) -> None:
-    with pytest.raises(TectonClientException):
+    with pytest.raises(TectonInvalidParameterException):
         default_get_feature_request_data.add_request_context("test_key", value)
 
 
