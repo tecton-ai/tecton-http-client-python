@@ -10,6 +10,7 @@ from tecton_client.exceptions import (
 import httpx
 from httpx_auth import HeaderApiKey
 
+
 API_PREFIX = "Tecton-key"
 
 
@@ -76,14 +77,29 @@ class TectonHttpClient:
         Validate that a given url string is a valid URL
         """
 
+<<<<<<< HEAD:tecton_client/http_client.py
         if not url or not urlparse(url).netloc:
             raise InvalidParameterException(InvalidParameterMessage.URL.value)
+=======
+        # If the URL is empty or None, raise an exception
+        if not url:
+            raise TectonInvalidParameterException(INVALID_URL)
+        # Otherwise, try parsing the URL and raise an exception if it fails
+        try:
+            urlparse(url)
+        except Exception:
+            raise TectonInvalidParameterException(INVALID_URL)
+>>>>>>> feead27 (Refactoring Code):tecton_client/transport/tecton_http_client.py
 
         return url
 
     @staticmethod
     def validate_key(api_key: Optional[str]) -> str:
         if not api_key:
+<<<<<<< HEAD:tecton_client/http_client.py
             raise InvalidParameterException(InvalidParameterMessage.KEY.value)
+=======
+            raise TectonInvalidParameterException(INVALID_KEY)
+>>>>>>> feead27 (Refactoring Code):tecton_client/transport/tecton_http_client.py
 
         return api_key
