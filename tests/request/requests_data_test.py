@@ -60,29 +60,29 @@ def test_mixed_type_request_context_key_value() -> None:
     assert len(request_context_map) == 3
     assert request_context_map.get("test_string_key") == "test_string_value"
     assert request_context_map.get("test_long_key") == "1234"
-    assert request_context_map.get("test_float_key") == "123.45"
+    assert request_context_map.get("test_float_key") == 123.45
 
 
 def test_join_key_and_request_context() -> None:
+
     join_key_map = {"test_join_key_1": "test_join_value_1",
                     "test_join_key_2": "test_join_value_2"}
     request_context_map = {"test_request_context_1": 1234,
                            "test_request_context_2": "test_string_value"}
 
-    default_get_feature_request_data.add_join_key_map(join_key_map)
-    default_get_feature_request_data.add_request_context_map(
-        request_context_map)
+    get_feature_request_data = GetFeatureRequestData(request_context_map,
+                                                     join_key_map)
 
-    assert default_get_feature_request_data.join_key_map is not None
-    assert default_get_feature_request_data.request_context_map is not None
+    assert get_feature_request_data.join_key_map is not None
+    assert get_feature_request_data.request_context_map is not None
 
-    assert len(default_get_feature_request_data.join_key_map) == 2
-    assert len(default_get_feature_request_data.request_context_map) == 2
+    assert len(get_feature_request_data.join_key_map) == 2
+    assert len(get_feature_request_data.request_context_map) == 2
 
-    for k, v in default_get_feature_request_data.join_key_map.items():
+    for k, v in get_feature_request_data.join_key_map.items():
         assert join_key_map.get(k) == \
-               default_get_feature_request_data.join_key_map.get(k)
+               get_feature_request_data.join_key_map.get(k)
 
-    for k, v in default_get_feature_request_data.join_key_map.items():
+    for k, v in get_feature_request_data.join_key_map.items():
         assert request_context_map.get(k) == \
-               default_get_feature_request_data.request_context_map.get(k)
+               get_feature_request_data.request_context_map.get(k)

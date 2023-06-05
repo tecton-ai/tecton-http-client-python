@@ -25,14 +25,6 @@ class TectonInvalidParameterException(TectonClientException):
     """
 
 
-class TectonEmptyFieldsException(TectonClientException):
-    """
-     Class that declares a TectonEmptyParameterException,
-     when a required parameter is empty
-     or received response is empty
-    """
-
-
 INVALID_KEY = "API Key cannot be empty"
 INVALID_URL = "Cannot connect to Tecton because the URL is invalid"
 INVALID_KEY_VALUE = "Key/Value cannot be null or empty"

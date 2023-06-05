@@ -4,10 +4,9 @@ from typing import Self, Optional
 
 from tecton_client.exceptions.exceptions import INVALID_WORKSPACE_NAME, \
     INVALID_FEATURE_SERVICE_NAME, TectonInvalidParameterException, \
-    TectonEmptyFieldsException, EMPTY_REQUEST_MAPS
-from tecton_client.utils import MetadataOptions
+    EMPTY_REQUEST_MAPS
 from tecton_client.request.requests_data import DEFAULT_METADATA_OPTIONS, \
-    ALL_METADATA_OPTIONS, GetFeatureRequestData
+    GetFeatureRequestData
 
 
 class AbstractTectonRequest(ABC):
@@ -16,20 +15,14 @@ class AbstractTectonRequest(ABC):
                  workspace_name: str,
                  feature_service_name: str) -> None:
 
-        AbstractTectonRequest.validate_request_parameters(
-            workspace_name, feature_service_name)
-
-        self.endpoint = endpoint
-        self.workspace_name = workspace_name
-        self.feature_service_name = feature_service_name
-
-    @staticmethod
-    def validate_request_parameters(workspace_name: str,
-                                    feature_service_name: str) -> None:
         if not workspace_name:
             raise TectonInvalidParameterException(INVALID_WORKSPACE_NAME)
         if not feature_service_name:
             raise TectonInvalidParameterException(INVALID_FEATURE_SERVICE_NAME)
+
+        self.endpoint = endpoint
+        self.workspace_name = workspace_name
+        self.feature_service_name = feature_service_name
 
 
 class AbstractGetFeaturesRequest(AbstractTectonRequest):
@@ -47,20 +40,16 @@ class AbstractGetFeaturesRequest(AbstractTectonRequest):
 
     @staticmethod
     def get_metadata_options(metadata_options: set) -> set:
-        if MetadataOptions.ALL in metadata_options:
-            return ALL_METADATA_OPTIONS
-        elif MetadataOptions.ALL in metadata_options:
-            return DEFAULT_METADATA_OPTIONS
-        else:
-            return metadata_options | DEFAULT_METADATA_OPTIONS
+        # union of two sets (add default options to their set)
+        return metadata_options | DEFAULT_METADATA_OPTIONS
 
     @staticmethod
     def validate_request_data(
             get_features_request_data: GetFeatureRequestData) -> None:
 
-        if get_features_request_data.is_empty_request_context_map() and \
-                get_features_request_data.is_empty_join_key_map():
-            raise TectonEmptyFieldsException(EMPTY_REQUEST_MAPS)
+        if len(get_features_request_data.request_context_map) == 0 and \
+                len(get_features_request_data.join_key_map) == 0:
+            raise TectonInvalidParameterException(EMPTY_REQUEST_MAPS)
 
 
 class GetFeaturesRequest(AbstractGetFeaturesRequest):
@@ -73,9 +62,11 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         super().__init__(self.endpoint, workspace_name,
                          feature_service_name, metadata_options)
 
-        self.validate_request_data(get_feature_request_data)
-        self.get_feature_request_data = \
-            get_feature_request_data or GetFeatureRequestData()
+        if len(get_feature_request_data.request_context_map) == 0 and \
+                len(get_feature_request_data.join_key_map) == 0:
+            raise TectonInvalidParameterException(EMPTY_REQUEST_MAPS)
+
+        self.get_feature_request_data = get_feature_request_data
 
     def request_to_json(self: Self) -> str:
         final_metadata_options = {}
