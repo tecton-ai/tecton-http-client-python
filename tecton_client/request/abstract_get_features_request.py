@@ -1,4 +1,4 @@
-from typing import Self, Optional
+from typing import Self
 
 from tecton_client.exceptions.exceptions import TectonClientException, \
     EMPTY_REQUEST_MAPS
@@ -6,7 +6,8 @@ from tecton_client.model.metadata_option import MetadataOptions
 from tecton_client.request.abstract_tecton_request import AbstractTectonRequest
 from tecton_client.request.get_feature_request_data import \
     GetFeatureRequestData
-from tecton_client.request.request_constants import DEFAULT_METADATA_OPTIONS, ALL_METADATA_OPTIONS
+from tecton_client.request.request_constants import DEFAULT_METADATA_OPTIONS, \
+    ALL_METADATA_OPTIONS
 
 
 class AbstractGetFeaturesRequest(AbstractTectonRequest):
@@ -19,22 +20,21 @@ class AbstractGetFeaturesRequest(AbstractTectonRequest):
         if metadata_options is None or len(metadata_options) == 0:
             self._metadata_options = DEFAULT_METADATA_OPTIONS
         else:
-            self._metadata_options = self.get_metadata_options(metadata_options)
-
+            self._metadata_options = \
+                self.get_metadata_options(metadata_options)
 
     @property
-    def metadata_options(self: Self):
+    def metadata_options(self: Self) -> set:
         return self._metadata_options
 
     @staticmethod
-    def get_metadata_options(metadata_options: set):
+    def get_metadata_options(metadata_options: set) -> set:
         if MetadataOptions.ALL in metadata_options:
             return ALL_METADATA_OPTIONS
         elif MetadataOptions.ALL in metadata_options:
             return DEFAULT_METADATA_OPTIONS
         else:
             return metadata_options | DEFAULT_METADATA_OPTIONS
-
 
     @staticmethod
     def validate_request_parameters(

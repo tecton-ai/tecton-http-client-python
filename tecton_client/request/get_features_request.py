@@ -38,8 +38,10 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     def request_to_json(self: Self) -> str:
         final_metadata_options = {}
         if len(self.metadata_options) != 0:
-            metadata_option_values = sorted([option.value for option in self.metadata_options])
-            final_metadata_options = {value: True for value in metadata_option_values}
+            metadata_option_values = \
+                sorted([option.value for option in self.metadata_options])
+            final_metadata_options = \
+                {value: True for value in metadata_option_values}
 
         request_value_dictionary = {
             "feature_service_name": self.feature_service_name,

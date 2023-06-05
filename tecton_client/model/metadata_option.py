@@ -9,5 +9,3 @@ class MetadataOptions(Enum):
     FEATURE_STATUS = "include_serving_status"
     ALL = ""
     NONE = ""
-
-
