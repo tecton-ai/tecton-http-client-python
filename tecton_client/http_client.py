@@ -10,7 +10,6 @@ from tecton_client.exceptions import (
 import httpx
 from httpx_auth import HeaderApiKey
 
-
 API_PREFIX = "Tecton-key"
 
 
@@ -24,8 +23,7 @@ class TectonHttpClient:
 
     def __init__(self: Self, url: str, api_key: str,
                  client: Optional[httpx.AsyncClient] = None) -> None:
-        """
-        Constructor that configures the url, api_key and
+        """Initializing the url, api key and
         client to make HTTP requests
 
         :param url: URL to ping
@@ -52,8 +50,7 @@ class TectonHttpClient:
 
     async def execute_request(self: Self, endpoint: str,
                               http_request: dict) -> str:
-        """
-        This is a method that performs a given HTTP request
+        """This is a method that performs a given HTTP request
         to an endpoint in the method passed by client
 
         :param http_request: request data to be passed
@@ -73,33 +70,16 @@ class TectonHttpClient:
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:
+        """Validate that a given url string is a valid URL
         """
-        Validate that a given url string is a valid URL
-        """
-
-<<<<<<< HEAD:tecton_client/http_client.py
         if not url or not urlparse(url).netloc:
             raise InvalidParameterException(InvalidParameterMessage.URL.value)
-=======
-        # If the URL is empty or None, raise an exception
-        if not url:
-            raise TectonInvalidParameterException(INVALID_URL)
-        # Otherwise, try parsing the URL and raise an exception if it fails
-        try:
-            urlparse(url)
-        except Exception:
-            raise TectonInvalidParameterException(INVALID_URL)
->>>>>>> feead27 (Refactoring Code):tecton_client/transport/tecton_http_client.py
 
         return url
 
     @staticmethod
     def validate_key(api_key: Optional[str]) -> str:
         if not api_key:
-<<<<<<< HEAD:tecton_client/http_client.py
             raise InvalidParameterException(InvalidParameterMessage.KEY.value)
-=======
-            raise TectonInvalidParameterException(INVALID_KEY)
->>>>>>> feead27 (Refactoring Code):tecton_client/transport/tecton_http_client.py
 
         return api_key
