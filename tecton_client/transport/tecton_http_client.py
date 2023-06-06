@@ -7,14 +7,20 @@ from enum import Enum
 from httpx_auth import HeaderApiKey
 from urllib.parse import urlparse
 
-from tecton_client.exceptions.exceptions import TectonServerException, \
-    TectonInvalidParameterException
-from tecton_client.exceptions.exceptions import INVALID_URL, INVALID_KEY
+from tecton_client.exceptions.exceptions import (
+    TectonServerException,
+    InvalidParameterException,
+    InvalidParameterMessages
+)
 
 API_PREFIX = "Tecton-key"
 
 
 class TectonHttpClient:
+    """
+    Basic HTTP Client to send and receive requests to a given URL
+    """
+
     class headers(Enum):
         AUTHORIZATION = 'Authorization'
         ACCEPT = 'Accept'
@@ -22,6 +28,12 @@ class TectonHttpClient:
 
     def __init__(self: Self, url: str, api_key: str,
                  client: Optional[httpx.AsyncClient] = None) -> None:
+        """
+
+        :param url: URL to ping
+        :param api_key: API Key required as part of header authorization
+        :param client: HTTP Asynchronous Client
+        """
 
         self.url = self.validate_url(url)
         self.api_key = self.validate_key(api_key)
@@ -67,20 +79,26 @@ class TectonHttpClient:
     @staticmethod
     def validate_url(url: Optional[str]) -> str:
 
+        """
+        Validate that a given URL is valid
+        """
+
         # If the URL is empty or None, raise an exception
         if not url:
-            raise TectonInvalidParameterException(INVALID_URL)
+            raise InvalidParameterException(InvalidParameterMessages.URL)
         # Otherwise, try parsing the URL and raise an exception if it fails
         try:
-            urlparse(url)
+            result = urlparse(url)
+            if not all([result.scheme, result.netloc]):
+                raise Exception
         except Exception:
-            raise TectonInvalidParameterException(INVALID_URL)
+            raise InvalidParameterException(InvalidParameterMessages.URL)
 
         return url
 
     @staticmethod
     def validate_key(api_key: Optional[str]) -> str:
         if not api_key:
-            raise TectonInvalidParameterException(INVALID_KEY)
+            raise InvalidParameterException(InvalidParameterMessages.URL)
 
         return api_key
