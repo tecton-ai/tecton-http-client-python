@@ -87,7 +87,7 @@ class GetFeaturesRequestJSON:
     feature_service_name: str
     join_key_map: Dict[str, Union[int, str, NoneType]]
     request_context_map: Dict[str, Union[int, str, float]]
-    metadata_options: Dict[str, bool]
+    metadata_options: Optional[Dict[str, bool]]
     workspace_name: str
 
     @property

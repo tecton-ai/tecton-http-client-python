@@ -3,8 +3,6 @@ import pytest
 from tecton_client.exceptions.exceptions import InvalidParameterException
 from tecton_client.request.requests_data import GetFeatureRequestData
 
-default_get_feature_request_data = GetFeatureRequestData()
-
 
 @pytest.mark.parametrize("key", ["", None])
 def test_error_join_key(key: str) -> None:
@@ -24,9 +22,9 @@ def test_empty_join_value() -> None:
 
 
 def test_none_join_value() -> None:
-    default_get_feature_request_data = \
+    get_feature_request_data = \
         GetFeatureRequestData(join_key_map={"test_key": None})
-    assert default_get_feature_request_data.join_key_map["test_key"] is None
+    assert get_feature_request_data.join_key_map["test_key"] is None
 
 
 @pytest.mark.parametrize("value", ["", None])

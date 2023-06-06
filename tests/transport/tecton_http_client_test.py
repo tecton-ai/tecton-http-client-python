@@ -1,7 +1,10 @@
 from pytest_httpx import HTTPXMock
 
-from tecton_client.exceptions.exceptions import TectonServerException, \
+from tecton_client.exceptions.exceptions import (
+    TectonServerException,
     InvalidParameterException
+)
+from tecton_client.request.requests_data import GetFeaturesRequestJSON
 from tecton_client.tecton_client import TectonClient
 from tecton_client.transport.tecton_http_client import TectonHttpClient
 import pytest
@@ -13,7 +16,7 @@ api_key = "abcd1234"
 @pytest.mark.asyncio
 async def test_http_client() -> None:
     http_client = TectonHttpClient(url, api_key)
-    assert http_client.is_client_closed is False
+    assert http_client.is_closed is False
     await http_client.close()
 
 
@@ -27,11 +30,13 @@ async def test_perform_http_request_success(httpx_mock: HTTPXMock) -> None:
     http_client = TectonHttpClient(url, api_key)
 
     endpoint = "api/v1/feature-service/get-features"
-    params = dict(feature_service_name="fraud_detection_feature_service",
-                  join_key_map={"user_id": "user_205125746682"},
-                  request_context_map={"merch_long": 35.0, "amt": 500.0,
-                                       "merch_lat": 30.0},
-                  workspace_name="tecton-fundamentals-tutorial-live")
+    params = GetFeaturesRequestJSON(
+        feature_service_name="fraud_detection_feature_service",
+        join_key_map={"user_id": "user_205125746682"},
+        request_context_map={"merch_long": 35.0, "amt": 500.0,
+                             "merch_lat": 30.0},
+        workspace_name="tecton-fundamentals-tutorial-live",
+        metadata_options=None).to_dict
     request = {"params": params}
 
     response = await http_client.execute_request(
@@ -56,11 +61,13 @@ async def test_perform_http_request_failure(httpx_mock: HTTPXMock) -> None:
     http_client = TectonHttpClient(url, api_key)
 
     endpoint = "api/v1/feature-service/get-features"
-    params = dict(feature_service_name="fraud_detection_feature_service",
-                  join_key_map={"user_id": "user_205125746682"},
-                  request_context_map={"merch_long": 35.0, "amt": 500.0,
-                                       "merch_lat": 30.0},
-                  workspace_name="tecton-fundamentals-tutorial-live")
+    params = GetFeaturesRequestJSON(
+        feature_service_name="fraud_detection_feature_service",
+        join_key_map={"user_id": "user_205125746682"},
+        request_context_map={"merch_long": 35.0, "amt": 500.0,
+                             "merch_lat": 30.0},
+        workspace_name="tecton-fundamentals-tutorial-live",
+        metadata_options=None).to_dict
     request = {"params": params}
 
     try:
@@ -73,7 +80,7 @@ async def test_perform_http_request_failure(httpx_mock: HTTPXMock) -> None:
     await http_client.close()
 
 
-@pytest.mark.parametrize("url", ["", None, "###"])
+@pytest.mark.parametrize("url", ["", None, "###", "somesite"])
 def test_invalid_url(url: object) -> None:
     with pytest.raises(InvalidParameterException):
         TectonClient(url, "1234")
