@@ -7,7 +7,10 @@ from typing import Self, Optional, Dict, Union, Set, Final
 
 from tecton_client.exceptions import (
     InvalidParameterMessage,
-    InvalidParameterException
+    InvalidParameterException,
+    INVALID_TYPE_KEY,
+    INVALID_TYPE_JOIN_VALUE,
+    INVALID_TYPE_REQ_VALUE
 )
 
 
@@ -61,16 +64,10 @@ class GetFeatureRequestData:
                         InvalidParameterMessage.KEY_VALUE.value)
 
                 if type(key) is not str:
-                    msg = f"{InvalidParameterMessage.TYPE_KEY.value} " \
-                          f"Join Key-Map key: {key}"
-                    raise InvalidParameterException(
-                        msg)
+                    INVALID_TYPE_KEY(key, "Join Key-Map")
 
                 if type(value) not in (int, str, NoneType):
-                    msg = f"{InvalidParameterMessage.TYPE_JOIN_VALUE.value}" \
-                          f" {value}"
-                    raise InvalidParameterException(
-                        msg)
+                    INVALID_TYPE_JOIN_VALUE(value)
 
                 join_key_map[key] = str(value) if type(value) is int else value
 
@@ -81,16 +78,10 @@ class GetFeatureRequestData:
                         InvalidParameterMessage.KEY_VALUE.value)
 
                 if type(key) is not str:
-                    msg = f"{InvalidParameterMessage.TYPE_KEY.value} " \
-                          f"Request Context Map key: {key}"
-                    raise InvalidParameterException(
-                        msg)
+                    INVALID_TYPE_KEY(key, "Request Context Map")
 
                 if type(value) not in (int, str, float):
-                    msg = f"{InvalidParameterMessage.TYPE_REQ_VALUE.value}" \
-                          f" {value}"
-                    raise InvalidParameterException(
-                        msg)
+                    INVALID_TYPE_REQ_VALUE(value)
 
                 request_context_map[key] = str(value) if \
                     type(value) not in (str, float) else value

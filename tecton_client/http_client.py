@@ -73,7 +73,9 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            error_message = f"{response.status_code} {response.reason_phrase}: {response.json()['message']}"
+            error_message = f"{response.status_code} " \
+                            f"{response.reason_phrase}: " \
+                            f"{response.json()['message']}"
             raise TectonServerException(error_message)
 
     @staticmethod
