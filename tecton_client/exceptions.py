@@ -1,6 +1,8 @@
 from enum import Enum
 
 import httpx
+
+
 class TectonException(Exception):
     """
     Base class for all Tecton specific exceptions
@@ -9,13 +11,13 @@ class TectonException(Exception):
 
 class TectonClientException(TectonException):
     """
-    Base class for exceptions thrown by the Python client
+    Base Class for exceptions thrown by the Python client
     """
 
 
 class TectonServerException(TectonException):
     """
-    Base class for exceptions representing error
+    Base Class for exceptions representing error
     response from Tecton API
     """
 
