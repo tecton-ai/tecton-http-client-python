@@ -1,6 +1,8 @@
+from typing import Union
+
 import pytest
 
-from tecton_client.exceptions.exceptions import InvalidParameterException
+from tecton_client.exceptions import InvalidParameterException
 from tecton_client.request.requests_data import GetFeatureRequestData
 
 
@@ -16,9 +18,10 @@ def test_error_request_context_key(key: str) -> None:
         GetFeatureRequestData(request_context_map={key: "test_value"})
 
 
-def test_empty_join_value() -> None:
+@pytest.mark.parametrize("value", ["", 123.45])
+def test_invalid_join_value(value: Union[str, float]) -> None:
     with pytest.raises(InvalidParameterException):
-        GetFeatureRequestData(join_key_map={"test_key": ""})
+        GetFeatureRequestData(join_key_map={"test_key": value})
 
 
 def test_none_join_value() -> None:
@@ -76,10 +79,5 @@ def test_join_key_and_request_context() -> None:
     assert len(get_feature_request_data.join_key_map) == 2
     assert len(get_feature_request_data.request_context_map) == 2
 
-    for k, v in get_feature_request_data.join_key_map.items():
-        assert join_key_map.get(k) == \
-               get_feature_request_data.join_key_map.get(k)
-
-    for k, v in get_feature_request_data.join_key_map.items():
-        assert request_context_map.get(k) == \
-               get_feature_request_data.request_context_map.get(k)
+    assert join_key_map == get_feature_request_data.join_key_map
+    assert request_context_map == get_feature_request_data.request_context_map

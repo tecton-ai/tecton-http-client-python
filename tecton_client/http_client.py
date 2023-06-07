@@ -7,10 +7,10 @@ from enum import Enum
 from httpx_auth import HeaderApiKey
 from urllib.parse import urlparse
 
-from tecton_client.exceptions.exceptions import (
+from tecton_client.exceptions import (
     TectonServerException,
     InvalidParameterException,
-    InvalidParameterMessages
+    InvalidParameterMessage
 )
 
 API_PREFIX = "Tecton-key"
@@ -29,10 +29,12 @@ class TectonHttpClient:
     def __init__(self: Self, url: str, api_key: str,
                  client: Optional[httpx.AsyncClient] = None) -> None:
         """
+        Constructor that configures the url, api_key and
+        client to make HTTP requests
 
         :param url: URL to ping
         :param api_key: API Key required as part of header authorization
-        :param client: HTTP Asynchronous Client
+        :param client: (Optional) HTTP Asynchronous Client
         """
 
         self.url = self.validate_url(url)
@@ -85,20 +87,20 @@ class TectonHttpClient:
 
         # If the URL is empty or None, raise an exception
         if not url:
-            raise InvalidParameterException(InvalidParameterMessages.URL)
+            raise InvalidParameterException(InvalidParameterMessage.URL.value)
         # Otherwise, try parsing the URL and raise an exception if it fails
         try:
             result = urlparse(url)
             if not all([result.scheme, result.netloc]):
                 raise Exception
         except Exception:
-            raise InvalidParameterException(InvalidParameterMessages.URL)
+            raise InvalidParameterException(InvalidParameterMessage.URL.value)
 
         return url
 
     @staticmethod
     def validate_key(api_key: Optional[str]) -> str:
         if not api_key:
-            raise InvalidParameterException(InvalidParameterMessages.URL)
+            raise InvalidParameterException(InvalidParameterMessage.KEY.value)
 
         return api_key
