@@ -65,7 +65,7 @@ class TectonHttpClient:
         :type http_request: String in JSON format
         :type endpoint: String
         """
-        url = self.url + "/" + endpoint
+        url = f"{self.url}/{endpoint}"
 
         response = await self.client.post(url, data=http_request,
                                           auth=self.auth)
@@ -73,9 +73,7 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            error_message = str(response.status_code) + " " \
-                            + response.reason_phrase + ": " \
-                            + response.json()['message']
+            error_message = f"{response.status_code} {response.reason_phrase}: {response.json()['message']}"
             raise TectonServerException(error_message)
 
     @staticmethod
@@ -85,15 +83,8 @@ class TectonHttpClient:
         Validate that a given URL is valid
         """
 
-        # If the URL is empty or None, raise an exception
-        if not url:
-            raise InvalidParameterException(InvalidParameterMessage.URL.value)
-        # Otherwise, try parsing the URL and raise an exception if it fails
-        try:
-            result = urlparse(url)
-            if not all([result.scheme, result.netloc]):
-                raise Exception
-        except Exception:
+        # If the URL is empty, None or the parsing fails, raise an exception
+        if not url or not urlparse(url).netloc:
             raise InvalidParameterException(InvalidParameterMessage.URL.value)
 
         return url
