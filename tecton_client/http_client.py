@@ -10,6 +10,7 @@ from tecton_client.exceptions import (
 import httpx
 from httpx_auth import HeaderApiKey
 
+
 API_PREFIX = "Tecton-key"
 
 
