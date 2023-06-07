@@ -1,5 +1,7 @@
 from enum import Enum
 
+import httpx
+
 
 class TectonException(Exception):
     """
@@ -9,38 +11,60 @@ class TectonException(Exception):
 
 class TectonClientException(TectonException):
     """
-    Base class for exceptions thrown by the Python client
+    Base Class for exceptions thrown by the Python client
     """
 
 
 class TectonServerException(TectonException):
     """
-    Base class for exceptions representing error
+    Base Class for exceptions representing error
     response from Tecton API
     """
 
 
+def INVALID_SERVER_RESPONSE(response: httpx.Response) -> None:
+    error_message = f"{response.status_code} " \
+                    f"{response.reason_phrase}: " \
+                    f"{response.json()['message']}"
+    raise TectonServerException(error_message)
+
+
 class InvalidParameterException(TectonClientException):
     """
-    Base class for exceptions raised when one or more
+    Class for exceptions raised when one or more
     parameters passed are invalid
     """
 
 
 class InvalidParameterMessage(str, Enum):
-    """
-    Error Messages for Invalid Parameters passed
-    """
+    """Error Messages for Invalid Parameters passed."""
 
     KEY = "API Key cannot be empty"
     URL = "Cannot connect to Tecton because the URL is invalid"
 
-    KEY_VALUE = "Key/Value cannot be None or empty"
-
     WORKSPACE_NAME = "Workspace Name cannot be None or empty"
     FEATURE_SERVICE_NAME = "FeatureService Name cannot be None or empty"
-    REQUEST_MAPS = "Both Join Key map and Request Context Map " \
-                   "cannot be empty"
+    EMPTY_MAPS = "Both Join Key map and Request Context Map " \
+                 "cannot be empty"
+
+
+class UnsupportedTypeException(TectonClientException):
+    """
+    Class for exceptions raised when the type of a
+    parameter passed is not supported by the client
+    """
+
+
+def EMPTY_KEY_VALUE(key: str, value: str) -> None:
+    """
+    Exception raised for when the key or value is empty
+    :param key: key provided
+    :param value: value provided
+    :return: InvalidParameterException
+    """
+    msg = f"Key/Value cannot be None or empty. Given key is: {key} " \
+          f"and value is: {value}"
+    raise InvalidParameterException(msg)
 
 
 def INVALID_TYPE_KEY(key: str, map: str) -> None:
@@ -52,7 +76,7 @@ def INVALID_TYPE_KEY(key: str, map: str) -> None:
     """
     msg = f"Join Key-Map keys and Request Context Map keys " \
           f"can only be of (str) type. Given key for {map} is: {key}"
-    raise InvalidParameterException(msg)
+    raise UnsupportedTypeException(msg)
 
 
 def INVALID_TYPE_JOIN_VALUE(value: str) -> None:
@@ -65,7 +89,7 @@ def INVALID_TYPE_JOIN_VALUE(value: str) -> None:
     """
     msg = f"Join Key-Map Values can only be of types " \
           f"(int, str). Given value is: {value}"
-    raise InvalidParameterException(msg)
+    raise UnsupportedTypeException(msg)
 
 
 def INVALID_TYPE_REQ_VALUE(value: str) -> None:
@@ -78,4 +102,4 @@ def INVALID_TYPE_REQ_VALUE(value: str) -> None:
     """
     msg = f"Request Context Map values can only be of types " \
           f"(int, str, float). Given value is: {value}"
-    raise InvalidParameterException(msg)
+    raise UnsupportedTypeException(msg)
