@@ -1,15 +1,16 @@
 from enum import Enum
 from typing import Optional
 from typing import Self
-from urllib.parse import urlparse
+from urllib.parse import urljoin, urlparse
 
 from tecton_client.exceptions import (
     InvalidParameterException,
-    InvalidParameterMessage, INVALID_SERVER_RESPONSE
+    InvalidParameterMessage,
+    INVALID_SERVER_RESPONSE,
+    TectonServerException
 )
 import httpx
 from httpx_auth import HeaderApiKey
-
 
 API_PREFIX = "Tecton-key"
 
@@ -59,7 +60,7 @@ class TectonHttpClient:
         :type http_request: String in JSON format
         :type endpoint: String
         """
-        url = f"{self.url}/{endpoint}"
+        url = urljoin(self.url, endpoint)
 
         response = await self.client.post(url, data=http_request,
                                           auth=self.auth)
@@ -67,12 +68,14 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            INVALID_SERVER_RESPONSE(response)
+            raise TectonServerException(INVALID_SERVER_RESPONSE(
+                response.status_code, response.reason_phrase,
+                response.json()['message']))
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:
-        """Validate that a given url string is a valid URL
-        """
+        """Validate that a given url string is a valid URL"""
+
         if not url or not urlparse(url).netloc:
             raise InvalidParameterException(InvalidParameterMessage.URL.value)
 
