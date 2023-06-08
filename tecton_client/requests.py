@@ -23,7 +23,17 @@ SUPPORTED_REQUEST_CONTEXT_MAP_TYPES: Final[set] = {int, str, float}
 
 
 class MetadataOptions(str, Enum):
-    """Options for retrieving metadata for get-features request."""
+    """Options for retrieving metadata for get-features request.
+
+    Attributes:
+        NAME: Include the name of each feature in the vector
+        EFFECTIVE_TIME: Include the timestamp of the most recent feature value
+        that was written to the online store
+        DATA_TYPE: Include the data types of each feature in the vector
+        SLO_INFO: Include information about the server response time
+        FEATURE_STATUS: Include feature serving status information
+        of the feature
+    """
 
     NAME = "include_names"
     EFFECTIVE_TIME = "include_effective_times"
@@ -44,10 +54,21 @@ class GetFeatureRequestData:
     """Class for request data needed for get-features queries.
 
     Attributes:
-        join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]):
-        (Optional) Join keys used for table-based FeatureViews
-        request_context_map (Optional[Dict[str, Union[int, str, float]]]):
-        (Optional) Request context used for OnDemand FeatureViews
+        join_key_map: (Optional) Join keys used for table-based FeatureViews
+        The key of this map is the join key name and the value is
+        the join key value for this request
+        For string keys, the value should be of type (str)
+        For int64 keys, the value should be (str) of the decimal
+        representation of the integer
+
+        request_context_map: (Optional) Request context used for
+        OnDemand FeatureViews
+        The key of this map is the request context name and the value
+        is the request context value for this request
+        For string values, the value should be of type (str)
+        For int64 values, the value should be (str) of the decimal
+        representation of the integer
+        For double values, the value should be of type (float)
     """
 
     def __init__(self: Self, join_key_map: Optional[Dict[str,
@@ -120,11 +141,11 @@ class TectonRequest(ABC):
     """Base class for all requests to the Tecton API.
 
     Attributes:
-        endpoint (str): HTTP endpoint to send request to
-        workspace_name (str): Name of the workspace in which the
-        Feature Service is defined
-        feature_service_name (str): Name of the Feature Service for
-        which the feature vector is being requested
+        endpoint: HTTP endpoint string to send request to
+        workspace_name: Name of the workspace in which the
+        Feature Service is defined (string)
+        feature_service_name: Name of the Feature Service for
+        which the feature vector is being requested (string)
     """
 
     def __init__(self: Self, endpoint: str,
@@ -158,8 +179,8 @@ class AbstractGetFeaturesRequest(TectonRequest):
     """Base class for all requests to fetch feature values from Tecton API.
 
     Attributes:
-        metadata_options (Set["MetadataOptions"]): Options for retrieving
-        additional metadata about feature values
+        metadata_options: A set of options for retrieving
+        additional metadata about feature values of type MetadataOptions
     """
 
     def __init__(self: Self, endpoint: str,
@@ -187,9 +208,10 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     """Class that represents a request to the /get-features endpoint
 
     Attributes:
-        request_data (GetFeatureRequestData): Request parameters for the query,
-        consisting of Join Key Map and/or Request context Map
-        ENDPOINT (str): get-features endpoint to send requests to
+        request_data: Request parameters for the query,
+        consisting of a Join Key Map and/or a Request context Map
+        sent as a GetFeaturesRequestData object
+        ENDPOINT: get-features endpoint string to send requests to
     """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"

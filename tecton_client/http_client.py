@@ -83,6 +83,7 @@ class TectonHttpClient:
 
     @staticmethod
     def validate_key(api_key: Optional[str]) -> str:
+        """Validate that a given api key string is valid"""
         if not api_key:
             raise InvalidParameterException(InvalidParameterMessage.KEY.value)
 
