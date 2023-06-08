@@ -10,6 +10,8 @@ from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterException
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import TectonServerException
+
+
 API_PREFIX = "Tecton-key"
 
 
