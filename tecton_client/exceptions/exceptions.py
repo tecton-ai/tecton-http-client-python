@@ -1,5 +1,3 @@
-
-
 class TectonException(Exception):
     """
     Base class for all Tecton specific exceptions
