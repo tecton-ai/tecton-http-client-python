@@ -1,6 +1,5 @@
 import json
 from abc import ABC
-from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
 from types import NoneType
@@ -42,7 +41,14 @@ class MetadataOptions(str, Enum):
 
 @dataclass
 class GetFeatureRequestData:
-    """Class for request data needed for get-features queries."""
+    """Class for request data needed for get-features queries.
+
+    Attributes:
+        join_key_map: (Optional) Join keys used for
+        table-based FeatureViews
+        request_context_map: (Optional) Request context used for
+        OnDemand FeatureViews
+    """
 
     def __init__(self: Self, join_key_map: Optional[Dict[str,
                  Union[int, str, NoneType]]] = None,
@@ -111,7 +117,15 @@ class GetFeatureRequestData:
 
 @dataclass
 class TectonRequest(ABC):
-    """Base class for all requests to the Tecton API."""
+    """Base class for all requests to the Tecton API.
+
+    Attributes:
+        endpoint: HTTP endpoint to send request to
+        workspace_name: Name of the workspace in which the
+        Feature Service is defined
+        feature_service_name: Name of the Feature Service for which
+        the feature vector is being requested
+    """
 
     def __init__(self: Self, endpoint: str,
                  workspace_name: str,
@@ -141,7 +155,12 @@ class TectonRequest(ABC):
 
 @dataclass
 class AbstractGetFeaturesRequest(TectonRequest):
-    """Base class for all requests to fetch feature values from Tecton API."""
+    """Base class for all requests to fetch feature values from Tecton API.
+
+    Attributes:
+        metadata_options: Options for retrieving additional metadata
+        about feature values
+    """
 
     def __init__(self: Self, endpoint: str,
                  workspace_name: str, feature_service_name: str,
@@ -166,7 +185,13 @@ class AbstractGetFeaturesRequest(TectonRequest):
 
 @dataclass
 class GetFeaturesRequest(AbstractGetFeaturesRequest):
-    """Class that represents a request to the /get-features endpoint"""
+    """Class that represents a request to the /get-features endpoint
+
+    Attributes:
+        request_data: Request parameters for the query, consisting of
+        Join Key Map and/or Request context Map
+        ENDPOINT: get-features endpoint to send requests to
+    """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"
 
@@ -196,7 +221,10 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
 
     def to_dict(self: Self) -> dict:
 
-        self_dict = deepcopy(vars(self))
+        fields_to_remove = ["endpoint", "request_data"]
+        self_dict = {key: value for key, value in
+                     vars(self).items()
+                     if key not in fields_to_remove}
 
         if self.request_data.join_key_map:
             self_dict["join_key_map"] = self.request_data.join_key_map
@@ -204,15 +232,10 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             self_dict["request_context_map"] = \
                 self.request_data.request_context_map
 
-        fields_to_remove = ["endpoint", "request_data"]
-        for field in fields_to_remove:
-            self_dict.pop(field)
-
-        final_metadata_options = {option.value: True for option in
-                                  sorted(self.metadata_options,
-                                         key=lambda x: x.value)} \
+        self_dict["metadata_options"] = {option.value: True for option in
+                                         sorted(self.metadata_options,
+                                                key=lambda x: x.value)} \
             if self.metadata_options else {}
-        self_dict["metadata_options"] = final_metadata_options
 
         return self_dict
 

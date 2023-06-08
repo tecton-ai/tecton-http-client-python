@@ -1,17 +1,16 @@
 from enum import Enum
 from typing import Optional
 from typing import Self
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
+from urllib.parse import urlparse
 
-from tecton_client.exceptions import (
-    InvalidParameterException,
-    InvalidParameterMessage,
-    INVALID_SERVER_RESPONSE,
-    TectonServerException
-)
 import httpx
 from httpx_auth import HeaderApiKey
 
+from tecton_client.exceptions import INVALID_SERVER_RESPONSE
+from tecton_client.exceptions import InvalidParameterException
+from tecton_client.exceptions import InvalidParameterMessage
+from tecton_client.exceptions import TectonServerException
 API_PREFIX = "Tecton-key"
 
 
