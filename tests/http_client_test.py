@@ -57,13 +57,12 @@ async def test_perform_http_request_failure(httpx_mock: HTTPXMock) -> None:
     http_client = TectonHttpClient(url, api_key)
 
     endpoint = "api/v1/feature-service/get-features"
-    params = {
-        "feature_service_name": "fraud_detection_feature_service",
-        "join_key_map": {"user_id": "user_205125746682"},
-        "request_context_map": {"merch_long": 35.0, "amt": 500.0,
-                                "merch_lat": 30.0},
-        "workspace_name": "tecton-fundamentals-tutorial-live",
-        "metadata_options": None}
+    params = {"feature_service_name": "fraud_detection_feature_service",
+              "join_key_map": {"user_id": "user_205125746682"},
+              "request_context_map": {"merch_long": 35.0, "amt": 500.0,
+                                      "merch_lat": 30.0},
+              "workspace_name": "tecton-fundamentals-tutorial-live",
+              "metadata_options": None}
     request = {"params": params}
 
     try:

@@ -2,15 +2,15 @@ from enum import Enum
 
 
 class TectonException(Exception):
-    """ Base class for all Tecton specific exceptions"""
+    """Base class for all Tecton specific exceptions"""
 
 
 class TectonClientException(TectonException):
-    """ Base Class for exceptions thrown by the Python client"""
+    """Base Class for exceptions thrown by the Python client"""
 
 
 class TectonServerException(TectonException):
-    """ Base Class for exceptions representing error
+    """Base Class for exceptions representing error
     response from Tecton API
     """
 
@@ -18,7 +18,7 @@ class TectonServerException(TectonException):
 def INVALID_SERVER_RESPONSE(status_code: int,
                             reason_phrase: str,
                             message: str) -> str:
-    """ Error message for invalid server response
+    """Error message for invalid server response
     :param status_code: HTTP status code
     :param reason_phrase: HTTP reason phrase
     :param message: Error message
