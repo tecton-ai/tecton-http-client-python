@@ -25,9 +25,17 @@ class GetFeatureRequestData:
     def is_empty_request_context_map(self: Self) -> bool:
         return True if len(self.request_context_map) == 0 else False
 
+<<<<<<< HEAD
     def add_join_key_map(self: Self, join_key_map: dict) -> None:
         if join_key_map is {}:
             raise TectonEmptyFieldsException(EMPTY_REQUEST_MAPS)
+=======
+    feature_service_name: str
+    join_key_map: Dict[str, Union[int, str, NoneType]]
+    request_context_map: Dict[str, Union[int, str, float]]
+    metadata_options: Optional[Dict[str, bool]]
+    workspace_name: str
+>>>>>>> cd43997 (Fixing conflicts 3)
 
         for k, v in join_key_map.items():
             self.validate_key_value(k, v)
