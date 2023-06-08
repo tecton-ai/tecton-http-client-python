@@ -6,6 +6,7 @@ from tecton_client.exceptions import TectonServerException
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.tecton_client import TectonClient
 
+
 url = "https://thisisaurl.ai"
 api_key = "abcd1234"
 

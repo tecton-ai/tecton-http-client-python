@@ -6,7 +6,6 @@ from urllib.parse import urlparse
 
 import httpx
 from httpx_auth import HeaderApiKey
-
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterException
 from tecton_client.exceptions import InvalidParameterMessage
