@@ -26,8 +26,7 @@ class TectonHttpClient:
 
     def __init__(self: Self, url: str, api_key: str,
                  client: Optional[httpx.AsyncClient] = None) -> None:
-        """Initializing the url, api key and
-        client to make HTTP requests
+        """Initializing parameters required to make HTTP requests
 
         :param url: URL to ping
         :param api_key: API Key required as part of header authorization

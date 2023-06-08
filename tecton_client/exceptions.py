@@ -55,7 +55,7 @@ class UnsupportedTypeException(TectonClientException):
 
 
 def EMPTY_KEY_VALUE(key: str, value: str) -> str:
-    """Exception raised for when the key or value is empty
+    """Exception message for when the key or value is empty
     :param key: key provided
     :param value: value provided
     :return: InvalidParameterException
@@ -66,7 +66,7 @@ def EMPTY_KEY_VALUE(key: str, value: str) -> str:
 
 
 def INVALID_TYPE_KEY(key: str, map: str) -> str:
-    """Exception raised for when the key in the map is not of a valid type
+    """Exception message for when the key in the map is not of a valid type
     :param key: key provided
     :param map: name of the map that's raising exception
     (one of Join Key Map or Request Context Map)
@@ -78,7 +78,7 @@ def INVALID_TYPE_KEY(key: str, map: str) -> str:
 
 
 def INVALID_TYPE_JOIN_VALUE(value: str) -> str:
-    """Exception raised for when the value in the Join Key-map
+    """Exception message for when the value in the Join Key-map
     is not of a valid type
 
     :param value: key provided
@@ -90,7 +90,7 @@ def INVALID_TYPE_JOIN_VALUE(value: str) -> str:
 
 
 def INVALID_TYPE_REQ_VALUE(value: str) -> str:
-    """Exception raised for when the value in the Request
+    """Exception message for when the value in the Request
     Context Map is not of a valid type
 
     :param value: key provided

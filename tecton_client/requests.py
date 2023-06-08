@@ -44,10 +44,10 @@ class GetFeatureRequestData:
     """Class for request data needed for get-features queries.
 
     Attributes:
-        join_key_map: (Optional) Join keys used for
-        table-based FeatureViews
-        request_context_map: (Optional) Request context used for
-        OnDemand FeatureViews
+        join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]):
+        (Optional) Join keys used for table-based FeatureViews
+        request_context_map (Optional[Dict[str, Union[int, str, float]]]):
+        (Optional) Request context used for OnDemand FeatureViews
     """
 
     def __init__(self: Self, join_key_map: Optional[Dict[str,
@@ -55,8 +55,8 @@ class GetFeatureRequestData:
                  request_context_map: Optional[Dict[str,
                                                Union[int, str, float]]]
                  = None) -> None:
-        """Initializing a GetFeaturesRequestData instance with a
-        join key map and/or request context map
+        """Initializing a GetFeaturesRequestData instance with the
+        given parameters
 
         :param join_key_map: (Optional) Join keys used for table-based
         FeatureViews
@@ -68,13 +68,13 @@ class GetFeatureRequestData:
             raise InvalidParameterException(
                 InvalidParameterMessage.EMPTY_MAPS.value)
 
-        self.join_key_map: dict = \
+        self.join_key_map = \
             self.validate_parameters(join_key_map,
                                      True,
                                      SUPPORTED_JOIN_KEY_VALUE_TYPES) \
             if join_key_map else None
 
-        self.request_context_map: dict = \
+        self.request_context_map = \
             self.validate_parameters(request_context_map, False,
                                      SUPPORTED_REQUEST_CONTEXT_MAP_TYPES) \
             if request_context_map else None
@@ -120,19 +120,19 @@ class TectonRequest(ABC):
     """Base class for all requests to the Tecton API.
 
     Attributes:
-        endpoint: HTTP endpoint to send request to
-        workspace_name: Name of the workspace in which the
+        endpoint (str): HTTP endpoint to send request to
+        workspace_name (str): Name of the workspace in which the
         Feature Service is defined
-        feature_service_name: Name of the Feature Service for which
-        the feature vector is being requested
+        feature_service_name (str): Name of the Feature Service for
+        which the feature vector is being requested
     """
 
     def __init__(self: Self, endpoint: str,
                  workspace_name: str,
                  feature_service_name: str) -> None:
 
-        """Initializing the request endpoint, workspace name and
-        feature service name
+        """Initializing parameters required to make a request
+        to the Tecton API
 
         :param endpoint: HTTP endpoint to send request to
         :param workspace_name: Name of the workspace in which the
@@ -158,16 +158,15 @@ class AbstractGetFeaturesRequest(TectonRequest):
     """Base class for all requests to fetch feature values from Tecton API.
 
     Attributes:
-        metadata_options: Options for retrieving additional metadata
-        about feature values
+        metadata_options (Set["MetadataOptions"]): Options for retrieving
+        additional metadata about feature values
     """
 
     def __init__(self: Self, endpoint: str,
                  workspace_name: str, feature_service_name: str,
                  metadata_options: Set["MetadataOptions"]
                  = MetadataOptions.defaults()) -> None:
-        """Initializing the request endpoint, workspace name,
-        feature service name and metadata options
+        """Initializing an object with the given parameters
 
         :param endpoint: HTTP endpoint to send request to
         :param workspace_name: Name of the workspace in which
@@ -188,9 +187,9 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     """Class that represents a request to the /get-features endpoint
 
     Attributes:
-        request_data: Request parameters for the query, consisting of
-        Join Key Map and/or Request context Map
-        ENDPOINT: get-features endpoint to send requests to
+        request_data (GetFeatureRequestData): Request parameters for the query,
+        consisting of Join Key Map and/or Request context Map
+        ENDPOINT (str): get-features endpoint to send requests to
     """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"
@@ -200,8 +199,8 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
                  request_data: GetFeatureRequestData,
                  metadata_options: Optional[Set["MetadataOptions"]] =
                  MetadataOptions.defaults()) -> None:
-        """Initializing the workspace name, feature service name,
-        request data and metadata options
+        """Initializing the GetFeaturesRequest object
+        with the given parameters
 
         :param workspace_name: Name of the workspace in which
         the Feature Service is defined
