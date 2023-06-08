@@ -1,3 +1,4 @@
+import pytest
 from pytest_httpx import HTTPXMock
 
 from tecton_client.exceptions import (
@@ -6,7 +7,6 @@ from tecton_client.exceptions import (
 )
 from tecton_client.tecton_client import TectonClient
 from tecton_client.http_client import TectonHttpClient
-import pytest
 
 url = "https://thisisaurl.ai"
 api_key = "abcd1234"

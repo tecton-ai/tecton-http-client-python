@@ -1,16 +1,14 @@
-from typing import Self
-from typing import Optional
-
-import httpx
 from enum import Enum
-
-from httpx_auth import HeaderApiKey
+from typing import Optional
+from typing import Self
 from urllib.parse import urlparse
 
 from tecton_client.exceptions import (
     InvalidParameterException,
     InvalidParameterMessage, INVALID_SERVER_RESPONSE
 )
+import httpx
+from httpx_auth import HeaderApiKey
 
 API_PREFIX = "Tecton-key"
 
