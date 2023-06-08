@@ -24,8 +24,7 @@ class TectonHttpClient:
         ACCEPT = 'Accept'
         CONTENT_TYPE = 'Content-Type'
 
-    def __init__(self: Self, url: str, api_key: str,
-                 client: Optional[httpx.AsyncClient] = None) -> None:
+    def __init__(self: Self, url: str, api_key: str, client: Optional[httpx.AsyncClient] = None) -> None:
         """Initializing parameters required to make HTTP requests
 
         :param url: URL to ping
@@ -66,9 +65,8 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            raise TectonServerException(INVALID_SERVER_RESPONSE(
-                response.status_code, response.reason_phrase,
-                response.json()['message']))
+            raise TectonServerException(INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase,
+                                                                response.json()['message']))
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:

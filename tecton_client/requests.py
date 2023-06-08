@@ -23,21 +23,22 @@ SUPPORTED_REQUEST_CONTEXT_MAP_TYPES: Final[set] = {int, str, float}
 
 
 class MetadataOptions(str, Enum):
-    """Options for retrieving metadata for get-features request.
-
-    Attributes:
-        NAME: Include the name of each feature in the vector
-        EFFECTIVE_TIME: Include the timestamp of the most recent feature value that was written to the online store
-        DATA_TYPE: Include the data types of each feature in the vector
-        SLO_INFO: Include information about the server response time
-        FEATURE_STATUS: Include feature serving status information of the feature
-    """
+    """Options for retrieving metadata for get-features request."""
 
     NAME = "include_names"
+    """Include the name of each feature in the vector"""
+
     EFFECTIVE_TIME = "include_effective_times"
+    """Include the timestamp of the most recent feature value that was written to the online store"""
+
     DATA_TYPE = "include_data_types"
+    """Include the data types of each feature in the vector"""
+
     SLO_INFO = "include_slo_info"
+    """Include information about the server response time"""
+
     FEATURE_STATUS = "include_serving_status"
+    """Include feature serving status information of the feature"""
 
     @staticmethod
     def defaults() -> Set["MetadataOptions"]:
@@ -54,15 +55,7 @@ class GetFeatureRequestData:
 
     Attributes:
         join_key_map: (Optional) Join keys used for table-based FeatureViews
-        The key of this map is the join key name and the value is the join key value for this request
-        For string keys, the value should be of type (str)
-        For int64 keys, the value should be (str) of the decimal representation of the integer
-
         request_context_map: (Optional) Request context used for OnDemand FeatureViews
-        The key of this map is the request context name and the value is the request context value for this request
-        For string values, the value should be of type (str)
-        For int64 values, the value should be (str) of the decimal representation of the integer
-        For double values, the value should be of type (float)
     """
 
     def __init__(self: Self, join_key_map: Optional[Dict[str, Union[int, str, NoneType]]] = None,
@@ -70,7 +63,14 @@ class GetFeatureRequestData:
         """Initializing a GetFeaturesRequestData instance with the given parameters
 
         :param join_key_map: (Optional) Join keys used for table-based FeatureViews
+        The key of this map is the join key name and the value is the join key value for this request
+        For string keys, the value should be of type (str)
+        For int64 keys, the value should be (str) of the decimal representation of the integer
         :param request_context_map: (Optional) Request context used for OnDemand FeatureViews
+        The key of this map is the request context name and the value is the request context value for this request
+        For string values, the value should be of type (str)
+        For int64 values, the value should be (str) of the decimal representation of the integer
+        For double values, the value should be of type (float)
         """
 
         if join_key_map is None and request_context_map is None:

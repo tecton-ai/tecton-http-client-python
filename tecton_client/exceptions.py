@@ -59,8 +59,7 @@ def INVALID_TYPE_KEY(key: str, map: str) -> str:
     """Exception message for when the key in the map is not of a valid type
 
     :param key: key provided
-    :param map: name of the map that's raising exception
-    (one of Join Key Map or Request Context Map)
+    :param map: name of the map that's raising exception (one of Join Key Map or Request Context Map)
     :return: InvalidParameterException
     """
     message = f"Join Key-Map keys and Request Context Map keys can only be of (str) type. Given key for {map} is: {key}"
