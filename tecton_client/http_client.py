@@ -50,8 +50,7 @@ class TectonHttpClient:
     def is_closed(self: Self) -> bool:
         return self.is_client_closed
 
-    async def execute_request(self: Self, endpoint: str,
-                              http_request: dict) -> str:
+    async def execute_request(self: Self, endpoint: str, http_request: dict) -> str:
         """This is a method that performs a given HTTP request
         to an endpoint in the method passed by client
 
@@ -62,8 +61,7 @@ class TectonHttpClient:
         """
         url = urljoin(self.url, endpoint)
 
-        response = await self.client.post(url, data=http_request,
-                                          auth=self.auth)
+        response = await self.client.post(url, data=http_request, auth=self.auth)
 
         if response.status_code == 200:
             return response.json()

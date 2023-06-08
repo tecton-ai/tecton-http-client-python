@@ -27,12 +27,10 @@ class MetadataOptions(str, Enum):
 
     Attributes:
         NAME: Include the name of each feature in the vector
-        EFFECTIVE_TIME: Include the timestamp of the most recent feature value
-        that was written to the online store
+        EFFECTIVE_TIME: Include the timestamp of the most recent feature value that was written to the online store
         DATA_TYPE: Include the data types of each feature in the vector
         SLO_INFO: Include information about the server response time
-        FEATURE_STATUS: Include feature serving status information
-        of the feature
+        FEATURE_STATUS: Include feature serving status information of the feature
     """
 
     NAME = "include_names"
@@ -44,6 +42,7 @@ class MetadataOptions(str, Enum):
     @staticmethod
     def defaults() -> Set["MetadataOptions"]:
         """Setting default options to include names and data types
+
         :return: Set["MetadataOptions"]
         """
         return {MetadataOptions.NAME, MetadataOptions.DATA_TYPE}
@@ -55,56 +54,39 @@ class GetFeatureRequestData:
 
     Attributes:
         join_key_map: (Optional) Join keys used for table-based FeatureViews
-        The key of this map is the join key name and the value is
-        the join key value for this request
+        The key of this map is the join key name and the value is the join key value for this request
         For string keys, the value should be of type (str)
-        For int64 keys, the value should be (str) of the decimal
-        representation of the integer
+        For int64 keys, the value should be (str) of the decimal representation of the integer
 
-        request_context_map: (Optional) Request context used for
-        OnDemand FeatureViews
-        The key of this map is the request context name and the value
-        is the request context value for this request
+        request_context_map: (Optional) Request context used for OnDemand FeatureViews
+        The key of this map is the request context name and the value is the request context value for this request
         For string values, the value should be of type (str)
-        For int64 values, the value should be (str) of the decimal
-        representation of the integer
+        For int64 values, the value should be (str) of the decimal representation of the integer
         For double values, the value should be of type (float)
     """
 
-    def __init__(self: Self, join_key_map: Optional[Dict[str,
-                 Union[int, str, NoneType]]] = None,
-                 request_context_map: Optional[Dict[str,
-                                               Union[int, str, float]]]
-                 = None) -> None:
-        """Initializing a GetFeaturesRequestData instance with the
-        given parameters
+    def __init__(self: Self, join_key_map: Optional[Dict[str, Union[int, str, NoneType]]] = None,
+                 request_context_map: Optional[Dict[str, Union[int, str, float]]] = None) -> None:
+        """Initializing a GetFeaturesRequestData instance with the given parameters
 
-        :param join_key_map: (Optional) Join keys used for table-based
-        FeatureViews
-        :param request_context_map: (Optional) Request context used for
-        OnDemand FeatureViews
+        :param join_key_map: (Optional) Join keys used for table-based FeatureViews
+        :param request_context_map: (Optional) Request context used for OnDemand FeatureViews
         """
 
         if join_key_map is None and request_context_map is None:
-            raise InvalidParameterException(
-                InvalidParameterMessage.EMPTY_MAPS.value)
+            raise InvalidParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
 
-        self.join_key_map = \
-            self.validate_parameters(join_key_map,
-                                     True,
-                                     SUPPORTED_JOIN_KEY_VALUE_TYPES) \
-            if join_key_map else None
+        self.join_key_map = self.validate_parameters(join_key_map, True,
+                                                     SUPPORTED_JOIN_KEY_VALUE_TYPES) if join_key_map else None
 
-        self.request_context_map = \
-            self.validate_parameters(request_context_map, False,
-                                     SUPPORTED_REQUEST_CONTEXT_MAP_TYPES) \
+        self.request_context_map = self.validate_parameters(request_context_map, False,
+                                                            SUPPORTED_REQUEST_CONTEXT_MAP_TYPES) \
             if request_context_map else None
 
     @staticmethod
-    def validate_parameters(map: dict,
-                            allow_none: bool,
-                            allowed_types: set) -> dict:
+    def validate_parameters(map: dict, allow_none: bool, allowed_types: set) -> dict:
         """Validates the parameters of the request
+
         :param map: The map to validate
         :param allow_none: Whether the map allows None values or not
         :param allowed_types: The allowed types for the values in the map
@@ -120,15 +102,12 @@ class GetFeatureRequestData:
                 raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
 
             if not isinstance(key, str):
-                message = INVALID_TYPE_KEY(key,
-                                           "Join Key-Map" if allow_none
-                                           else "Request Context Map")
+                message = INVALID_TYPE_KEY(key, "Join Key-Map" if allow_none else "Request Context Map")
 
                 raise UnsupportedTypeException(message)
 
             if not isinstance(value, tuple(allowed_types)):
-                message = INVALID_TYPE_JOIN_VALUE(value) if allow_none \
-                    else INVALID_TYPE_REQ_VALUE(value)
+                message = INVALID_TYPE_JOIN_VALUE(value) if allow_none else INVALID_TYPE_REQ_VALUE(value)
                 raise UnsupportedTypeException(message)
 
             map[key] = str(value) if isinstance(value, int) else value
@@ -142,32 +121,23 @@ class TectonRequest(ABC):
 
     Attributes:
         endpoint: HTTP endpoint string to send request to
-        workspace_name: Name of the workspace in which the
-        Feature Service is defined (string)
-        feature_service_name: Name of the Feature Service for
-        which the feature vector is being requested (string)
+        workspace_name: Name of the workspace in which the Feature Service is defined (string)
+        feature_service_name: Name of the Feature Service for which the feature vector is being requested (string)
     """
 
-    def __init__(self: Self, endpoint: str,
-                 workspace_name: str,
-                 feature_service_name: str) -> None:
+    def __init__(self: Self, endpoint: str, workspace_name: str, feature_service_name: str) -> None:
 
-        """Initializing parameters required to make a request
-        to the Tecton API
+        """Initializing parameters required to make a request to the Tecton API
 
         :param endpoint: HTTP endpoint to send request to
-        :param workspace_name: Name of the workspace in which the
-        Feature Service is defined
-        :param feature_service_name: Name of the Feature Service for which
-        the feature vector is being requested
+        :param workspace_name: Name of the workspace in which the Feature Service is defined
+        :param feature_service_name: Name of the Feature Service for which the feature vector is being requested
         """
 
         if not workspace_name:
-            raise InvalidParameterException(
-                InvalidParameterMessage.WORKSPACE_NAME.value)
+            raise InvalidParameterException(InvalidParameterMessage.WORKSPACE_NAME.value)
         if not feature_service_name:
-            raise InvalidParameterException(
-                InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
+            raise InvalidParameterException(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
 
         self.endpoint = endpoint
         self.feature_service_name = feature_service_name
@@ -183,24 +153,18 @@ class AbstractGetFeaturesRequest(TectonRequest):
         additional metadata about feature values of type MetadataOptions
     """
 
-    def __init__(self: Self, endpoint: str,
-                 workspace_name: str, feature_service_name: str,
-                 metadata_options: Set["MetadataOptions"]
-                 = MetadataOptions.defaults()) -> None:
+    def __init__(self: Self, endpoint: str, workspace_name: str, feature_service_name: str,
+                 metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults()) -> None:
         """Initializing an object with the given parameters
 
         :param endpoint: HTTP endpoint to send request to
-        :param workspace_name: Name of the workspace in which
-        the Feature Service is defined
-        :param feature_service_name: Name of the Feature Service for which
-        the feature vector is being requested
-        :param metadata_options: Options for retrieving additional metadata
-        about feature values
+        :param workspace_name: Name of the workspace in which the Feature Service is defined
+        :param feature_service_name: Name of the Feature Service for which the feature vector is being requested
+        :param metadata_options: Options for retrieving additional metadata about feature values
         """
 
         super().__init__(endpoint, workspace_name, feature_service_name)
-        self.metadata_options = metadata_options.union(
-            MetadataOptions.defaults())
+        self.metadata_options = metadata_options.union(MetadataOptions.defaults())
 
 
 @dataclass
@@ -208,55 +172,40 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     """Class that represents a request to the /get-features endpoint
 
     Attributes:
-        request_data: Request parameters for the query,
-        consisting of a Join Key Map and/or a Request context Map
+        request_data: Request parameters for the query, consisting of a Join Key Map and/or a Request Context Map
         sent as a GetFeaturesRequestData object
         ENDPOINT: get-features endpoint string to send requests to
     """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"
 
-    def __init__(self: Self, workspace_name: str,
-                 feature_service_name: str,
-                 request_data: GetFeatureRequestData,
-                 metadata_options: Optional[Set["MetadataOptions"]] =
-                 MetadataOptions.defaults()) -> None:
-        """Initializing the GetFeaturesRequest object
-        with the given parameters
+    def __init__(self: Self, workspace_name: str, feature_service_name: str, request_data: GetFeatureRequestData,
+                 metadata_options: Optional[Set["MetadataOptions"]] = MetadataOptions.defaults()) -> None:
+        """Initializing the GetFeaturesRequest object with the given parameters
 
-        :param workspace_name: Name of the workspace in which
-        the Feature Service is defined
-        :param feature_service_name: Name of the Feature Service for which
-        the feature vector is being requested
+        :param workspace_name: Name of the workspace in which the Feature Service is defined
+        :param feature_service_name: Name of the Feature Service for which the feature vector is being requested
         :param request_data: Request parameters for the query
-        :param metadata_options: (Optional) Options for retrieving additional
-        metadata about feature values
+        :param metadata_options: (Optional) Options for retrieving additional metadata about feature values
         """
 
-        super().__init__(GetFeaturesRequest.ENDPOINT,
-                         workspace_name,
-                         feature_service_name,
-                         metadata_options)
+        super().__init__(GetFeaturesRequest.ENDPOINT, workspace_name, feature_service_name, metadata_options)
 
         self.request_data = request_data
 
     def to_dict(self: Self) -> dict:
 
         fields_to_remove = ["endpoint", "request_data"]
-        self_dict = {key: value for key, value in
-                     vars(self).items()
-                     if key not in fields_to_remove}
+        self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
 
         if self.request_data.join_key_map:
             self_dict["join_key_map"] = self.request_data.join_key_map
         if self.request_data.request_context_map:
-            self_dict["request_context_map"] = \
-                self.request_data.request_context_map
+            self_dict["request_context_map"] = self.request_data.request_context_map
 
         self_dict["metadata_options"] = {option.value: True for option in
                                          sorted(self.metadata_options,
-                                                key=lambda x: x.value)} \
-            if self.metadata_options else {}
+                                                key=lambda x: x.value)} if self.metadata_options else {}
 
         return self_dict
 
