@@ -7,9 +7,10 @@ from urllib.parse import urlparse
 import httpx
 from httpx_auth import HeaderApiKey
 
+from tecton_client.exceptions import EmptyParameterException
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
-from tecton_client.exceptions import InvalidParameterException
 from tecton_client.exceptions import InvalidParameterMessage
+from tecton_client.exceptions import InvalidURLException
 from tecton_client.exceptions import TectonServerException
 
 
@@ -39,7 +40,7 @@ class TectonHttpClient:
                                  api_key=f"{API_PREFIX} {self.api_key}")
 
         self.client: httpx.AsyncClient = client or httpx.AsyncClient()
-        self.is_client_closed = False
+        self.is_client_closed: bool = False
 
     async def close(self: Self) -> None:
         await self.client.aclose()
@@ -73,7 +74,7 @@ class TectonHttpClient:
         """Validate that a given url string is a valid URL"""
 
         if not url or not urlparse(url).netloc:
-            raise InvalidParameterException(InvalidParameterMessage.URL.value)
+            raise InvalidURLException(InvalidParameterMessage.URL.value)
 
         return url
 
@@ -81,6 +82,6 @@ class TectonHttpClient:
     def validate_key(api_key: Optional[str]) -> str:
         """Validate that a given api key string is valid"""
         if not api_key:
-            raise InvalidParameterException(InvalidParameterMessage.KEY.value)
+            raise EmptyParameterException(InvalidParameterMessage.KEY.value)
 
         return api_key

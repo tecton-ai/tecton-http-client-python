@@ -11,10 +11,8 @@ from typing import Set
 from typing import Union
 
 from tecton_client.exceptions import EMPTY_KEY_VALUE
-from tecton_client.exceptions import INVALID_TYPE_JOIN_VALUE
-from tecton_client.exceptions import INVALID_TYPE_KEY
-from tecton_client.exceptions import INVALID_TYPE_REQ_VALUE
-from tecton_client.exceptions import InvalidParameterException
+from tecton_client.exceptions import EmptyParameterException
+from tecton_client.exceptions import INVALID_TYPE_KEY_VALUE
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import UnsupportedTypeException
 
@@ -74,45 +72,50 @@ class GetFeatureRequestData:
         """
 
         if join_key_map is None and request_context_map is None:
-            raise InvalidParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
+            raise EmptyParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
 
-        self.join_key_map = self.validate_parameters(join_key_map, True,
-                                                     SUPPORTED_JOIN_KEY_VALUE_TYPES) if join_key_map else None
+        self.join_key_map = self.validate_request_data_parameters(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES,
+                                                                  is_join_map=True) if join_key_map else None
 
-        self.request_context_map = self.validate_parameters(request_context_map, False,
-                                                            SUPPORTED_REQUEST_CONTEXT_MAP_TYPES) \
+        self.request_context_map = self.validate_request_data_parameters(request_context_map, False,
+                                                                         SUPPORTED_REQUEST_CONTEXT_MAP_TYPES,
+                                                                         is_join_map=False) \
             if request_context_map else None
 
     @staticmethod
-    def validate_parameters(map: dict, allow_none: bool, allowed_types: set) -> dict:
+    def validate_request_data_parameters(request_map: dict, allow_none: bool,
+                                         allowed_types: set, is_join_map: bool) -> dict:
         """Validates the parameters of the request
 
-        :param map: The map to validate
+        :param request_map: The map to validate
         :param allow_none: Whether the map allows None values or not
         :param allowed_types: The allowed types for the values in the map
+        :param is_join_map: Boolean to indicate whether a Join Key Map is passed or a Request Context Map
         """
 
-        for key, value in map.items():
+        for key, value in request_map.items():
             if not key:
-                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
+                raise EmptyParameterException(EMPTY_KEY_VALUE(key, value))
 
-            if not allow_none and not value:
-                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
+            if not allow_none and (value is None or value == ""):
+                raise EmptyParameterException(EMPTY_KEY_VALUE(key, value))
             if allow_none and value == "":
-                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
+                raise EmptyParameterException(EMPTY_KEY_VALUE(key, value))
 
             if not isinstance(key, str):
-                message = INVALID_TYPE_KEY(key, "Join Key-Map" if allow_none else "Request Context Map")
+                message = INVALID_TYPE_KEY_VALUE(key=key,
+                                                 map_type="Join Key-Map" if is_join_map else "Request Context Map")
 
                 raise UnsupportedTypeException(message)
 
-            if not isinstance(value, tuple(allowed_types)):
-                message = INVALID_TYPE_JOIN_VALUE(value) if allow_none else INVALID_TYPE_REQ_VALUE(value)
+            if type(value) not in tuple(allowed_types):
+                message = INVALID_TYPE_KEY_VALUE(value=value,
+                                                 map_type="Join Key-Map" if is_join_map else "Request Context Map")
                 raise UnsupportedTypeException(message)
 
-            map[key] = str(value) if isinstance(value, int) else value
+            request_map[key] = str(value) if isinstance(value, int) else value
 
-        return map
+        return request_map
 
 
 @dataclass
@@ -135,9 +138,9 @@ class TectonRequest(ABC):
         """
 
         if not workspace_name:
-            raise InvalidParameterException(InvalidParameterMessage.WORKSPACE_NAME.value)
+            raise EmptyParameterException(InvalidParameterMessage.WORKSPACE_NAME.value)
         if not feature_service_name:
-            raise InvalidParameterException(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
+            raise EmptyParameterException(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
 
         self.endpoint = endpoint
         self.feature_service_name = feature_service_name
@@ -180,7 +183,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"
 
     def __init__(self: Self, workspace_name: str, feature_service_name: str, request_data: GetFeatureRequestData,
-                 metadata_options: Optional[Set["MetadataOptions"]] = MetadataOptions.defaults()) -> None:
+                 metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults()) -> None:
         """Initializing the GetFeaturesRequest object with the given parameters
 
         :param workspace_name: Name of the workspace in which the Feature Service is defined
@@ -193,7 +196,10 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
 
         self.request_data = request_data
 
-    def to_dict(self: Self) -> dict:
+    def to_json_string(self: Self) -> str:
+        """Returns a JSON representation of the GetFeaturesRequest
+        :return: JSON formatted string
+        """
 
         fields_to_remove = ["endpoint", "request_data"]
         self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
@@ -207,12 +213,4 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
                                          sorted(self.metadata_options,
                                                 key=lambda x: x.value)} if self.metadata_options else {}
 
-        return self_dict
-
-    def to_json_string(self: Self) -> str:
-        """Returns a JSON representation of the GetFeaturesRequest
-        :return: JSON formatted string
-        """
-
-        request_value_dictionary = self.to_dict()
-        return json.dumps({"params": request_value_dictionary})
+        return json.dumps({"params": self_dict})

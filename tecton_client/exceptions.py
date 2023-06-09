@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 
 class TectonException(Exception):
@@ -25,8 +26,12 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
     return error_message
 
 
-class InvalidParameterException(TectonClientException):
+class EmptyParameterException(TectonClientException):
     """Class for exceptions raised when one or more parameters passed are invalid"""
+
+
+class InvalidURLException(TectonClientException):
+    """Class for exceptions raised when the URL passed is invalid"""
 
 
 class InvalidParameterMessage(str, Enum):
@@ -49,38 +54,28 @@ def EMPTY_KEY_VALUE(key: str, value: str) -> str:
 
     :param key: key provided
     :param value: value provided
-    :return: InvalidParameterException
+    :return: Error message string
     """
     message = f"Key/Value cannot be None or empty. Given key is: {key} and value is: {value}"
     return message
 
 
-def INVALID_TYPE_KEY(key: str, map: str) -> str:
+def INVALID_TYPE_KEY_VALUE(map_type: str, key: Optional[str] = None, value: Optional[str] = None) -> str:
     """Exception message for when the key in the map is not of a valid type
 
     :param key: key provided
-    :param map: name of the map that's raising exception (one of Join Key Map or Request Context Map)
-    :return: InvalidParameterException
+    :param map_type: name of the map that's raising exception (one of Join Key Map or Request Context Map)
+    :param value: value provided
+    :return: Error message string
     """
-    message = f"Join Key-Map keys and Request Context Map keys can only be of (str) type. Given key for {map} is: {key}"
-    return message
 
+    if key:
+        return f"Join Key-Map keys and Request Context Map keys can only be of (str) type. " \
+               f"Given key for {map_type} is: {key}"
+    if value:
+        if map_type == "Join Key-Map":
+            message = f"Join Key-Map Values can only be of types (int, str). Given value is: {value}"
+        else:
+            message = f"Request Context Map values can only be of types (int, str, float). Given value is: {value}"
 
-def INVALID_TYPE_JOIN_VALUE(value: str) -> str:
-    """Exception message for when the value in the Join Key-map is not of a valid type
-
-    :param value: key provided
-    :return: InvalidParameterException
-    """
-    message = f"Join Key-Map Values can only be of types (int, str). Given value is: {value}"
-    return message
-
-
-def INVALID_TYPE_REQ_VALUE(value: str) -> str:
-    """Exception message for when the value in the Request Context Map is not of a valid type
-
-    :param value: key provided
-    :return: InvalidParameterException
-    """
-    message = f"Request Context Map values can only be of types (int, str, float). Given value is: {value}"
-    return message
+        return message
