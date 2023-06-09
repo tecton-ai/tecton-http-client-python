@@ -160,4 +160,113 @@ class Value:
             except Exception:
                 raise MismatchedTypeException(feature_value, value_type.__str__())
         else:
+<<<<<<< HEAD
             raise UnknownTypeException(value_type.__str__())
+=======
+            raise UnknownTypeException(UNKNOWN_DATA_TYPE(value_type.__str__()))
+
+class FeatureValue:
+    """Class representing a feature value returned from the GetFeatures API call.
+
+    Attributes:
+        value_type: The type of the feature value.
+        feature_value: The value of the feature.
+        feature_namespace: The namespace that the feature belongs to.
+        feature_name: The name of the feature.
+        feature_status: The status of the feature.
+        effective_time: The effective time of the feature value.
+    """
+
+    value_type: DataType
+    feature_value: Union[int, str, float, bool, List[Union[int, str, float, bool]]]
+
+    def __init__(self: Self, name: str,
+                 value_type: str,
+                 feature_value: Union[str, None, list],
+                 effective_time: Optional[str] = None,
+                 element_type: Optional[str] = None,
+                 fields: Optional[list] = None,
+                 feature_status: Optional[str] = None) -> None:
+        """Initialize a FeatureValue object.
+
+        :param name: The name of the feature.
+        :param value_type: String that indicates the type of the feature value.
+        :param feature_value: The value of the feature.
+        :param effective_time: (Optional) The effective time of the feature value, sent as ISO format string.
+        :param element_type: (Optional) String that indicates the type of the elements in the array,
+        present if value_type is ArrayType.
+        :param fields: (Optional) List of the fields of the struct, if value_type is StructType.
+        :param feature_status: (Optional) The status string of the feature value.
+        """
+
+        self.feature_namespace, self.feature_name = name.split(".")
+        self.feature_status = feature_status
+
+        if effective_time:
+            self.effective_time = datetime.fromisoformat(effective_time)
+
+        self.value_type = self.parse_value_type(value_type, element_type, fields)
+        self.set_feature_value(feature_value)
+
+    @staticmethod
+    def parse_value_type(value_type: str, element_type: Optional[str] = None,
+                         fields: Optional[list] = None) -> DataType:
+        """Parse the value type of the feature value.
+
+        :param value_type: The type of the feature value.
+        :param element_type: (Optional) The type of the elements in the array, if value_type is ArrayType.
+        :param fields: (Optional) The fields of the struct, if value_type is StructType.
+        """
+
+        if value_type == 'int64':
+            return IntType()
+        elif value_type == 'float64' or value_type == 'float32':
+            return FloatType()
+        elif value_type == 'string':
+            return StringType()
+        elif value_type == 'boolean':
+            return BoolType()
+        elif value_type == 'array':
+            return ArrayType(FeatureValue.parse_value_type(element_type))
+        elif value_type == 'struct':
+            fields_list = [StructField(field['name'], FeatureValue.parse_value_type(field['type'])) for field in fields]
+            return StructType(fields_list)
+        else:
+            raise UnknownTypeException(ResponseRelatedErrorMessage.UNKNOWN_DATA_TYPE)
+
+    @staticmethod
+    def get_value(value_type: DataType, feature_value: Union[str, None, list]) -> Union[None, int,
+                                                                                        float, str, bool, list]:
+        """Get the value of the feature in the specified type.
+
+        :param value_type: The type of the feature value.
+        :param feature_value: The value of the feature that needs to be converted to specified type.
+        """
+        if feature_value is None:
+            return None
+        if isinstance(value_type, IntType):
+            return int(feature_value)
+        elif isinstance(value_type, FloatType):
+            return float(feature_value)
+        elif isinstance(value_type, StringType):
+            return feature_value
+        elif isinstance(value_type, BoolType):
+            return bool(feature_value)
+        else:
+            raise UnknownTypeException(ResponseRelatedErrorMessage.UNKNOWN_DATA_TYPE)
+
+    def set_feature_value(self: Self,
+                          feature_value: Union[str, bool, NoneType, List[Union[str, bool, NoneType]]]) -> None:
+        """Set the value of the feature in the specified type.
+
+        :param feature_value: The value of the feature that needs to be set as an attribute.
+        """
+
+        if isinstance(self.value_type, ArrayType):
+            self.feature_value = [self.get_value(self.value_type.element_type, value) for value in feature_value]
+        elif isinstance(self.value_type, StructType):
+            self.feature_value = [self.get_value(self.value_type.fields[i].data_type, feature_value[i])
+                                  for i in range(len(feature_value))]
+        else:
+            self.feature_value = self.get_value(self.value_type, feature_value)
+>>>>>>> cad09bf (Adding documentation)
