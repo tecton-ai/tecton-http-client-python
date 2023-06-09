@@ -74,23 +74,24 @@ class GetFeatureRequestData:
         if join_key_map is None and request_context_map is None:
             raise InvalidParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
 
-        self.join_key_map = self.validate_request_data_parameters(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES,
-                                                                  map_type="Join Key-Map") if join_key_map else None
+        self.join_key_map = self.get_processed_map(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES,
+                                                   map_type="Join Key-Map") if join_key_map else None
 
-        self.request_context_map = self.validate_request_data_parameters(request_context_map, False,
-                                                                         SUPPORTED_REQUEST_CONTEXT_MAP_TYPES,
-                                                                         map_type="Request Context Map") \
+        self.request_context_map = self.get_processed_map(request_context_map, False,
+                                                          SUPPORTED_REQUEST_CONTEXT_MAP_TYPES,
+                                                          map_type="Request Context Map") \
             if request_context_map else None
 
     @staticmethod
-    def validate_request_data_parameters(request_map: dict, allow_none: bool,
-                                         allowed_types: set, map_type: str) -> dict:
+    def get_processed_map(request_map: dict, allow_none: bool,
+                          allowed_types: set, map_type: str) -> dict:
         """Validates the parameters of the request
 
         :param request_map: The map to validate
         :param allow_none: Whether the map allows None values or not
         :param allowed_types: The allowed types for the values in the map
         :param map_type: The type of the map to validate (Join Key-Map or Request Context Map)
+        :return: The validated map with appropriate types for values
         """
 
         for key, value in request_map.items():
