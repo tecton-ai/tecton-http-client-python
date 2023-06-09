@@ -1,5 +1,4 @@
 import json
-from types import NoneType
 from typing import Union
 
 import pytest
