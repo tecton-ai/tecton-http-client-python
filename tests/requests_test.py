@@ -22,9 +22,21 @@ def test_error_join_key(key: str) -> None:
         GetFeatureRequestData(join_key_map={key: "test_value"})
 
 
+@pytest.mark.parametrize("key", [123, 123.45])
+def test_unsupported_join_key(key: str) -> None:
+    with pytest.raises(UnsupportedTypeException):
+        GetFeatureRequestData(join_key_map={key: "test_value"})
+
+
 @pytest.mark.parametrize("key", ["", None])
 def test_error_request_context_key(key: str) -> None:
     with pytest.raises(InvalidParameterException):
+        GetFeatureRequestData(request_context_map={key: "test_value"})
+
+
+@pytest.mark.parametrize("key", [123, 123.45])
+def test_unsupported_request_context_key(key: str) -> None:
+    with pytest.raises(UnsupportedTypeException):
         GetFeatureRequestData(request_context_map={key: "test_value"})
 
 
@@ -43,10 +55,14 @@ def test_none_join_value() -> None:
     assert get_feature_request_data.join_key_map["test_key"] is None
 
 
-@pytest.mark.parametrize("value", ["", None])
-def test_error_request_context_value(value: Union[str, NoneType]) -> None:
+def test_none_request_context_value() -> None:
+    with pytest.raises(UnsupportedTypeException):
+        GetFeatureRequestData(request_context_map={"test_key": None})
+
+
+def test_empty_request_context_value() -> None:
     with pytest.raises(InvalidParameterException):
-        GetFeatureRequestData(request_context_map={"test_key": value})
+        GetFeatureRequestData(request_context_map={"test_key": ""})
 
 
 @pytest.mark.parametrize("value", [False, {"test_key": "test_value"}])

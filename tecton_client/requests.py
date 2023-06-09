@@ -75,45 +75,42 @@ class GetFeatureRequestData:
             raise InvalidParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
 
         self.join_key_map = self.validate_request_data_parameters(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES,
-                                                                  is_join_map=True) if join_key_map else None
+                                                                  map_type="Join Key-Map") if join_key_map else None
 
         self.request_context_map = self.validate_request_data_parameters(request_context_map, False,
                                                                          SUPPORTED_REQUEST_CONTEXT_MAP_TYPES,
-                                                                         is_join_map=False) \
+                                                                         map_type="Request Context Map") \
             if request_context_map else None
 
     @staticmethod
     def validate_request_data_parameters(request_map: dict, allow_none: bool,
-                                         allowed_types: set, is_join_map: bool) -> dict:
+                                         allowed_types: set, map_type: str) -> dict:
         """Validates the parameters of the request
 
         :param request_map: The map to validate
         :param allow_none: Whether the map allows None values or not
         :param allowed_types: The allowed types for the values in the map
-        :param is_join_map: Boolean to indicate whether a Join Key Map is passed or a Request Context Map
+        :param map_type: The type of the map to validate (Join Key-Map or Request Context Map)
         """
 
         for key, value in request_map.items():
             if not key:
                 raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
 
-            if not allow_none and (value is None or value == ""):
+            if type(key) != str:
+                message = INVALID_TYPE_KEY_VALUE(map_type=map_type, key=key)
+                raise UnsupportedTypeException(message)
+
+            if type(value) not in tuple(allowed_types):
+                message = INVALID_TYPE_KEY_VALUE(map_type=map_type, allowed_types=tuple(allowed_types), value=value)
+                raise UnsupportedTypeException(message)
+
+            if not allow_none and not value:
                 raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
             if allow_none and value == "":
                 raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
 
-            if not isinstance(key, str):
-                message = INVALID_TYPE_KEY_VALUE(key=key,
-                                                 map_type="Join Key-Map" if is_join_map else "Request Context Map")
-
-                raise UnsupportedTypeException(message)
-
-            if type(value) not in tuple(allowed_types):
-                message = INVALID_TYPE_KEY_VALUE(value=value,
-                                                 map_type="Join Key-Map" if is_join_map else "Request Context Map")
-                raise UnsupportedTypeException(message)
-
-            request_map[key] = str(value) if isinstance(value, int) else value
+            request_map[key] = str(value) if type(value) == int else value
 
         return request_map
 

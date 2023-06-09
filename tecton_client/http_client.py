@@ -48,20 +48,23 @@ class TectonHttpClient:
 
     @property
     def is_closed(self: Self) -> bool:
+        """Checks if the client is closed
+        :return: True if the client is closed, False otherwise
+        """
         return self.is_client_closed
 
-    async def execute_request(self: Self, endpoint: str, http_request: dict) -> str:
+    async def execute_request(self: Self, endpoint: str, request_body: dict) -> str:
         """This is a method that performs a given HTTP request
         to an endpoint in the method passed by client
 
-        :param http_request: request data to be passed
+        :param request_body: request data to be passed
         :param endpoint: HTTP endpoint to attach to the URL and query
-        :type http_request: String in JSON format
+        :type request_body: String in JSON format
         :type endpoint: String
         """
         url = urljoin(self.url, endpoint)
 
-        response = await self.client.post(url, data=http_request, auth=self.auth)
+        response = await self.client.post(url, data=request_body, auth=self.auth)
 
         if response.status_code == 200:
             return response.json()

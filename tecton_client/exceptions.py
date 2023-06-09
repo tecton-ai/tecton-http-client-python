@@ -60,21 +60,20 @@ def EMPTY_KEY_VALUE(key: str, value: str) -> str:
     return message
 
 
-def INVALID_TYPE_KEY_VALUE(map_type: str, key: Optional[str] = None, value: Optional[str] = None) -> str:
-    """Exception message for when the key in the map is not of a valid type
+def INVALID_TYPE_KEY_VALUE(map_type: str, allowed_types: Optional[tuple] = None,
+                           key: Optional[str] = None, value: Optional[str] = None) -> str:
+    """Exception message for when the key or value in the map is not of a valid type
 
+    :param map_type: Type of the request map (one of Join Key Map or Request Context Map)
+    :param allowed_types: Tuple of data types allowed for the value in the map
     :param key: key provided
-    :param map_type: name of the map that's raising exception (one of Join Key Map or Request Context Map)
     :param value: value provided
     :return: Error message string
     """
 
     if key:
-        return f"{map_type} keys can only be of (str) type. Given key for {map_type} is: {key}"
+        return f"{map_type} keys can only be of (str) type. Given key for {map_type} is {key} of type {type(key)}"
     if value:
-        if map_type == "Join Key-Map":
-            message = f"Join Key-Map Values can only be of types (int, str). Given value is: {value}"
-        else:
-            message = f"Request Context Map values can only be of types (int, str, float). Given value is: {value}"
-
-        return message
+        allowed_types = tuple([str(val_type).split("\'")[1] for val_type in allowed_types])
+        return f"{map_type} values can only be of types {allowed_types}. " \
+               f"Given value for {map_type} is {value} of type {type(value)}"
