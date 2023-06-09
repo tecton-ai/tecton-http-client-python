@@ -17,7 +17,7 @@ class TestRequests:
 
     default_get_feature_request_data = GetFeatureRequestData(join_key_map={"test_key": "test_value"})
 
-    @pytest.mark.parametrize("key", ["", None])
+    @pytest.mark.parametrize("key", [None, ""])
     def test_error_join_key(self: Self, key: str) -> None:
         with pytest.raises(InvalidParameterException):
             GetFeatureRequestData(join_key_map={key: "test_value"})
