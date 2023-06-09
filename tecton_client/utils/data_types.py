@@ -5,7 +5,7 @@ from typing import Self
 
 class DataType(abc.ABC):
     """
-    Base DataType class. A python utility for working with `tecton_proto.common.DataType` protos.
+    Base DataType class
     """
 
     def __str__(self: Self) -> str:
