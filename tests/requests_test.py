@@ -45,7 +45,7 @@ class TestRequests:
         assert get_feature_request_data.join_key_map["test_key"] is None
 
     def test_none_request_context_value(self: Self) -> None:
-        with pytest.raises(UnsupportedTypeException):
+        with pytest.raises(InvalidParameterException):
             GetFeatureRequestData(request_context_map={"test_key": None})
 
     def test_empty_request_context_value(self: Self) -> None:

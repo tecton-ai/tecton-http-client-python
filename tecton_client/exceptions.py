@@ -21,8 +21,8 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
     :param reason_phrase: HTTP reason phrase
     :param message: Error message
     """
-    error_message = f"{status_code} {reason_phrase}: {message}"
 
+    error_message = f"{status_code} {reason_phrase}: {message}"
     return error_message
 
 
@@ -56,6 +56,7 @@ def EMPTY_KEY_VALUE(key: str, value: str) -> str:
     :param value: value provided
     :return: Error message string
     """
+
     message = f"Key/Value cannot be None or empty. Given key is: {key} and value is: {value}"
     return message
 

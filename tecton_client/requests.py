@@ -102,9 +102,10 @@ class GetFeatureRequestData:
                 message = INVALID_TYPE_KEY_VALUE(map_type=map_type, key=key)
                 raise UnsupportedTypeException(message)
 
-            if type(value) not in tuple(allowed_types):
-                message = INVALID_TYPE_KEY_VALUE(map_type=map_type, allowed_types=tuple(allowed_types), value=value)
-                raise UnsupportedTypeException(message)
+            if value is not None:
+                if type(value) not in tuple(allowed_types):
+                    message = INVALID_TYPE_KEY_VALUE(map_type=map_type, allowed_types=tuple(allowed_types), value=value)
+                    raise UnsupportedTypeException(message)
 
             if not allow_none and not value:
                 raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
@@ -191,7 +192,6 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         """
 
         super().__init__(GetFeaturesRequest.ENDPOINT, workspace_name, feature_service_name, metadata_options)
-
         self.request_data = request_data
 
     def to_json_string(self: Self) -> str:
