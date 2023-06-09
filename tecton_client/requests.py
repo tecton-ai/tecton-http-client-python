@@ -11,8 +11,8 @@ from typing import Set
 from typing import Union
 
 from tecton_client.exceptions import EMPTY_KEY_VALUE
-from tecton_client.exceptions import EmptyParameterException
 from tecton_client.exceptions import INVALID_TYPE_KEY_VALUE
+from tecton_client.exceptions import InvalidParameterException
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import UnsupportedTypeException
 
@@ -72,7 +72,7 @@ class GetFeatureRequestData:
         """
 
         if join_key_map is None and request_context_map is None:
-            raise EmptyParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
+            raise InvalidParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
 
         self.join_key_map = self.validate_request_data_parameters(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES,
                                                                   is_join_map=True) if join_key_map else None
@@ -95,12 +95,12 @@ class GetFeatureRequestData:
 
         for key, value in request_map.items():
             if not key:
-                raise EmptyParameterException(EMPTY_KEY_VALUE(key, value))
+                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
 
             if not allow_none and (value is None or value == ""):
-                raise EmptyParameterException(EMPTY_KEY_VALUE(key, value))
+                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
             if allow_none and value == "":
-                raise EmptyParameterException(EMPTY_KEY_VALUE(key, value))
+                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
 
             if not isinstance(key, str):
                 message = INVALID_TYPE_KEY_VALUE(key=key,
@@ -138,9 +138,9 @@ class TectonRequest(ABC):
         """
 
         if not workspace_name:
-            raise EmptyParameterException(InvalidParameterMessage.WORKSPACE_NAME.value)
+            raise InvalidParameterException(InvalidParameterMessage.WORKSPACE_NAME.value)
         if not feature_service_name:
-            raise EmptyParameterException(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
+            raise InvalidParameterException(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
 
         self.endpoint = endpoint
         self.feature_service_name = feature_service_name
@@ -210,7 +210,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             self_dict["request_context_map"] = self.request_data.request_context_map
 
         self_dict["metadata_options"] = {option.value: True for option in
-                                         sorted(self.metadata_options,
-                                                key=lambda x: x.value)} if self.metadata_options else {}
+                                         sorted(self.metadata_options, key=lambda x: x.value)} \
+            if self.metadata_options else {}
 
         return json.dumps({"params": self_dict})

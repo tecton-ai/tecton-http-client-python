@@ -7,8 +7,8 @@ from urllib.parse import urlparse
 import httpx
 from httpx_auth import HeaderApiKey
 
-from tecton_client.exceptions import EmptyParameterException
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
+from tecton_client.exceptions import InvalidParameterException
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import InvalidURLException
 from tecton_client.exceptions import TectonServerException
@@ -82,6 +82,6 @@ class TectonHttpClient:
     def validate_key(api_key: Optional[str]) -> str:
         """Validate that a given api key string is valid"""
         if not api_key:
-            raise EmptyParameterException(InvalidParameterMessage.KEY.value)
+            raise InvalidParameterException(InvalidParameterMessage.KEY.value)
 
         return api_key

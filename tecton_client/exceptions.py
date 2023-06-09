@@ -26,7 +26,7 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
     return error_message
 
 
-class EmptyParameterException(TectonClientException):
+class InvalidParameterException(TectonClientException):
     """Class for exceptions raised when one or more parameters passed are invalid"""
 
 
@@ -70,8 +70,7 @@ def INVALID_TYPE_KEY_VALUE(map_type: str, key: Optional[str] = None, value: Opti
     """
 
     if key:
-        return f"Join Key-Map keys and Request Context Map keys can only be of (str) type. " \
-               f"Given key for {map_type} is: {key}"
+        return f"{map_type} keys can only be of (str) type. Given key for {map_type} is: {key}"
     if value:
         if map_type == "Join Key-Map":
             message = f"Join Key-Map Values can only be of types (int, str). Given value is: {value}"
