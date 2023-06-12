@@ -78,3 +78,13 @@ def INVALID_TYPE_KEY_VALUE(map_type: str, allowed_types: Optional[tuple] = None,
         allowed_types = tuple([str(val_type).split("\'")[1] for val_type in allowed_types])
         return f"{map_type} values can only be of types {allowed_types}. " \
                f"Given value for {map_type} is {value} of type {type(value)}"
+
+
+class UnknownTypeException(TectonClientException):
+    """Class for exceptions raised when the type of response received is not known"""
+
+
+class ResponseRelatedErrorMessage(str, Enum):
+    """Error Messages for Response Related Exceptions."""
+
+    UNKNOWN_DATA_TYPE = "Unknown Data Type %s in response"

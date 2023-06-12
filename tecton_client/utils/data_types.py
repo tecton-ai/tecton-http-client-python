@@ -1,6 +1,10 @@
 import abc
 from typing import List
 from typing import Self
+from typing import Union
+
+from tecton_client.exceptions import ResponseRelatedErrorMessage
+from tecton_client.exceptions import UnknownTypeException
 
 
 class DataType(abc.ABC):
@@ -113,3 +117,38 @@ class StructType(DataType):
     def __str__(self: Self) -> str:
         fields_string = ", ".join(str(field) for field in self._fields)
         return f"Struct({fields_string})"
+
+
+class Value:
+    """
+    Represents a value of a feature in a specific type.
+
+    Attributes:
+        value_type: The type of the feature value.
+        value: A dictionary storing the value of the feature converted to the required type.
+    """
+
+    def __init__(self: Self, value_type: DataType, feature_value: Union[str, None, list]) -> None:
+        """Get the value of the feature in the specified type.
+
+        :param value_type: The type of the feature value.
+        :param feature_value: The value of the feature that needs to be converted to specified type.
+        """
+        self.value_type = value_type
+        self.value = {}
+
+        if isinstance(value_type, IntType):
+            self.value[value_type.__str__()] = None if feature_value is None else int(feature_value)
+        elif isinstance(value_type, FloatType):
+            self.value[value_type.__str__()] = None if feature_value is None else float(feature_value)
+        elif isinstance(value_type, StringType):
+            self.value[value_type.__str__()] = None if feature_value is None else feature_value
+        elif isinstance(value_type, BoolType):
+            self.value[value_type.__str__()] = None if feature_value is None else bool(feature_value)
+        elif isinstance(value_type, ArrayType):
+            self.value[value_type.__str__()] = [Value(value_type.element_type, value) for value in feature_value]
+        elif isinstance(value_type, StructType):
+            self.value[value_type.__str__()] = {field.name: Value(field.data_type, feature_value[i])
+                                                for i, field in enumerate(value_type.fields)}
+        else:
+            raise UnknownTypeException(ResponseRelatedErrorMessage.UNKNOWN_DATA_TYPE % value_type)
