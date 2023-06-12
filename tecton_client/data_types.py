@@ -138,18 +138,18 @@ class Value:
         self.value_type = value_type
         self.value = {}
 
-        if isinstance(value_type, IntType):
-            self.value[value_type.__str__()] = None if feature_value is None else int(feature_value)
-        elif isinstance(value_type, FloatType):
-            self.value[value_type.__str__()] = None if feature_value is None else float(feature_value)
-        elif isinstance(value_type, StringType):
-            self.value[value_type.__str__()] = None if feature_value is None else feature_value
-        elif isinstance(value_type, BoolType):
-            self.value[value_type.__str__()] = None if feature_value is None else bool(feature_value)
-        elif isinstance(value_type, ArrayType):
-            self.value[value_type.__str__()] = [Value(value_type.element_type, value) for value in feature_value]
-        elif isinstance(value_type, StructType):
-            self.value[value_type.__str__()] = {field.name: Value(field.data_type, feature_value[i])
-                                                for i, field in enumerate(value_type.fields)}
+        type_conversion_map = {
+            IntType: int,
+            FloatType: float,
+            StringType: lambda x: x,
+            BoolType: bool,
+            ArrayType: lambda x: [Value(value_type.element_type, value) for value in x],
+            StructType: lambda x: {field.name: Value(field.data_type, value)
+                                   for field, value in zip(value_type.fields, x)}
+        }
+
+        if value_type.__class__ in type_conversion_map:
+            convert = type_conversion_map[value_type.__class__]
+            self.value[value_type.__str__()] = None if feature_value is None else convert(feature_value)
         else:
             raise UnknownTypeException(ResponseRelatedErrorMessage.UNKNOWN_DATA_TYPE % value_type)
