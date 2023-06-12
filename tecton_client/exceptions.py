@@ -84,7 +84,13 @@ class UnknownTypeException(TectonClientException):
     """Class for exceptions raised when the type of response received is not known"""
 
 
+class MismatchedTypeException(TectonClientException):
+    """Class for exceptions raised when the type of response received does not match the expected type"""
+
+
 class ResponseRelatedErrorMessage(str, Enum):
     """Error Messages for Response Related Exceptions."""
 
-    UNKNOWN_DATA_TYPE = "Unknown Data Type %s in response"
+    UNKNOWN_DATA_TYPE = "Received unknown data type %s in the response. Please contact Tecton Support for assistance."
+    MISMATCHED_DATA_TYPE = "Error converting data to type %s. Please recheck data and type of response, " \
+                           "or contact Tecton Support for assistance."
