@@ -77,7 +77,9 @@ class TestDataTypes:
 
     def test_none_values(self: Self) -> None:
         type_name = ArrayType(StringType())
-        test_var = Value(type_name, None)
+        test_var = Value(type_name, ["test_string", None])
 
-        assert test_var.value[str(type_name.__str__())] is None
+        arraylist = test_var.value[str(type_name.__str__())]
+        assert [item.value[type_name.element_type.__str__()] for item in arraylist] == ["test_string", None]
+
         assert len(test_var.value) == 1
