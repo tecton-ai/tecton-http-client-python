@@ -149,6 +149,6 @@ class Value:
 
         if value_type.__class__ in type_conversion_map:
             convert = type_conversion_map[value_type.__class__]
-            self.value[value_type.__str__()] = None if feature_value is None else convert(feature_value)
+            self.value[str(value_type.__class__)] = None if feature_value is None else convert(feature_value)
         else:
             raise UnknownTypeException(ResponseRelatedErrorMessage.UNKNOWN_DATA_TYPE % value_type)
