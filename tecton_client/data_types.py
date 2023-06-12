@@ -3,6 +3,7 @@ from typing import List
 from typing import Self
 from typing import Union
 
+from tecton_client.exceptions import MismatchedTypeException
 from tecton_client.exceptions import ResponseRelatedErrorMessage
 from tecton_client.exceptions import UnknownTypeException
 
@@ -135,7 +136,6 @@ class Value:
         :param value_type: The type of the feature value.
         :param feature_value: The value of the feature that needs to be converted to specified type.
         """
-        self.value_type = value_type
         self.value = {}
 
         type_conversion_map = {
@@ -144,12 +144,16 @@ class Value:
             StringType: lambda x: x,
             BoolType: bool,
             ArrayType: lambda x: [Value(value_type.element_type, value) for value in x],
-            StructType: lambda x: {field.name: Value(field.data_type, value)
-                                   for field, value in zip(value_type.fields, x)}
+            StructType: lambda x: {field.name: Value(field.data_type, x[i])
+                                   for i, field in enumerate(value_type.fields)}
         }
 
         if value_type.__class__ in type_conversion_map:
             convert = type_conversion_map[value_type.__class__]
-            self.value[str(value_type.__class__)] = None if feature_value is None else convert(feature_value)
+
+            try:
+                self.value[value_type.__str__()] = None if feature_value is None else convert(feature_value)
+            except Exception:
+                raise MismatchedTypeException(ResponseRelatedErrorMessage.MISMATCHED_DATA_TYPE % value_type)
         else:
             raise UnknownTypeException(ResponseRelatedErrorMessage.UNKNOWN_DATA_TYPE % value_type)

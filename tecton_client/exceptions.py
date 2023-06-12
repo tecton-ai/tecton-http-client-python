@@ -81,3 +81,18 @@ def INVALID_TYPE_KEY_VALUE(
             f"{map_type} values can only be of types {allowed_types}. "
             f"Given value for {map_type} is {value} of type {type(value)}"
         )
+
+class UnknownTypeException(TectonClientException):
+    """Class for exceptions raised when the type of response received is not known"""
+
+
+class MismatchedTypeException(TectonClientException):
+    """Class for exceptions raised when the type of response received does not match the expected type"""
+
+
+class ResponseRelatedErrorMessage(str, Enum):
+    """Error Messages for Response Related Exceptions."""
+
+    UNKNOWN_DATA_TYPE = "Received unknown data type %s in the response. Please contact Tecton Support for assistance."
+    MISMATCHED_DATA_TYPE = "Error converting data to type %s. Please recheck data and type of response, " \
+                           "or contact Tecton Support for assistance."
