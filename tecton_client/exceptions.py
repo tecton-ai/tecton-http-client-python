@@ -90,9 +90,23 @@ class MismatchedTypeException(TectonClientException):
     """Class for exceptions raised when the type of response received does not match the expected type"""
 
 
-class ResponseRelatedErrorMessage(str, Enum):
-    """Error Messages for Response Related Exceptions."""
+def UNKNOWN_DATA_TYPE(data_type: str) -> str:
+    """Exception message for when the type of response received is not known
 
-    UNKNOWN_DATA_TYPE = "Received unknown data type %s in the response. Please contact Tecton Support for assistance."
-    MISMATCHED_DATA_TYPE = "Error converting data to type %s. Please recheck data and type of response, " \
-                           "or contact Tecton Support for assistance."
+    :param data_type: Type of the response received
+    :return: Error message string
+    """
+
+    return "Received unknown data type %s in the response. Please contact Tecton Support for assistance." % data_type
+
+
+def MISMATCHED_DATA_TYPE(value: str, data_type: str) -> str:
+    """Exception message for when the type of response received does not match the expected type
+
+    :param value: Value of the response received
+    :param data_type: Type of the response received
+    :return: Error message string
+    """
+
+    return "Unexpected Error occurred while parsing the feature value %s to data type %s. " \
+           "If problem persists, please contact Tecton Support for assistance." % (value, data_type)

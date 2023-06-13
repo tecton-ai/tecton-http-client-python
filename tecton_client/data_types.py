@@ -3,8 +3,9 @@ from typing import List
 from typing import Self
 from typing import Union
 
+from tecton_client.exceptions import MISMATCHED_DATA_TYPE
 from tecton_client.exceptions import MismatchedTypeException
-from tecton_client.exceptions import ResponseRelatedErrorMessage
+from tecton_client.exceptions import UNKNOWN_DATA_TYPE
 from tecton_client.exceptions import UnknownTypeException
 
 
@@ -131,7 +132,7 @@ class Value:
     """
 
     def __init__(self: Self, value_type: DataType, feature_value: Union[str, None, list]) -> None:
-        """Get the value of the feature in the specified type.
+        """Set the value of the feature in the specified type.
 
         :param value_type: The type of the feature value.
         :param feature_value: The value of the feature that needs to be converted to specified type.
@@ -154,6 +155,6 @@ class Value:
             try:
                 self.value[value_type.__str__()] = None if feature_value is None else convert(feature_value)
             except Exception:
-                raise MismatchedTypeException(ResponseRelatedErrorMessage.MISMATCHED_DATA_TYPE % value_type)
+                raise MismatchedTypeException(MISMATCHED_DATA_TYPE(feature_value, value_type.__str__()))
         else:
-            raise UnknownTypeException(ResponseRelatedErrorMessage.UNKNOWN_DATA_TYPE % value_type)
+            raise UnknownTypeException(UNKNOWN_DATA_TYPE(value_type.__str__()))
