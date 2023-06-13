@@ -1,3 +1,4 @@
+from typing import List
 from typing import Self
 from typing import Union
 
@@ -15,6 +16,16 @@ from tecton_client.utils.data_types import Value
 
 
 class TestDataTypes:
+    array_type1 = ArrayType(ArrayType(IntType()))
+    array_data1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+    struct_type1 = StructType([StructField("nested_struct", StructType([StructField("field1", StringType()),
+                                                                        StructField("field2", FloatType())])),
+                               StructField("nested_array", ArrayType(BoolType())), StructField("normal", IntType())])
+    struct_data1 = [["test_string", 123.45], [True, False], 123]
+
+    struct_type2 = StructType([StructField('array', ArrayType(IntType())), StructField('int', IntType())])
+    struct_data2 = [[1, 2, 3], 4]
 
     @pytest.mark.parametrize("type_name,value", [(StringType(), "test_string"), (IntType(), 123),
                                                  (FloatType(), 123.45), (BoolType(), True)])
@@ -23,63 +34,71 @@ class TestDataTypes:
         assert test_var.value[str(type_name.__str__())] == value
         assert len(test_var.value) == 1
 
-    def test_array_value(self: Self) -> None:
-        type_name = ArrayType(StringType())
-        test_var = Value(type_name, ["test_string1", "test_string2"])
-
+    @staticmethod
+    def assert_array(test_var: Value, expected_list: list, type_name: ArrayType) -> None:
         arraylist = test_var.value[str(type_name.__str__())]
-        assert [item.value[type_name.element_type.__str__()] for item in arraylist] == ["test_string1", "test_string2"]
+        assert [item.value[type_name.element_type.__str__()] for item in arraylist] == expected_list
+        assert len(arraylist) == len(expected_list)
         assert len(test_var.value) == 1
+
+    @pytest.mark.parametrize("array_value", [(["test_string1", "test_string2"]), (["test_string", None])])
+    def test_array_value(self: Self, array_value: List[str]) -> None:
+        type_name = ArrayType(StringType())
+        test_var = Value(type_name, array_value)
+
+        self.assert_array(test_var, array_value, type_name)
+
+    @staticmethod
+    def assert_struct(test_var: Value, expected_dict: dict, type_name: StructType) -> None:
+        assert len(test_var.value) == 1
+        datadict = test_var.value[type_name.__str__()]
+
+        length = len(datadict)
+        assert length == len(expected_dict)
+
+        result_dict = {}
+        for i in range(len(datadict)):
+            key = type_name.fields[i]
+            result_dict[key.name] = datadict[key.name].value[key.data_type.__str__()]
+
+        assert result_dict == expected_dict
 
     def test_struct_value(self: Self) -> None:
         type_name = StructType([StructField("field1", StringType()), StructField("field2", IntType())])
         test_var = Value(type_name, ["test_string", 123])
-
-        datadict = test_var.value[type_name.__str__()]
         expected_dict = {"field1": "test_string", "field2": 123}
 
-        field1 = datadict["field1"]
-        field2 = datadict["field2"]
+        self.assert_struct(test_var, expected_dict, type_name)
 
-        actual_dict = {"field1": field1.value[type_name.fields[0].data_type.__str__()],
-                       "field2": field2.value[type_name.fields[1].data_type.__str__()]}
+    @pytest.mark.parametrize("type_name,actual_data", [(struct_type1, struct_data1), (struct_type2, struct_data2)])
+    def test_nested_struct(self: Self, type_name: StructType, actual_data: list) -> None:
 
-        assert actual_dict == expected_dict
-        assert len(test_var.value) == 1
-
-    def test_nested_value(self: Self) -> None:
-        nested_struct = StructType([StructField("field1", StringType()), StructField("field2", FloatType())])
-        nested_array = ArrayType(BoolType())
-        type_name = StructType([StructField("nested_struct", nested_struct), StructField("nested_array", nested_array),
-                                StructField("normal", IntType())])
-
-        actual_data = [["test_string", 123.45], [True, False], 123]
         test_var = Value(type_name, actual_data)
 
         datadict = test_var.value[type_name.__str__()]
-        assert len(datadict) == 3
+        assert len(datadict) == len(actual_data)
 
-        struct_val = datadict["nested_struct"].value[type_name.fields[0].data_type.__str__()]
-        assert len(struct_val) == 2
+        for i in range(len(datadict)):
+            key = type_name.fields[i].name
+            datatype = type_name.fields[i].data_type
+            print(datadict[key])
 
-        nested_struct_f1 = struct_val["field1"]
-        nested_struct_f2 = struct_val["field2"]
-        nested_dict = {"field1": nested_struct_f1.value[nested_struct.fields[0].data_type.__str__()],
-                       "field2": nested_struct_f2.value[nested_struct.fields[1].data_type.__str__()]}
-        actual_nested_dict = {"field1": "test_string", "field2": 123.45}
-        assert nested_dict == actual_nested_dict
+            if type(datatype) == StructType:
+                result_dict = {field.name: actual_data[i][j] for j, field in enumerate(datatype.fields)}
+                self.assert_struct(datadict[key], result_dict, datatype)
 
-        array_val = datadict["nested_array"].value[type_name.fields[1].data_type.__str__()]
-        assert len(array_val) == 2
-        assert [item.value[nested_array.element_type.__str__()] for item in array_val] == [True, False]
+            elif type(datatype) == ArrayType:
+                self.assert_array(datadict[key], actual_data[i], datatype)
 
-        assert datadict["normal"].value[type_name.fields[2].data_type.__str__()] == 123
+            else:
+                assert datadict[key].value[datatype.__str__()] == actual_data[i]
 
-    def test_none_values(self: Self) -> None:
-        type_name = ArrayType(StringType())
-        test_var = Value(type_name, ["test_string", None])
+    @pytest.mark.parametrize("type_name,actual_data", [(array_type1, array_data1)])
+    def test_nested_array(self: Self, type_name: ArrayType, actual_data: list) -> None:
+        test_var = Value(type_name, actual_data)
 
         arraylist = test_var.value[str(type_name.__str__())]
-        assert [item.value[type_name.element_type.__str__()] for item in arraylist] == ["test_string", None]
+        assert len(arraylist) == len(actual_data)
 
-        assert len(test_var.value) == 1
+        for i in range(len(arraylist)):
+            self.assert_array(arraylist[i], actual_data[i], type_name.element_type)
