@@ -126,15 +126,15 @@ class Value:
     Represents a value of a feature in a specific type.
 
     Attributes:
-        value_type: The type of the feature value.
-        value: A dictionary storing the value of the feature converted to the required type.
+        value (dict): A dictionary storing the value of the feature converted to the required type.
     """
 
     def __init__(self: Self, value_type: DataType, feature_value: Union[str, None, list]) -> None:
         """Set the value of the feature in the specified type.
 
-        :param value_type: The type of the feature value.
-        :param feature_value: The value of the feature that needs to be converted to specified type.
+        Args:
+            value_type (DataType): The type of the feature value.
+            feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified type.
         """
         self.value = {}
 

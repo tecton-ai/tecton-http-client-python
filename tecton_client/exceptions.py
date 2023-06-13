@@ -81,29 +81,36 @@ def INVALID_TYPE_KEY_VALUE(map_type: str, allowed_types: Optional[tuple] = None,
 
 
 class UnknownTypeException(TectonClientException):
-    """Class for exceptions raised when the type of response received is not known"""
+    """Class for exceptions raised when the type of one or more feature values in the response received is not known"""
 
 
 class MismatchedTypeException(TectonClientException):
-    """Class for exceptions raised when the type of response received does not match the expected type"""
+    """Class for exceptions raised when the type of one or more feature values in the response received
+    does not match the expected type"""
 
 
 def UNKNOWN_DATA_TYPE(data_type: str) -> str:
-    """Exception message for when the type of response received is not known
+    """Error message for when the data type of one or more feature values in the response is not known
 
-    :param data_type: Type of the response received
-    :return: Error message string
+    Args:
+        data_type (str): Type of the response received
+
+    Returns:
+        str: Error message string
     """
-
     return "Received unknown data type %s in the response. Please contact Tecton Support for assistance." % data_type
 
 
 def MISMATCHED_DATA_TYPE(value: str, data_type: str) -> str:
-    """Exception message for when the type of response received does not match the expected type
+    """Error message for when the type of one or more feature values in the response received
+    does not match the expected type
 
-    :param value: Value of the response received
-    :param data_type: Type of the response received
-    :return: Error message string
+    Args:
+        value (str): Value of the response received
+        data_type (str): Type of the response received
+
+    Returns:
+        str: Error message string
     """
 
     return "Unexpected Error occurred while parsing the feature value %s to data type %s. " \
