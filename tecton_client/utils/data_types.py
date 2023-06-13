@@ -12,35 +12,35 @@ class DataType(abc.ABC):
 
 
 class IntType(DataType):
-    """Class to represent data of type Integer."""
+    """Class to represent datatype Integer."""
 
     def __str__(self: Self) -> str:
         return "Int"
 
 
 class FloatType(DataType):
-    """Class to represent data of type Float."""
+    """Class to represent datatype Float."""
 
     def __str__(self: Self) -> str:
         return "Float"
 
 
 class StringType(DataType):
-    """Class to represent data of type String."""
+    """Class to represent datatype String."""
 
     def __str__(self: Self) -> str:
         return "String"
 
 
 class BoolType(DataType):
-    """Class to represent data of type Boolean."""
+    """Class to represent datatype Boolean."""
 
     def __str__(self: Self) -> str:
         return "Bool"
 
 
 class ArrayType(DataType):
-    """Class to represent data of type Array. Can contain elements of another DataType."""
+    """Class to represent datatype Array. Can contain elements of another DataType."""
 
     def __init__(self: Self, element_type: DataType) -> None:
         self._element_type = element_type
@@ -78,7 +78,7 @@ class StructField:
 
 
 class StructType(DataType):
-    """Class to represent data of type Struct.
+    """Class to represent datatype Struct.
 
     Attributes:
         fields: List of StructField objects, one for each field in the struct.
