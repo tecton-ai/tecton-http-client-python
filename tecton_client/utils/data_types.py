@@ -134,7 +134,8 @@ class Value:
 
         Args:
             value_type (DataType): The type of the feature value.
-            feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified type.
+            feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified
+            type.
 
         Raises:
             MismatchedTypeException: If the feature value cannot be converted to the specified type.
