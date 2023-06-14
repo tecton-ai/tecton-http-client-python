@@ -1,4 +1,3 @@
-import json
 from typing import List
 from typing import Self
 from typing import Union
@@ -79,7 +78,6 @@ class TestDataTypes:
             }
         }
     ]
-
 
     @pytest.mark.parametrize("type_name,value", [(StringType(), "test_string"), (IntType(), 123),
                                                  (FloatType(), 123.45), (BoolType(), True)])
