@@ -114,3 +114,41 @@ class TestDataTypes:
         arraylist = test_var.value
         assert len(arraylist) == len(actual_data)
         assert arraylist == actual_data
+
+    @pytest.mark.parametrize("value_type,feature_value", [("string", "test_feature_value"), ("int64", 123),
+                                                          ("float64", 123.45), ("float32", 123.45),
+                                                          ("boolean", True)])
+    def test_basic_feature_values(self: Self, value_type: str, feature_value: str) -> None:
+        feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+        assert feature.feature_value.value[feature.value_type.__str__()] == feature_value
+
+    @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
+    def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
+        feature = FeatureValue(name="test.test_feature", value_type="struct",
+                               feature_value=feature_value, fields=fields)
+
+        feature_val = feature.feature_value.value[feature.value_type.__str__()]
+
+        for i in range(len(feature_val)):
+            key = feature.value_type.fields[i].name
+            datatype = feature.value_type.fields[i].data_type
+
+            if type(datatype) == StructType:
+                result_dict = {field.name: feature_value[i][j] for j, field in enumerate(datatype.fields)}
+                self.assert_struct(feature_val[key], result_dict, datatype)
+
+            elif type(datatype) == ArrayType:
+                self.assert_array(feature_val[key], feature_value[i], datatype)
+
+            else:
+                assert feature_val[key].value[datatype.__str__()] == feature_value[i]
+
+    @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields1)])
+    def test_feature_value_with_arrays(self: Self, feature_value: list, fields: list) -> None:
+        feature = FeatureValue(name="test.test_feature", value_type="array",
+                               feature_value=feature_value, element_type=fields[0]["dataType"]["elementType"])
+
+        feature_val = feature.feature_value.value[feature.value_type.__str__()]
+
+        for i in range(len(feature_val)):
+            self.assert_array(feature_val[i], feature_value[i], feature.value_type.element_type)
