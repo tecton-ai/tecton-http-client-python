@@ -18,12 +18,6 @@ from tecton_client.responses import Value
 class TestDataTypes:
     array_type1 = ArrayType(ArrayType(IntType()))
     array_data1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-    array_fields1 = [
-        {
-            "name": "array",
-            "dataType": {"type": "array", "elementType": {"type": "array", "elementType": {"type": "int64"}}},
-        }
-    ]
 
     array_data2 = [[1, 2, 3], [4, 5, None], None]
     array_fields2 = [
@@ -58,12 +52,8 @@ class TestDataTypes:
         {"name": "normal", "dataType": {"type": "int64"}},
     ]
 
-    struct_type2 = StructType([StructField("field1", ArrayType(IntType())), StructField("field2", IntType())])
+    struct_type2 = StructType([StructField("array", ArrayType(IntType())), StructField("int", IntType())])
     struct_data2 = [[1, 2, 3], 4]
-    struct_fields2 = [
-        {"name": "field1", "dataType": {"type": "array", "elementType": {"type": "int64"}}},
-        {"name": "field2", "dataType": {"type": "int64"}},
-    ]
 
     @pytest.mark.parametrize(
         "type_name,value",
