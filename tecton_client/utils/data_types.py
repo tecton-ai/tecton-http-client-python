@@ -40,8 +40,17 @@ class BoolType(DataType):
 
 
 class ArrayType(DataType):
-    """Class to represent datatype Array. Can contain elements of another DataType."""
+    """Class to represent datatype Array.
+     An `ArrayType` object represents an array datatype that can contain elements of another `DataType`.
 
+     Usage:
+         element_type = FloatType()
+         array_type = ArrayType(element_type)
+         print(array_type)  # Output: Array(Float)
+
+     Attributes:
+         element_type (DataType): The datatype of the elements in the array.
+     """
     def __init__(self: Self, element_type: DataType) -> None:
         self._element_type = element_type
 
@@ -55,6 +64,8 @@ class ArrayType(DataType):
 
 class StructField:
     """Class to represent a field in a StructType.
+
+    A `StructField` object represents a field within a `StructType`, containing a name and a corresponding `DataType`.
 
     Attributes:
         name (str): Name of the field
@@ -80,8 +91,16 @@ class StructField:
 class StructType(DataType):
     """Class to represent datatype Struct.
 
+    A `StructType` object represents a struct datatype, consisting of multiple fields.
+
+    Usage:
+        field1 = StructField("name", StringType())
+        field2 = StructField("age", IntType())
+        struct_type = StructType([field1, field2])
+        print(struct_type)  # Output: Struct(Field(name, String), Field(age, Int))
+
     Attributes:
-        fields (str): List of StructField objects, one for each field in the struct.
+        fields (List[StructField]): The list of StructField objects representing the fields in the struct.
     """
 
     def __init__(self: Self, fields: List[StructField]) -> None:
