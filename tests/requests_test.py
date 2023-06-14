@@ -1,5 +1,6 @@
 import json
-from typing import Self, Set
+from typing import Self
+from typing import Set
 from typing import Union
 
 import pytest
@@ -31,7 +32,7 @@ class TestRequests:
                             MetadataOptions.EFFECTIVE_TIME, MetadataOptions.FEATURE_STATUS, MetadataOptions.SLO_INFO}
     all_meta_opts_json = {"include_data_types": True, "include_effective_times": True,
                           "include_names": True, "include_serving_status": True, "include_slo_info": True}
-    
+
     def setup_method(self: Self) -> None:
 
         self.expected_response = {
