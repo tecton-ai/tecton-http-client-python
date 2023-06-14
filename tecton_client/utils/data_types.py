@@ -57,8 +57,8 @@ class StructField:
     """Class to represent a field in a StructType.
 
     Attributes:
-        name: Name of the field
-        data_type: DataType of the field
+        name (str): Name of the field
+        data_type (str): DataType of the field
     """
 
     def __init__(self: Self, name: str, data_type: DataType) -> None:
@@ -81,7 +81,7 @@ class StructType(DataType):
     """Class to represent datatype Struct.
 
     Attributes:
-        fields: List of StructField objects, one for each field in the struct.
+        fields (str): List of StructField objects, one for each field in the struct.
     """
 
     def __init__(self: Self, fields: List[StructField]) -> None:
