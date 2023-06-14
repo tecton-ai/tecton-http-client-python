@@ -3,9 +3,7 @@ from typing import List
 from typing import Self
 from typing import Union
 
-from tecton_client.exceptions import MISMATCHED_DATA_TYPE
 from tecton_client.exceptions import MismatchedTypeException
-from tecton_client.exceptions import UNKNOWN_DATA_TYPE
 from tecton_client.exceptions import UnknownTypeException
 
 
@@ -124,7 +122,7 @@ class StructType(DataType):
 
 class Value:
     """
-    Represents a value of a feature in a specific type.
+    Represents an object containing a feature value with a specific type.
 
     Attributes:
         value (dict): A dictionary storing the value of the feature converted to the required type.
@@ -160,6 +158,6 @@ class Value:
             try:
                 self.value[value_type.__str__()] = None if feature_value is None else convert(feature_value)
             except Exception:
-                raise MismatchedTypeException(MISMATCHED_DATA_TYPE(feature_value, value_type.__str__()))
+                raise MismatchedTypeException(feature_value, value_type.__str__())
         else:
-            raise UnknownTypeException(UNKNOWN_DATA_TYPE(value_type.__str__()))
+            raise UnknownTypeException(value_type.__str__())

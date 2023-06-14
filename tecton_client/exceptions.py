@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Optional
+from typing import Self
 
 
 class TectonException(Exception):
@@ -85,35 +86,34 @@ def INVALID_TYPE_KEY_VALUE(
 class UnknownTypeException(TectonClientException):
     """Class for exceptions raised when the type of one or more feature values in the response received is not known"""
 
+    def __init__(self: Self, data_type: str) -> None:
+        """Initializes the exception with the error message for when the data type of one or more feature values
+        in the response is not known
+
+        Args:
+             data_type (str): Type of the response received
+         """
+
+        message = "Received unknown data type %s in the response. " \
+                  "Please contact Tecton Support for assistance." % data_type
+
+        super().__init__(message)
+
 
 class MismatchedTypeException(TectonClientException):
     """Class for exceptions raised when the type of one or more feature values in the response received
     does not match the expected type"""
 
+    def __init__(self: Self, value: str, data_type: str) -> None:
+        """Initializes the exception with the error message for when the type of one or more feature values
+        in the response received does not match the expected type
 
-def UNKNOWN_DATA_TYPE(data_type: str) -> str:
-    """Error message for when the data type of one or more feature values in the response is not known
+        Args:
+            value (str): Value of the response received
+            data_type (str): Type of the response received
+        """
 
-    Args:
-        data_type (str): Type of the response received
+        message = "Unexpected Error occurred while parsing the feature value %s to data type %s. " \
+                  "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
 
-    Returns:
-        str: Error message string
-    """
-    return "Received unknown data type %s in the response. Please contact Tecton Support for assistance." % data_type
-
-
-def MISMATCHED_DATA_TYPE(value: str, data_type: str) -> str:
-    """Error message for when the type of one or more feature values in the response received
-    does not match the expected type
-
-    Args:
-        value (str): Value of the response received
-        data_type (str): Type of the response received
-
-    Returns:
-        str: Error message string
-    """
-
-    return "Unexpected Error occurred while parsing the feature value %s to data type %s. " \
-           "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
+        super().__init__(message)
