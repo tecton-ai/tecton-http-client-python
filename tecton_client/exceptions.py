@@ -16,13 +16,17 @@ class TectonServerException(TectonException):
 
 
 def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) -> str:
-    """Error message for invalid server response
+    """Error message for invalid server response.
 
-    :param status_code: HTTP status code
-    :param reason_phrase: HTTP reason phrase
-    :param message: Error message
+    Args:
+        status_code (int): The HTTP status code.
+        reason_phrase (str): The HTTP reason phrase.
+        message (str): The error message.
+
+    Returns:
+        str: The error message string.
+
     """
-
     error_message = f"{status_code} {reason_phrase}: {message}"
     return error_message
 
@@ -51,13 +55,16 @@ class UnsupportedTypeException(TectonClientException):
 
 
 def EMPTY_KEY_VALUE(key: str, value: str) -> str:
-    """Exception message for when the key or value is empty
+    """Exception message for when the key or value is empty.
 
-    :param key: key provided
-    :param value: value provided
-    :return: Error message string
+    Args:
+        key (str): The key provided.
+        value (str): The value provided.
+
+    Returns:
+        str: The error message string.
+
     """
-
     message = f"Key/Value cannot be None or empty. Given key is: {key} and value is: {value}"
     return message
 
@@ -67,13 +74,16 @@ def INVALID_TYPE_KEY_VALUE(
 ) -> str:
     """Exception message for when the key or value in the map is not of a valid type
 
-    :param map_type: Type of the request map (one of Join Key Map or Request Context Map)
-    :param allowed_types: Tuple of data types allowed for the value in the map
-    :param key: key provided
-    :param value: value provided
-    :return: Error message string
-    """
+    Args:
+        map_type (str): Type of the request map (one of Join Key Map or Request Context Map).
+        allowed_types (Tuple[type]): Tuple of data types allowed for the value in the map.
+        key (str): The key provided.
+        value (Any): The value provided.
 
+    Returns:
+        str: The error message string.
+
+    """
     if key:
         return f"{map_type} keys can only be of (str) type. Given key for {map_type} is {key} of type {type(key)}"
     if value:

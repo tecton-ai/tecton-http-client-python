@@ -26,13 +26,14 @@ class TectonHttpClient:
         CONTENT_TYPE = "Content-Type"
 
     def __init__(self: Self, url: str, api_key: str, client: Optional[httpx.AsyncClient] = None) -> None:
-        """Initializing parameters required to make HTTP requests
+        """Initialize the parameters required to make HTTP requests.
 
-        :param url: URL to ping
-        :param api_key: API Key required as part of header authorization
-        :param client: (Optional) HTTPX Asynchronous Client
+        Args:
+            url (str): The URL to ping.
+            api_key (str): The API Key required as part of header authorization.
+            client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
+
         """
-
         self.url = self.validate_url(url)
         self.api_key = self.validate_key(api_key)
 
@@ -47,19 +48,29 @@ class TectonHttpClient:
 
     @property
     def is_closed(self: Self) -> bool:
-        """Checks if the client is closed
-        :return: True if the client is closed, False otherwise
+        """Checks if the client is closed.
+
+        Returns:
+            bool: True if the client is closed, False otherwise.
+
         """
         return self.is_client_closed
 
     async def execute_request(self: Self, endpoint: str, request_body: dict) -> str:
-        """This is a method that performs a given HTTP request
-        to an endpoint in the method passed by client
+        """Performs an HTTP request to a specified endpoint using the client.
 
-        :param request_body: request data to be passed
-        :param endpoint: HTTP endpoint to attach to the URL and query
-        :type request_body: String in JSON format
-        :type endpoint: String
+        This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
+
+        Args:
+            endpoint (str): The HTTP endpoint to attach to the URL and query.
+            request_body (dict): The request data to be passed, in JSON format.
+
+        Returns:
+            str: The response in JSON format.
+
+        Raises:
+            TectonServerException: If the server response is invalid.
+
         """
         url = urljoin(self.url, endpoint)
 
@@ -74,8 +85,18 @@ class TectonHttpClient:
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:
-        """Validate that a given url string is a valid URL"""
+        """Validate that a given URL string is a valid URL.
 
+        Args:
+            url (Optional[str]): The URL string to validate.
+
+        Returns:
+            str: The validated URL string.
+
+        Raises:
+            InvalidURLException: If the URL is empty or does not have a valid netloc.
+
+        """
         if not url or not urlparse(url).netloc:
             raise InvalidURLException(InvalidParameterMessage.URL.value)
 
@@ -83,7 +104,18 @@ class TectonHttpClient:
 
     @staticmethod
     def validate_key(api_key: Optional[str]) -> str:
-        """Validate that a given api key string is valid"""
+        """Validate that a given API key string is valid.
+
+        Args:
+            api_key (Optional[str]): The API key string to validate.
+
+        Returns:
+            str: The validated API key string.
+
+        Raises:
+            InvalidParameterException: If the API key is empty.
+
+        """
         if not api_key:
             raise InvalidParameterException(InvalidParameterMessage.KEY.value)
 
