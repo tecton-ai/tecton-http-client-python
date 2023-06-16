@@ -52,11 +52,16 @@ class ArrayType(DataType):
     """
 
     def __init__(self: Self, element_type: DataType) -> None:
+        """Initialize an ArrayType object.
+
+        Args:
+            element_type (DataType): The datatype of the elements in the array.
+        """
         self._element_type = element_type
 
     @property
     def element_type(self: Self) -> DataType:
-        """Return the DataType of the elements in the array."""
+        """Return the datatype of the elements in the array."""
         return self._element_type
 
     def __str__(self: Self) -> str:
@@ -70,6 +75,12 @@ class StructField:
     """
 
     def __init__(self: Self, name: str, data_type: DataType) -> None:
+        """Initialize a StructField object.
+
+        Args:
+            name (str): Name of the field
+            data_type (DataType): DataType of the field
+        """
         self._name = name
         self._data_type = data_type
 
@@ -100,6 +111,11 @@ class StructType(DataType):
     """
 
     def __init__(self: Self, fields: List[StructField]) -> None:
+        """Initialize a StructType object.
+
+        Args:
+            fields (List[StructField]): The list of StructField objects representing the fields in the struct.
+        """
         self._fields = fields
 
     @property

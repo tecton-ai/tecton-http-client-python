@@ -21,6 +21,8 @@ class TectonHttpClient:
     """Basic HTTP Client to send and receive requests to a given URL."""
 
     class headers(Enum):
+        """Enum class for HTTP headers."""
+
         AUTHORIZATION = "Authorization"
         ACCEPT = "Accept"
         CONTENT_TYPE = "Content-Type"
@@ -43,6 +45,7 @@ class TectonHttpClient:
         self.is_client_closed: bool = False
 
     async def close(self: Self) -> None:
+        """Close the HTTPX Asynchronous Client."""
         await self.client.aclose()
         self.is_client_closed = True
 
@@ -56,7 +59,7 @@ class TectonHttpClient:
         """
         return self.is_client_closed
 
-    async def execute_request(self: Self, endpoint: str, request_body: dict) -> str:
+    async def execute_request(self: Self, endpoint: str, request_body: dict) -> dict:
         """Performs an HTTP request to a specified endpoint using the client.
 
         This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
@@ -66,7 +69,7 @@ class TectonHttpClient:
             request_body (dict): The request data to be passed, in JSON format.
 
         Returns:
-            str: The response in JSON format.
+            dict: The response in JSON format.
 
         Raises:
             TectonServerException: If the server response is invalid.
