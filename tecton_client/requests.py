@@ -56,8 +56,11 @@ class GetFeatureRequestData:
         request_context_map: (Optional) Request context used for OnDemand FeatureViews
     """
 
-    def __init__(self: Self, join_key_map: Optional[Dict[str, Union[int, str, NoneType]]] = None,
-                 request_context_map: Optional[Dict[str, Union[int, str, float]]] = None) -> None:
+    def __init__(
+        self: Self,
+        join_key_map: Optional[Dict[str, Union[int, str, NoneType]]] = None,
+        request_context_map: Optional[Dict[str, Union[int, str, float]]] = None,
+    ) -> None:
         """Initializing a GetFeaturesRequestData instance with the given parameters
 
         :param join_key_map: (Optional) Join keys used for table-based FeatureViews
@@ -74,17 +77,22 @@ class GetFeatureRequestData:
         if join_key_map is None and request_context_map is None:
             raise InvalidParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
 
-        self.join_key_map = self.get_processed_map(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES,
-                                                   map_type="Join Key-Map") if join_key_map else None
+        self.join_key_map = (
+            self.get_processed_map(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES, map_type="Join Key-Map")
+            if join_key_map
+            else None
+        )
 
-        self.request_context_map = self.get_processed_map(request_context_map, False,
-                                                          SUPPORTED_REQUEST_CONTEXT_MAP_TYPES,
-                                                          map_type="Request Context Map") \
-            if request_context_map else None
+        self.request_context_map = (
+            self.get_processed_map(
+                request_context_map, False, SUPPORTED_REQUEST_CONTEXT_MAP_TYPES, map_type="Request Context Map"
+            )
+            if request_context_map
+            else None
+        )
 
     @staticmethod
-    def get_processed_map(request_map: dict, allow_none: bool,
-                          allowed_types: set, map_type: str) -> dict:
+    def get_processed_map(request_map: dict, allow_none: bool, allowed_types: set, map_type: str) -> dict:
         """Validates the parameters of the request
 
         :param request_map: The map to validate
@@ -128,7 +136,6 @@ class TectonRequest(ABC):
     """
 
     def __init__(self: Self, endpoint: str, workspace_name: str, feature_service_name: str) -> None:
-
         """Initializing parameters required to make a request to the Tecton API
 
         :param endpoint: HTTP endpoint to send request to
@@ -155,8 +162,13 @@ class AbstractGetFeaturesRequest(TectonRequest):
         additional metadata about feature values of type MetadataOptions
     """
 
-    def __init__(self: Self, endpoint: str, workspace_name: str, feature_service_name: str,
-                 metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults()) -> None:
+    def __init__(
+        self: Self,
+        endpoint: str,
+        workspace_name: str,
+        feature_service_name: str,
+        metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults(),
+    ) -> None:
         """Initializing an object with the given parameters
 
         :param endpoint: HTTP endpoint to send request to
@@ -181,8 +193,13 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"
 
-    def __init__(self: Self, workspace_name: str, feature_service_name: str, request_data: GetFeatureRequestData,
-                 metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults()) -> None:
+    def __init__(
+        self: Self,
+        workspace_name: str,
+        feature_service_name: str,
+        request_data: GetFeatureRequestData,
+        metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults(),
+    ) -> None:
         """Initializing the GetFeaturesRequest object with the given parameters
 
         :param workspace_name: Name of the workspace in which the Feature Service is defined
@@ -207,8 +224,10 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         if self.request_data.request_context_map:
             self_dict["request_context_map"] = self.request_data.request_context_map
 
-        self_dict["metadata_options"] = {option.value: True for option in
-                                         sorted(self.metadata_options, key=lambda x: x.value)} \
-            if self.metadata_options else {}
+        self_dict["metadata_options"] = (
+            {option.value: True for option in sorted(self.metadata_options, key=lambda x: x.value)}
+            if self.metadata_options
+            else {}
+        )
 
         return json.dumps({"params": self_dict})

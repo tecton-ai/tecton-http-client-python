@@ -61,8 +61,9 @@ def EMPTY_KEY_VALUE(key: str, value: str) -> str:
     return message
 
 
-def INVALID_TYPE_KEY_VALUE(map_type: str, allowed_types: Optional[tuple] = None,
-                           key: Optional[str] = None, value: Optional[str] = None) -> str:
+def INVALID_TYPE_KEY_VALUE(
+    map_type: str, allowed_types: Optional[tuple] = None, key: Optional[str] = None, value: Optional[str] = None
+) -> str:
     """Exception message for when the key or value in the map is not of a valid type
 
     :param map_type: Type of the request map (one of Join Key Map or Request Context Map)
@@ -75,6 +76,8 @@ def INVALID_TYPE_KEY_VALUE(map_type: str, allowed_types: Optional[tuple] = None,
     if key:
         return f"{map_type} keys can only be of (str) type. Given key for {map_type} is {key} of type {type(key)}"
     if value:
-        allowed_types = tuple([str(val_type).split("\'")[1] for val_type in allowed_types])
-        return f"{map_type} values can only be of types {allowed_types}. " \
-               f"Given value for {map_type} is {value} of type {type(value)}"
+        allowed_types = tuple([str(val_type).split("'")[1] for val_type in allowed_types])
+        return (
+            f"{map_type} values can only be of types {allowed_types}. "
+            f"Given value for {map_type} is {value} of type {type(value)}"
+        )
