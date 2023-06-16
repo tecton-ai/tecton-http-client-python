@@ -4,15 +4,15 @@ from typing import Self
 
 
 class TectonException(Exception):
-    """Base class for all Tecton specific exceptions"""
+    """Base class for all Tecton specific exceptions."""
 
 
 class TectonClientException(TectonException):
-    """Base Class for exceptions thrown by the Python client"""
+    """Base Class for exceptions thrown by the Python client."""
 
 
 class TectonServerException(TectonException):
-    """Base Class for exceptions representing error response from Tecton API"""
+    """Base Class for exceptions representing error response from Tecton API."""
 
 
 def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) -> str:
@@ -32,11 +32,11 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
 
 
 class InvalidParameterException(TectonClientException):
-    """Class for exceptions raised when one or more parameters passed are invalid"""
+    """Class for exceptions raised when one or more parameters passed are invalid."""
 
 
 class InvalidURLException(TectonClientException):
-    """Class for exceptions raised when the URL passed is invalid"""
+    """Class for exceptions raised when the URL passed is invalid."""
 
 
 class InvalidParameterMessage(str, Enum):
@@ -51,7 +51,7 @@ class InvalidParameterMessage(str, Enum):
 
 
 class UnsupportedTypeException(TectonClientException):
-    """Class for exceptions raised when the type of parameter passed is not supported by the client"""
+    """Class for exceptions raised when the type of parameter passed is not supported by the client."""
 
 
 def EMPTY_KEY_VALUE(key: str, value: str) -> str:
@@ -72,13 +72,13 @@ def EMPTY_KEY_VALUE(key: str, value: str) -> str:
 def INVALID_TYPE_KEY_VALUE(
     map_type: str, allowed_types: Optional[tuple] = None, key: Optional[str] = None, value: Optional[str] = None
 ) -> str:
-    """Exception message for when the key or value in the map is not of a valid type
+    """Exception message for when the key or value in the map is not of a valid type.
 
     Args:
         map_type (str): Type of the request map (one of Join Key Map or Request Context Map).
-        allowed_types (Tuple[type]): Tuple of data types allowed for the value in the map.
-        key (str): The key provided.
-        value (Any): The value provided.
+        allowed_types (Optional[tuple]): Tuple of data types allowed for the value in the map.
+        key (Optional[str]): The key provided.
+        value (Optional[str]): The value provided.
 
     Returns:
         str: The error message string.
@@ -95,16 +95,15 @@ def INVALID_TYPE_KEY_VALUE(
 
 
 class UnknownTypeException(TectonClientException):
-    """Class for exceptions raised when the type of one or more feature values in the response received is not known"""
+    """Class for exceptions raised when the type of one or more feature values in the response received is not known."""
 
     def __init__(self: Self, data_type: str) -> None:
         """Initializes the exception with the error message for when the data type of one or more feature values
-        in the response is not known
+        in the response is not known.
 
         Args:
              data_type (str): Type of the response received
         """
-
         message = (
             "Received unknown data type %s in the response. "
             "Please contact Tecton Support for assistance." % data_type
@@ -115,17 +114,17 @@ class UnknownTypeException(TectonClientException):
 
 class MismatchedTypeException(TectonClientException):
     """Class for exceptions raised when the type of one or more feature values in the response received
-    does not match the expected type"""
+    does not match the expected type.
+    """
 
     def __init__(self: Self, value: str, data_type: str) -> None:
         """Initializes the exception with the error message for when the type of one or more feature values
-        in the response received does not match the expected type
+        in the response received does not match the expected type.
 
         Args:
-            value (str): Value of the response received
-            data_type (str): Type of the response received
+            value (str): Value of the response received.
+            data_type (str): Type of the response received.
         """
-
         message = (
             "Unexpected Error occurred while parsing the feature value %s to data type %s. "
             "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
