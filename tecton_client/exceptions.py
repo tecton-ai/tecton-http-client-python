@@ -131,3 +131,27 @@ class MismatchedTypeException(TectonClientException):
         )
 
         super().__init__(message)
+
+
+class MissingResponseException(TectonClientException):
+    """Class for exceptions raised when the response received from Tecton is empty or misses feature vectors."""
+
+
+class ResponseRelatedErrorMessage(str, Enum):
+    """Error messages for response related exceptions."""
+
+    MALFORMED_FEATURE_NAME = "Feature name provided is not in expected format of 'namespace.name'."
+
+
+def MISSING_EXPECTED_METADATA(metadata: str) -> str:
+    """Exception message for when the expected metadata is missing from the response.
+
+    Args:
+        metadata (str): The metadata field.
+
+    Returns:
+        str: The error message string.
+
+    """
+    message = f"Required metadata {metadata} is missing from the response"
+    return message
