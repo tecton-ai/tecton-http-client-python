@@ -7,17 +7,24 @@ import pytest
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
+from tecton_client.data_types import FeatureValue
 from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructField
 from tecton_client.data_types import StructType
-from tecton_client.responses import Value
+from tecton_client.data_types import Value
 
 
 class TestDataTypes:
     array_type1 = ArrayType(ArrayType(IntType()))
     array_data1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    array_fields1 = [
+        {
+            "name": "array",
+            "dataType": {"type": "array", "elementType": {"type": "array", "elementType": {"type": "int64"}}},
+        }
+    ]
 
     array_data2 = [[1, 2, 3], [4, 5, None], None]
     array_fields2 = [
@@ -52,8 +59,12 @@ class TestDataTypes:
         {"name": "normal", "dataType": {"type": "int64"}},
     ]
 
-    struct_type2 = StructType([StructField("array", ArrayType(IntType())), StructField("int", IntType())])
+    struct_type2 = StructType([StructField("field1", ArrayType(IntType())), StructField("field2", IntType())])
     struct_data2 = [[1, 2, 3], 4]
+    struct_fields2 = [
+        {"name": "field1", "dataType": {"type": "array", "elementType": {"type": "int64"}}},
+        {"name": "field2", "dataType": {"type": "int64"}},
+    ]
 
     @pytest.mark.parametrize(
         "type_name,value",
@@ -115,17 +126,19 @@ class TestDataTypes:
         assert len(arraylist) == len(actual_data)
         assert arraylist == actual_data
 
-    @pytest.mark.parametrize("value_type,feature_value", [("string", "test_feature_value"), ("int64", 123),
-                                                          ("float64", 123.45), ("float32", 123.45),
-                                                          ("boolean", True)])
+    @pytest.mark.parametrize(
+        "value_type,feature_value",
+        [("string", "test_feature_value"), ("int64", 123), ("float64", 123.45), ("float32", 123.45), ("boolean", True)],
+    )
     def test_basic_feature_values(self: Self, value_type: str, feature_value: str) -> None:
         feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
         assert feature.feature_value.value[feature.value_type.__str__()] == feature_value
 
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
     def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
-        feature = FeatureValue(name="test.test_feature", value_type="struct",
-                               feature_value=feature_value, fields=fields)
+        feature = FeatureValue(
+            name="test.test_feature", value_type="struct", feature_value=feature_value, fields=fields
+        )
 
         feature_val = feature.feature_value.value[feature.value_type.__str__()]
 
@@ -145,8 +158,12 @@ class TestDataTypes:
 
     @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields1)])
     def test_feature_value_with_arrays(self: Self, feature_value: list, fields: list) -> None:
-        feature = FeatureValue(name="test.test_feature", value_type="array",
-                               feature_value=feature_value, element_type=fields[0]["dataType"]["elementType"])
+        feature = FeatureValue(
+            name="test.test_feature",
+            value_type="array",
+            feature_value=feature_value,
+            element_type=fields[0]["dataType"]["elementType"],
+        )
 
         feature_val = feature.feature_value.value[feature.value_type.__str__()]
 
