@@ -1,0 +1,44 @@
+{
+  "result": {
+    "features": [["2.46", 2.46], [1, 2, 3, 4, 5], "test"]
+  },
+  "metadata": {
+    "features": [
+      {
+        "name": "test.output_struct",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "string_field",
+              "dataType": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "float64_field",
+              "dataType": {
+                "type": "float64"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name":"test.output_array",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
+          }
+        }
+      },
+      {
+        "name":"test.output_string",
+        "dataType": {
+          "type": "string"
+        }
+      }
+    ]
+  }
+}

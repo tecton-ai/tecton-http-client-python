@@ -1,0 +1,97 @@
+{
+  "array_type1": ArrayType(ArrayType(IntType())),
+  "array_data1": [
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6
+    ],
+    [
+      7,
+      8,
+      9
+    ]
+  ],
+  "array_fields1": [
+    {
+      "name": "array",
+      "dataType": {
+        "type": "array",
+        "elementType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
+          }
+        }
+      }
+    }
+  ],
+  "struct_type1": StructType([
+  StructField(
+  "nested_struct",
+  StructType(
+  [
+    StructField(
+    "field1",
+    StringType()),
+    StructField(
+    "field2",
+    FloatType())
+  ]
+  )),
+  StructField(
+  "nested_array",
+  ArrayType(BoolType())),
+  StructField(
+  "normal",
+  IntType())
+]),
+"struct_data1": [["test_string", 123.45], [True, False], 123],
+"struct_fields1": [
+{
+"name": "nested_struct",
+"dataType": {
+"type": "struct",
+"fields": [
+{"name": "field1", "dataType": {"type": "string"}},
+{"name": "field2", "dataType": {"type": "float64"}}
+]
+}
+},
+{
+"name": "nested_array",
+"dataType": {
+"type": "array",
+"elementType": {"type": "boolean"}
+}
+},
+{
+"name": "normal",
+"dataType": {
+"type": "int64"
+}
+}
+],
+"struct_type2": StructType([StructField('field1', ArrayType(IntType())), StructField('field2', IntType())]),
+"struct_data2": [[1, 2, 3], 4],
+"struct_fields2": [
+{
+"name": "field1",
+"dataType": {
+"type": "array",
+"elementType": {"type": "int64"}
+}
+},
+{
+"name": "field2",
+"dataType": {
+"type": "int64"
+}
+}
+]
+}

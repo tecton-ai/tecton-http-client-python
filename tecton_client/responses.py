@@ -190,13 +190,16 @@ class AbstractTectonResponse(ABC):
     """Base class for Response objects from Tecton API calls."""
 
     @staticmethod
-    def validate_response(feature_vector: list, feature_metadata: list):
-        """Validates the response from the Tecton API call
+    def validate_response(feature_vector: list, feature_metadata: list) -> None:
+        """Validates the response from the Tecton API call.
 
-        :param feature_vector: List of features returned
-        :param feature_metadata: List of metadata for each feature
+        Args:
+            feature_vector (list): List of features returned.
+            feature_metadata (list): List of metadata for each feature.
+
+        Raises:
+            MissingResponseException: If the feature vector is empty or if the metadata is missing name or data type.
         """
-
         if not feature_vector:
             raise MissingResponseException(ResponseRelatedErrorMessage.EMPTY_FEATURE_VECTOR)
 
@@ -211,16 +214,16 @@ class GetFeaturesResponse(AbstractTectonResponse):
     """Response object for GetFeatures API call.
 
     Attributes:
-        feature_values: List of FeatureValue objects, one for each feature in the feature vector.
-        slo_info: (Optional) SloInformation object containing information about the feature vector's SLO.
+        feature_values (List[FeatureValue]): List of FeatureValue objects, one for each feature in the feature vector.
+        slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector's SLO.
     """
 
     def __init__(self: Self, response: dict) -> None:
-        """Initializes the object with data from the response
+        """Initializes the object with data from the response.
 
-        :param response: JSON response from the GetFeatures API call parsed to dict
+        Args:
+            response (dict): JSON response from the GetFeatures API call parsed to dict.
         """
-
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
         self.feature_values: List[FeatureValue] = []
@@ -254,6 +257,11 @@ class GetFeaturesResponse(AbstractTectonResponse):
             )
 
     def get_feature_values_dict(self: Self) -> dict:
+        """Returns a dictionary of feature values.
+
+        Returns:
+            Dictionary with feature names as keys and their corresponding values.
+        """
         feature_values_dict = {
             f"{feature.feature_namespace}.{feature.feature_name}": feature.feature_value
             for feature in self.feature_values

@@ -1,0 +1,29 @@
+{
+  "result": {
+    "features": [["2.46", 2.46]]
+  },
+  "metadata": {
+    "features": [
+      {
+        "name": "test.output_struct",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "string_field",
+              "dataType": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "float64_field",
+              "dataType": {
+                "type": "float64"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
