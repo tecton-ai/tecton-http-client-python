@@ -69,8 +69,9 @@ def EMPTY_KEY_VALUE(key: str, value: str) -> str:
     return message
 
 
-def INVALID_TYPE_KEY_VALUE(map_type: str, allowed_types: Optional[tuple] = None,
-                           key: Optional[str] = None, value: Optional[str] = None) -> str:
+def INVALID_TYPE_KEY_VALUE(
+    map_type: str, allowed_types: Optional[tuple] = None, key: Optional[str] = None, value: Optional[str] = None
+) -> str:
     """Exception message for when the key or value in the map is not of a valid type.
 
     Args:
@@ -86,9 +87,11 @@ def INVALID_TYPE_KEY_VALUE(map_type: str, allowed_types: Optional[tuple] = None,
     if key:
         return f"{map_type} keys can only be of (str) type. Given key for {map_type} is {key} of type {type(key)}"
     if value:
-        allowed_types = tuple([str(val_type).split("\'")[1] for val_type in allowed_types])
-        return f"{map_type} values can only be of types {allowed_types}. " \
-               f"Given value for {map_type} is {value} of type {type(value)}"
+        allowed_types = tuple([str(val_type).split("'")[1] for val_type in allowed_types])
+        return (
+            f"{map_type} values can only be of types {allowed_types}. "
+            f"Given value for {map_type} is {value} of type {type(value)}"
+        )
 
 
 class UnknownTypeException(TectonClientException):
@@ -100,10 +103,12 @@ class UnknownTypeException(TectonClientException):
 
         Args:
              data_type (str): Type of the response received
-         """
+        """
 
-        message = "Received unknown data type %s in the response. " \
-                  "Please contact Tecton Support for assistance." % data_type
+        message = (
+            "Received unknown data type %s in the response. "
+            "Please contact Tecton Support for assistance." % data_type
+        )
 
         super().__init__(message)
 
@@ -121,7 +126,9 @@ class MismatchedTypeException(TectonClientException):
             data_type (str): Type of the response received
         """
 
-        message = "Unexpected Error occurred while parsing the feature value %s to data type %s. " \
-                  "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
+        message = (
+            "Unexpected Error occurred while parsing the feature value %s to data type %s. "
+            "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
+        )
 
         super().__init__(message)

@@ -21,9 +21,9 @@ class TectonHttpClient:
     """Basic HTTP Client to send and receive requests to a given URL."""
 
     class headers(Enum):
-        AUTHORIZATION = 'Authorization'
-        ACCEPT = 'Accept'
-        CONTENT_TYPE = 'Content-Type'
+        AUTHORIZATION = "Authorization"
+        ACCEPT = "Accept"
+        CONTENT_TYPE = "Content-Type"
 
     def __init__(self: Self, url: str, api_key: str, client: Optional[httpx.AsyncClient] = None) -> None:
         """Initialize the parameters required to make HTTP requests.
@@ -37,8 +37,7 @@ class TectonHttpClient:
         self.url = self.validate_url(url)
         self.api_key = self.validate_key(api_key)
 
-        self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value,
-                                 api_key=f"{API_PREFIX} {self.api_key}")
+        self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self.api_key}")
 
         self.client: httpx.AsyncClient = client or httpx.AsyncClient()
         self.is_client_closed: bool = False
@@ -80,8 +79,9 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            raise TectonServerException(INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase,
-                                                                response.json()['message']))
+            raise TectonServerException(
+                INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
+            )
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:

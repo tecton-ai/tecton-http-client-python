@@ -58,6 +58,7 @@ class ArrayType(DataType):
     Attributes:
         element_type (DataType): The datatype of the elements in the array.
     """
+
     def __init__(self: Self, element_type: DataType) -> None:
         self._element_type = element_type
 
@@ -150,8 +151,9 @@ class Value:
             StringType: lambda x: x,
             BoolType: bool,
             ArrayType: lambda x: [Value(value_type.element_type, value) for value in x],
-            StructType: lambda x: {field.name: Value(field.data_type, x[i])
-                                   for i, field in enumerate(value_type.fields)}
+            StructType: lambda x: {
+                field.name: Value(field.data_type, x[i]) for i, field in enumerate(value_type.fields)
+            },
         }
 
         if value_type.__class__ in type_conversion_map:
@@ -177,13 +179,16 @@ class FeatureValue:
         effective_time (datetime): The effective time of the feature value.
     """
 
-    def __init__(self: Self, name: str,
-                 value_type: str,
-                 feature_value: Union[str, None, list],
-                 effective_time: Optional[str] = None,
-                 element_type: Optional[dict] = None,
-                 fields: Optional[list] = None,
-                 feature_status: Optional[str] = None) -> None:
+    def __init__(
+        self: Self,
+        name: str,
+        value_type: str,
+        feature_value: Union[str, None, list],
+        effective_time: Optional[str] = None,
+        element_type: Optional[dict] = None,
+        fields: Optional[list] = None,
+        feature_status: Optional[str] = None,
+    ) -> None:
         """Initialize a FeatureValue object.
 
         Args:
@@ -207,8 +212,9 @@ class FeatureValue:
         self.feature_value: Value = Value(self.value_type, feature_value)
 
     @staticmethod
-    def parse_value_type(value_type: str, element_type: Optional[dict] = None,
-                         fields: Optional[list] = None) -> DataType:
+    def parse_value_type(
+        value_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None
+    ) -> DataType:
         """Parse the value type of the feature value.
 
         Args:
@@ -223,31 +229,37 @@ class FeatureValue:
             UnknownTypeException: If the value_type is unknown or unsupported.
         """
 
-        if value_type == 'int64':
+        if value_type == "int64":
             return IntType()
-        elif value_type == 'float64' or value_type == 'float32':
+        elif value_type == "float64" or value_type == "float32":
             return FloatType()
-        elif value_type == 'string':
+        elif value_type == "string":
             return StringType()
-        elif value_type == 'boolean':
+        elif value_type == "boolean":
             return BoolType()
-        elif value_type == 'array':
-            inner_value_type = element_type['type']
-            inner_fields = element_type['fields'] if 'fields' in element_type else None
-            inner_type = element_type['elementType'] if 'elementType' in element_type else None
+        elif value_type == "array":
+            inner_value_type = element_type["type"]
+            inner_fields = element_type["fields"] if "fields" in element_type else None
+            inner_type = element_type["elementType"] if "elementType" in element_type else None
 
-            return ArrayType(FeatureValue.parse_value_type(value_type=inner_value_type, element_type=inner_type,
-                                                           fields=inner_fields))
-        elif value_type == 'struct':
+            return ArrayType(
+                FeatureValue.parse_value_type(value_type=inner_value_type, element_type=inner_type, fields=inner_fields)
+            )
+        elif value_type == "struct":
             fields_list = []
             for field in fields:
-                inner_value_type = field['dataType']['type']
-                inner_fields = field['dataType']['fields'] if 'fields' in field['dataType'] else None
-                inner_type = field['dataType']['elementType'] if 'elementType' in field['dataType'] else None
+                inner_value_type = field["dataType"]["type"]
+                inner_fields = field["dataType"]["fields"] if "fields" in field["dataType"] else None
+                inner_type = field["dataType"]["elementType"] if "elementType" in field["dataType"] else None
 
-                fields_list.append(StructField(field['name'], FeatureValue.parse_value_type(value_type=inner_value_type,
-                                                                                            element_type=inner_type,
-                                                                                            fields=inner_fields)))
+                fields_list.append(
+                    StructField(
+                        field["name"],
+                        FeatureValue.parse_value_type(
+                            value_type=inner_value_type, element_type=inner_type, fields=inner_fields
+                        ),
+                    )
+                )
             return StructType(fields_list)
         else:
             raise UnknownTypeException(value_type.__str__())
