@@ -55,10 +55,6 @@ repos:
     hooks:
       - id: black
         args: [--line-length=120]
-#  - repo: https://github.com/terrencepreilly/darglint
-#    rev: v1.8.1
-#    hooks:
-#      - id: darglint
   - repo: https://github.com/pycqa/pydocstyle
     rev: 6.3.0  # pick a git hash / tag to point to
     hooks:
