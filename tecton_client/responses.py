@@ -153,3 +153,99 @@ class FeatureValue:
         self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
         self.data_type = get_data_type(data_type, element_type, fields)
         self.feature_value = Value(self.data_type, feature_value).value
+
+class SloInformation:
+    def __init__(self: Self, slo_information: dict):
+        self.slo_eligible = slo_information["sloEligible"] if "sloEligible" in slo_information else None
+        self.server_time_seconds = (
+            slo_information["serverTimeSeconds"] if "serverTimeSeconds" in slo_information else None
+        )
+        self.slo_server_time_seconds = (
+            slo_information["sloServerTimeSeconds"] if "sloServerTimeSeconds" in slo_information else None
+        )
+        self.dynamoDB_response_size_bytes = (
+            slo_information["dynamodbResponseSizeBytes"] if "dynamodbResponseSizeBytes" in slo_information else None
+        )
+        self.store_max_latency = slo_information["storeMaxLatency"] if "storeMaxLatency" in slo_information else None
+        self.store_response_size_bytes = (
+            slo_information["storeResponseSizeBytes"] if "storeResponseSizeBytes" in slo_information else None
+        )
+
+    def to_dict(self: Self) -> dict:
+        return {k: v for k, v in vars(self).items() if v is not None}
+
+
+class AbstractTectonResponse(ABC):
+    """Base class for Response objects from Tecton API calls."""
+
+    @staticmethod
+    def validate_response(feature_vector: list, feature_metadata: list):
+        """Validates the response from the Tecton API call
+
+        :param feature_vector: List of features returned
+        :param feature_metadata: List of metadata for each feature
+        """
+
+        if not feature_vector:
+            raise MissingResponseException(ResponseRelatedErrorMessage.EMPTY_FEATURE_VECTOR)
+
+        for metadata in feature_metadata:
+            if "name" not in metadata:
+                raise MissingResponseException(MISSING_EXPECTED_METADATA("name"))
+            if "dataType" not in metadata or "type" not in metadata["dataType"]:
+                raise MissingResponseException(MISSING_EXPECTED_METADATA("data type"))
+
+
+class GetFeaturesResponse(AbstractTectonResponse):
+    """Response object for GetFeatures API call.
+
+    Attributes:
+        feature_values: List of FeatureValue objects, one for each feature in the feature vector.
+        slo_info: (Optional) SloInformation object containing information about the feature vector's SLO.
+    """
+
+    def __init__(self: Self, response: dict) -> None:
+        """Initializes the object with data from the response
+
+        :param response: JSON response from the GetFeatures API call parsed to dict
+        """
+
+        feature_vector: list = response["result"]["features"]
+        feature_metadata: List[dict] = response["metadata"]["features"]
+        self.feature_values: List[FeatureValue] = []
+
+        self.validate_response(feature_vector, feature_metadata)
+
+        for i in range(len(feature_vector)):
+            element_type = (
+                feature_metadata[i]["dataType"]["elementType"]
+                if "elementType" in feature_metadata[i]["dataType"]
+                else None
+            )
+            feature_status = feature_metadata[i]["status"] if "status" in feature_metadata[i] else None
+            effective_time = feature_metadata[i]["effectiveTime"] if "effectiveTime" in feature_metadata[i] else None
+            fields = feature_metadata[i]["dataType"]["fields"] if "fields" in feature_metadata[i]["dataType"] else None
+
+            feature = FeatureValue(
+                name=feature_metadata[i]["name"],
+                value_type=feature_metadata[i]["dataType"]["type"],
+                element_type=element_type,
+                effective_time=effective_time,
+                feature_status=feature_status,
+                feature_value=feature_vector[i],
+                fields=fields,
+            )
+
+            self.feature_values.append(feature)
+
+            self.slo_info: Optional[SloInformation] = (
+                SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
+            )
+
+    def get_feature_values_dict(self: Self) -> dict:
+        feature_values_dict = {
+            f"{feature.feature_namespace}.{feature.feature_name}": feature.feature_value
+            for feature in self.feature_values
+        }
+
+        return feature_values_dict
