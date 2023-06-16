@@ -19,16 +19,23 @@ class TestDataTypes:
     array_type1 = ArrayType(ArrayType(IntType()))
     array_data1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 
-    struct_type1 = StructType([StructField("nested_struct", StructType([StructField("field1", StringType()),
-                                                                        StructField("field2", FloatType())])),
-                               StructField("nested_array", ArrayType(BoolType())), StructField("normal", IntType())])
+    struct_type1 = StructType(
+        [
+            StructField(
+                "nested_struct", StructType([StructField("field1", StringType()), StructField("field2", FloatType())])
+            ),
+            StructField("nested_array", ArrayType(BoolType())),
+            StructField("normal", IntType()),
+        ]
+    )
     struct_data1 = [["test_string", 123.45], [True, False], 123]
 
-    struct_type2 = StructType([StructField('array', ArrayType(IntType())), StructField('int', IntType())])
+    struct_type2 = StructType([StructField("array", ArrayType(IntType())), StructField("int", IntType())])
     struct_data2 = [[1, 2, 3], 4]
 
-    @pytest.mark.parametrize("type_name,value", [(StringType(), "test_string"), (IntType(), 123),
-                                                 (FloatType(), 123.45), (BoolType(), True)])
+    @pytest.mark.parametrize(
+        "type_name,value", [(StringType(), "test_string"), (IntType(), 123), (FloatType(), 123.45), (BoolType(), True)]
+    )
     def test_value(self: Self, type_name: DataType, value: Union[str, float, int, bool]) -> None:
         test_var = Value(type_name, value)
         assert test_var.value[str(type_name.__str__())] == value
@@ -72,7 +79,6 @@ class TestDataTypes:
 
     @pytest.mark.parametrize("type_name,actual_data", [(struct_type1, struct_data1), (struct_type2, struct_data2)])
     def test_nested_struct(self: Self, type_name: StructType, actual_data: list) -> None:
-
         test_var = Value(type_name, actual_data)
 
         datadict = test_var.value[type_name.__str__()]

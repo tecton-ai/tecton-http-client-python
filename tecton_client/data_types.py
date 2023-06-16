@@ -148,8 +148,9 @@ class Value:
             StringType: lambda x: x,
             BoolType: bool,
             ArrayType: lambda x: [Value(value_type.element_type, value) for value in x],
-            StructType: lambda x: {field.name: Value(field.data_type, x[i])
-                                   for i, field in enumerate(value_type.fields)}
+            StructType: lambda x: {
+                field.name: Value(field.data_type, x[i]) for i, field in enumerate(value_type.fields)
+            },
         }
 
         if value_type.__class__ in type_conversion_map:
