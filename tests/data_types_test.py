@@ -7,7 +7,6 @@ import pytest
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
-from tecton_client.data_types import FeatureValue
 from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
@@ -16,7 +15,6 @@ from tecton_client.data_types import StructType
 from tecton_client.exceptions import MissingResponseException
 from tecton_client.responses import FeatureValue
 from tecton_client.responses import Value
-
 
 class TestDataTypes:
     array_type1 = ArrayType(ArrayType(IntType()))
@@ -196,4 +194,4 @@ class TestDataTypes:
                 feature_value=feature_value,
                 element_type=fields[0]["dataType"]["elementType"],
             )
-            
+
