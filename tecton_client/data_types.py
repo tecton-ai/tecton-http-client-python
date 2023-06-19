@@ -1,9 +1,8 @@
 import abc
+from typing import List
 from typing import Optional
 from typing import Self
-from typing import Union
 
-from tecton_client.exceptions import MismatchedTypeException
 from tecton_client.exceptions import MISSING_EXPECTED_METADATA
 from tecton_client.exceptions import MissingResponseException
 from tecton_client.exceptions import UnknownTypeException

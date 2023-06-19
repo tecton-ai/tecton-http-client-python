@@ -16,6 +16,7 @@ from tecton_client.exceptions import MissingResponseException
 from tecton_client.responses import FeatureValue
 from tecton_client.responses import Value
 
+
 class TestDataTypes:
     array_type1 = ArrayType(ArrayType(IntType()))
     array_data1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
@@ -158,6 +159,11 @@ class TestDataTypes:
         with pytest.raises(MissingResponseException):
             FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
 
+    @pytest.mark.parametrize("value_type,feature_value", [("int64", "123")])
+    def test_int_feature_value(self: Self, value_type: str, feature_value: str) -> None:
+        feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+        assert feature.feature_value.value[feature.value_type.__str__()] == int(feature_value)
+
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
     def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
         feature = FeatureValue(name="test.test_feature", data_type="struct", feature_value=feature_value, fields=fields)
@@ -194,4 +200,3 @@ class TestDataTypes:
                 feature_value=feature_value,
                 element_type=fields[0]["dataType"]["elementType"],
             )
-
