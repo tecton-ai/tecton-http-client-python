@@ -1,10 +1,12 @@
 import abc
-from typing import List
-from datetime import datetime
-from enum import Enum
-from typing import List
 from typing import Optional
 from typing import Self
+from typing import Union
+
+from tecton_client.exceptions import MismatchedTypeException
+from tecton_client.exceptions import MISSING_EXPECTED_METADATA
+from tecton_client.exceptions import MissingResponseException
+from tecton_client.exceptions import UnknownTypeException
 
 
 class DataType(abc.ABC):
@@ -132,13 +134,11 @@ class StructType(DataType):
         return f"Struct({fields_string})"
 
 
-def parse_value_type(
-        value_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None
-) -> DataType:
+def parse_data_type(data_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None) -> DataType:
     """Parse the value type of the feature value.
 
     Args:
-        value_type (str): The type of the feature value.
+        data_type (str): The type of the feature value.
         element_type (Optional[dict]): The type of the elements in the array, if value_type is ArrayType.
         fields (Optional[list]): The fields of the struct, if value_type is StructType.
 
@@ -149,31 +149,29 @@ def parse_value_type(
         MissingResponseException: If some expected metadata is missing in the response.
         UnknownTypeException: If the value_type is unknown or unsupported.
     """
-    if not value_type:
+    if not data_type:
         raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
 
-    value_type = value_type.lower()
+    data_type = data_type.lower()
 
-    if value_type == "int64":
+    if data_type == "int64":
         return IntType()
-    elif value_type == "float64" or value_type == "float32":
+    elif data_type == "float64" or data_type == "float32":
         return FloatType()
-    elif value_type == "string":
+    elif data_type == "string":
         return StringType()
-    elif value_type == "boolean":
+    elif data_type == "boolean":
         return BoolType()
-    elif value_type == "array":
+    elif data_type == "array":
         if not element_type:
             raise MissingResponseException(MISSING_EXPECTED_METADATA("elementType for ArrayType"))
 
-        inner_value_type = element_type["type"] if "type" in element_type else None
+        inner_data_type = element_type["type"] if "type" in element_type else None
         inner_fields = element_type["fields"] if "fields" in element_type else None
         inner_type = element_type["elementType"] if "elementType" in element_type else None
 
-        return ArrayType(
-            parse_value_type(value_type=inner_value_type, element_type=inner_type, fields=inner_fields)
-        )
-    elif value_type == "struct":
+        return ArrayType(parse_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields))
+    elif data_type == "struct":
         if not fields:
             raise MissingResponseException(MISSING_EXPECTED_METADATA("fields for StructType"))
 
@@ -182,18 +180,16 @@ def parse_value_type(
             if "dataType" not in field or not field["dataType"]:
                 raise MissingResponseException(MISSING_EXPECTED_METADATA("dataType for StructType"))
 
-            inner_value_type = field["dataType"]["type"] if "type" in field["dataType"] else None
+            inner_data_type = field["dataType"]["type"] if "type" in field["dataType"] else None
             inner_fields = field["dataType"]["fields"] if "fields" in field["dataType"] else None
             inner_type = field["dataType"]["elementType"] if "elementType" in field["dataType"] else None
 
             fields_list.append(
                 StructField(
                     field["name"],
-                    parse_value_type(
-                        value_type=inner_value_type, element_type=inner_type, fields=inner_fields
-                    ),
+                    parse_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields),
                 )
             )
         return StructType(fields_list)
     else:
-        raise UnknownTypeException(value_type.__str__())
+        raise UnknownTypeException(data_type.__str__())
