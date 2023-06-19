@@ -1,10 +1,6 @@
 import abc
 from typing import List
 from typing import Self
-from typing import Union
-
-from tecton_client.exceptions import MismatchedTypeException
-from tecton_client.exceptions import UnknownTypeException
 
 
 class DataType(abc.ABC):
@@ -74,7 +70,7 @@ class StructField:
 
     Attributes:
         name (str): Name of the field
-        data_type (str): DataType of the field
+        _data_type (str): DataType of the field
     """
 
     def __init__(self: Self, name: str, data_type: DataType) -> None:
@@ -118,47 +114,3 @@ class StructType(DataType):
     def __str__(self: Self) -> str:
         fields_string = ", ".join(str(field) for field in self._fields)
         return f"Struct({fields_string})"
-
-
-class Value:
-    """
-    Represents an object containing a feature value with a specific type.
-
-    Attributes:
-        value (dict): A dictionary storing the value of the feature converted to the required type.
-    """
-
-    def __init__(self: Self, value_type: DataType, feature_value: Union[str, None, list]) -> None:
-        """Set the value of the feature in the specified type.
-
-        Args:
-            value_type (DataType): The type of the feature value.
-            feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified
-            type.
-
-        Raises:
-            MismatchedTypeException: If the feature value cannot be converted to the specified type.
-            UnknownTypeException: If the specified type is not supported.
-        """
-        self.value = {}
-
-        type_conversion_map = {
-            IntType: int,
-            FloatType: float,
-            StringType: lambda x: x,
-            BoolType: bool,
-            ArrayType: lambda x: [Value(value_type.element_type, value) for value in x],
-            StructType: lambda x: {
-                field.name: Value(field.data_type, x[i]) for i, field in enumerate(value_type.fields)
-            },
-        }
-
-        if value_type.__class__ in type_conversion_map:
-            convert = type_conversion_map[value_type.__class__]
-
-            try:
-                self.value[value_type.__str__()] = None if feature_value is None else convert(feature_value)
-            except Exception:
-                raise MismatchedTypeException(feature_value, value_type.__str__())
-        else:
-            raise UnknownTypeException(value_type.__str__())
