@@ -12,8 +12,9 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructField
 from tecton_client.data_types import StructType
-from tecton_client.data_types import Value
 from tecton_client.responses import FeatureValue
+from tecton_client.responses import Value
+
 
 class TestDataTypes:
     array_type1 = ArrayType(ArrayType(IntType()))
@@ -132,6 +133,11 @@ class TestDataTypes:
     def test_basic_feature_values(self: Self, value_type: str, feature_value: str) -> None:
         feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
         assert feature.feature_value.value[feature.value_type.__str__()] == feature_value
+
+    @pytest.mark.parametrize("value_type,feature_value", [("int64", "123")])
+    def test_int_feature_value(self: Self, value_type: str, feature_value: str) -> None:
+        feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+        assert feature.feature_value.value[feature.value_type.__str__()] == int(feature_value)
 
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
     def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
