@@ -1,5 +1,7 @@
+from abc import ABC
 from datetime import datetime
 from enum import Enum
+from typing import List
 from typing import Optional
 from typing import Self
 from typing import Union
@@ -14,17 +16,6 @@ from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
 
-
-from abc import ABC
-from typing import List
-from typing import Optional
-from typing import Self
-
-from tecton_client.exceptions import MISSING_EXPECTED_METADATA
-from tecton_client.exceptions import MissingResponseException
-from tecton_client.exceptions import ResponseRelatedErrorMessage
-from tecton_client.utils.data_types import FeatureValue
-from tecton_client.utils.data_types import SloInformation
 
 class Value:
     """Represents an object containing a feature value with a specific type."""
@@ -166,7 +157,23 @@ class FeatureValue:
         self.feature_value = Value(self.data_type, feature_value).value
 
 class SloInformation:
-    def __init__(self: Self, slo_information: dict):
+    """Class encapsulating all the data for a SLO information returned from a GetFeatures API call.
+
+    Attributes:
+        slo_eligible (bool): Whether the feature is SLO eligible.
+        server_time_seconds (float): The server time in seconds.
+        slo_server_time_seconds (float): The SLO server time in seconds.
+        dynamoDB_response_size_bytes (int): The DynamoDB response size in bytes.
+        store_max_latency (float): The store max latency.
+        store_response_size_bytes (int): The store response size in bytes.
+    """
+
+    def __init__(self: Self, slo_information: dict) -> None:
+        """Initialize a SloInformation object.
+
+        Args:
+            slo_information (dict): The SLO information dictionary received from the server.
+        """
         self.slo_eligible = slo_information["sloEligible"] if "sloEligible" in slo_information else None
         self.server_time_seconds = (
             slo_information["serverTimeSeconds"] if "serverTimeSeconds" in slo_information else None
@@ -183,6 +190,7 @@ class SloInformation:
         )
 
     def to_dict(self: Self) -> dict:
+        """Returns the SloInformation object as a dictionary."""
         return {k: v for k, v in vars(self).items() if v is not None}
 
 
@@ -198,16 +206,16 @@ class AbstractTectonResponse(ABC):
             feature_metadata (list): List of metadata for each feature.
 
         Raises:
-            MissingResponseException: If the feature vector is empty or if the metadata is missing name or data type.
+            TectonClientException: If the feature vector is empty or if the metadata is missing name or data type.
         """
         if not feature_vector:
-            raise MissingResponseException(ResponseRelatedErrorMessage.EMPTY_FEATURE_VECTOR)
+            raise TectonClientException(ResponseRelatedErrorMessage.EMPTY_FEATURE_VECTOR)
 
         for metadata in feature_metadata:
             if "name" not in metadata:
-                raise MissingResponseException(MISSING_EXPECTED_METADATA("name"))
+                raise TectonClientException(MISSING_EXPECTED_METADATA("name"))
             if "dataType" not in metadata or "type" not in metadata["dataType"]:
-                raise MissingResponseException(MISSING_EXPECTED_METADATA("data type"))
+                raise TectonClientException(MISSING_EXPECTED_METADATA("data type"))
 
 
 class GetFeaturesResponse(AbstractTectonResponse):
