@@ -1,18 +1,13 @@
 from datetime import datetime
 from enum import Enum
-from typing import Self, Optional
+from typing import Optional
+from typing import Self
 from typing import Union
 
-from tecton_client.data_types import ArrayType, parse_value_type
-from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
-from tecton_client.data_types import FloatType
-from tecton_client.data_types import IntType
-from tecton_client.data_types import StringType
-from tecton_client.data_types import StructType
-from tecton_client.exceptions import MismatchedTypeException, ResponseRelatedErrorMessage, MissingResponseException
-from tecton_client.exceptions import UnknownTypeException
-
+from tecton_client.data_types import parse_data_type
+from tecton_client.exceptions import MissingResponseException
+from tecton_client.exceptions import ResponseRelatedErrorMessage
 
 class Value:
     """Represents an object containing a feature value with a specific type."""
@@ -100,14 +95,14 @@ class FeatureValue:
     """
 
     def __init__(
-            self: Self,
-            name: str,
-            value_type: str,
-            feature_value: Union[str, None, list],
-            effective_time: Optional[str] = None,
-            element_type: Optional[dict] = None,
-            fields: Optional[list] = None,
-            feature_status: Optional[str] = None,
+        self: Self,
+        name: str,
+        value_type: str,
+        feature_value: Union[str, None, list],
+        effective_time: Optional[str] = None,
+        element_type: Optional[dict] = None,
+        fields: Optional[list] = None,
+        feature_status: Optional[str] = None,
     ) -> None:
         """Initialize a FeatureValue object.
 
@@ -119,7 +114,7 @@ class FeatureValue:
             element_type (Optional[dict]): Dictionary that indicates the type of the elements in the array,
                 present if value_type is ArrayType.
             fields (Optional[list]): List of the fields of the struct, if value_type is StructType.
-            feature_status (Optional[FeatureStatus]): The status string of the feature value.
+            feature_status (Optional[str]): The status string of the feature value.
 
         Raises:
             MissingResponseException: If the name of the feature is not in the format of <namespace>.<feature_name>.
@@ -131,6 +126,5 @@ class FeatureValue:
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
         self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
-
-        self.value_type: DataType = parse_value_type(value_type, element_type, fields)
+        self.value_type: DataType = parse_data_type(value_type, element_type, fields)
         self.feature_value: Value = Value(self.value_type, feature_value)
