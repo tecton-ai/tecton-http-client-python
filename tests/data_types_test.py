@@ -7,14 +7,13 @@ import pytest
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
-from tecton_client.data_types import FeatureValue
 from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructField
 from tecton_client.data_types import StructType
 from tecton_client.data_types import Value
-
+from tecton_client.responses import FeatureValue
 
 class TestDataTypes:
     array_type1 = ArrayType(ArrayType(IntType()))
@@ -148,10 +147,10 @@ class TestDataTypes:
 
             if type(datatype) == StructType:
                 result_dict = {field.name: feature_value[i][j] for j, field in enumerate(datatype.fields)}
-                self.assert_struct(feature_val[key], result_dict, datatype)
+                self.assert_struct(feature_val[key], result_dict)
 
             elif type(datatype) == ArrayType:
-                self.assert_array(feature_val[key], feature_value[i], datatype)
+                self.assert_array(feature_val[key], feature_value[i])
 
             else:
                 assert feature_val[key].value[datatype.__str__()] == feature_value[i]
@@ -168,4 +167,4 @@ class TestDataTypes:
         feature_val = feature.feature_value.value[feature.value_type.__str__()]
 
         for i in range(len(feature_val)):
-            self.assert_array(feature_val[i], feature_value[i], feature.value_type.element_type)
+            self.assert_array(feature_val[i], feature_value[i])
