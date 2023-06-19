@@ -3,8 +3,8 @@ from typing import Self
 import pytest
 from pytest_httpx import HTTPXMock
 
-from tecton_client.exceptions import InvalidParameterException
-from tecton_client.exceptions import InvalidURLException
+from tecton_client.exceptions import InvalidParameterError
+from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.http_client import TectonHttpClient
 
@@ -77,12 +77,12 @@ class TestHttpClient:
 
     @pytest.mark.parametrize("url", ["", None, "###", "somesite"])
     def test_invalid_url(self: Self, url: object) -> None:
-        with pytest.raises(InvalidURLException):
+        with pytest.raises(InvalidURLError):
             TectonHttpClient(url, "1234")
 
     @pytest.mark.parametrize("key", ["", None])
     def test_empty_or_none_key(self: Self, key: object) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             TectonHttpClient(self.URL, key)
 
     def test_invalid_api_key(self: Self, httpx_mock: HTTPXMock) -> None:

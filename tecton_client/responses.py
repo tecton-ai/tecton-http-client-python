@@ -15,8 +15,10 @@ from tecton_client.data_types import StructType
 from tecton_client.exceptions import MismatchedTypeException
 from tecton_client.exceptions import MISSING_EXPECTED_METADATA
 from tecton_client.exceptions import MissingResponseException
+from tecton_client.exceptions import MISMATCHED_TYPE_ERROR
 from tecton_client.exceptions import ResponseRelatedErrorMessage
-from tecton_client.exceptions import UnknownTypeException
+from tecton_client.exceptions import TectonClientException
+from tecton_client.exceptions import UNKNOWN_TYPE_ERROR
 
 
 class Value:
@@ -31,8 +33,8 @@ class Value:
                 type.
 
         Raises:
-            MismatchedTypeException: If the feature value cannot be converted to the specified type.
-            UnknownTypeException: If the specified type is not supported.
+            TectonClientException: If the feature value cannot be converted to the specified type or
+                if the specified type is not supported.
         """
         self._value = {}
         self._data_type = data_type
@@ -54,9 +56,9 @@ class Value:
             try:
                 self._value[data_type.__str__()] = None if feature_value is None else convert(feature_value)
             except Exception:
-                raise MismatchedTypeException(feature_value, data_type.__str__())
+                raise TectonClientException(MISMATCHED_TYPE_ERROR(feature_value, data_type.__str__()))
         else:
-            raise UnknownTypeException(data_type.__str__())
+            raise TectonClientException(UNKNOWN_TYPE_ERROR(data_type.__str__()))
 
     @property
     def value(self: Self) -> Union[int, float, str, bool, list, dict, None]:
@@ -133,12 +135,12 @@ class FeatureValue:
             feature_status (Optional[str]): The status string of the feature value.
 
         Raises:
-            MissingResponseException: If the name of the feature is not in the format of <namespace>.<feature_name>.
+            TectonClientException: If the name of the feature is not in the format of <namespace>.<feature_name>.
         """
         try:
             self.feature_namespace, self.feature_name = name.split(".")
         except ValueError:
-            raise MissingResponseException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
+            raise TectonClientException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
 
         if not data_type:
             raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))

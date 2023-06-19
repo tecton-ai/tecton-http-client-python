@@ -4,8 +4,8 @@ from typing import Optional
 from typing import Self
 
 from tecton_client.exceptions import MISSING_EXPECTED_METADATA
-from tecton_client.exceptions import MissingResponseException
-from tecton_client.exceptions import UnknownTypeException
+from tecton_client.exceptions import TectonClientException
+from tecton_client.exceptions import UNKNOWN_TYPE_ERROR
 
 from tecton_client.exceptions import MISSING_EXPECTED_METADATA
 from tecton_client.exceptions import MissingResponseException
@@ -192,6 +192,6 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
         try:
             return type_mapping[data_type]()
         except Exception:
-            raise MissingResponseException(MISSING_EXPECTED_METADATA(f"for given data type {data_type}"))
+            raise TectonClientException(MISSING_EXPECTED_METADATA(f"for given data type {data_type}"))
     else:
-        raise UnknownTypeException(data_type.__str__())
+        raise TectonClientException(UNKNOWN_TYPE_ERROR(data_type.__str__()))

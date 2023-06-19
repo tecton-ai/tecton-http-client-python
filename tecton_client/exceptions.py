@@ -1,6 +1,5 @@
 from enum import Enum
 from typing import Optional
-from typing import Self
 
 
 class TectonException(Exception):
@@ -31,11 +30,11 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
     return error_message
 
 
-class InvalidParameterException(TectonClientException):
+class InvalidParameterError(TectonClientException):
     """Class for exceptions raised when one or more parameters passed are invalid."""
 
 
-class InvalidURLException(TectonClientException):
+class InvalidURLError(TectonClientException):
     """Class for exceptions raised when the URL passed is invalid."""
 
 
@@ -50,7 +49,7 @@ class InvalidParameterMessage(str, Enum):
     EMPTY_MAPS = "Both Join Key map and Request Context Map cannot be empty"
 
 
-class UnsupportedTypeException(TectonClientException):
+class UnsupportedTypeError(TectonClientException):
     """Class for exceptions raised when the type of parameter passed is not supported by the client."""
 
 
@@ -94,47 +93,37 @@ def INVALID_TYPE_KEY_VALUE(
         )
 
 
-class UnknownTypeException(TectonClientException):
-    """Class for exceptions raised when the type of one or more feature values in the response received is not known."""
+def UNKNOWN_TYPE_ERROR(data_type: str) -> str:
+    """Exception message when the type of one or more feature values in the response received is not known.
 
-    def __init__(self: Self, data_type: str) -> None:
-        """Initializes the exception with the error message for when the data type of one or more feature values
-        in the response is not known.
+    Args:
+        data_type (str): Type of the response received
 
-        Args:
-             data_type (str): Type of the response received
-        """
-        message = (
-            "Received unknown data type %s in the response. "
-            "Please contact Tecton Support for assistance." % data_type
-        )
-
-        super().__init__(message)
-
-
-class MismatchedTypeException(TectonClientException):
-    """Class for exceptions raised when the type of one or more feature values in the response received
-    does not match the expected type.
+    Returns:
+        str: The error message string.
     """
-
-    def __init__(self: Self, value: str, data_type: str) -> None:
-        """Initializes the exception with the error message for when the type of one or more feature values
-        in the response received does not match the expected type.
-
-        Args:
-            value (str): Value of the response received.
-            data_type (str): Type of the response received.
-        """
-        message = (
-            "Unexpected Error occurred while parsing the feature value %s to data type %s. "
-            "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
-        )
-
-        super().__init__(message)
+    message = (
+        "Received unknown data type %s in the response. " "Please contact Tecton Support for assistance." % data_type
+    )
+    return message
 
 
-class MissingResponseException(TectonClientException):
-    """Class for exceptions raised when the response received from Tecton is empty or misses feature vectors."""
+def MISMATCHED_TYPE_ERROR(value: str, data_type: str) -> str:
+    """Exception message for when the type of one or more feature values in the response received
+    does not match the expected type.
+
+    Args:
+        value (str): Value of the response received.
+        data_type (str): Type of the response received.
+
+    Returns:
+        str: The error message string.
+    """
+    message = (
+        "Unexpected Error occurred while parsing the feature value %s to data type %s. "
+        "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
+    )
+    return message
 
 
 class ResponseRelatedErrorMessage(str, Enum):
@@ -153,5 +142,8 @@ def MISSING_EXPECTED_METADATA(metadata: str) -> str:
         str: The error message string.
 
     """
-    message = f"Required metadata {metadata} is missing from the response"
+    message = (
+        f"Required metadata {metadata} is missing from the response."
+        f"If problem persists, please contact Tecton Support for assistance."
+    )
     return message

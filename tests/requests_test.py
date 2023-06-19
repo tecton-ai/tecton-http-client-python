@@ -4,8 +4,8 @@ from typing import Union
 
 import pytest
 
-from tecton_client.exceptions import InvalidParameterException
-from tecton_client.exceptions import UnsupportedTypeException
+from tecton_client.exceptions import InvalidParameterError
+from tecton_client.exceptions import UnsupportedTypeError
 from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import MetadataOptions
@@ -19,25 +19,25 @@ class TestRequests:
 
     @pytest.mark.parametrize("key", ["", None])
     def test_error_join_key(self: Self, key: str) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeatureRequestData(join_key_map={key: "test_value"})
 
     @pytest.mark.parametrize("key", ["", None])
     def test_error_request_context_key(self: Self, key: str) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeatureRequestData(request_context_map={key: "test_value"})
 
     @pytest.mark.parametrize("key", [123, 123.45])
     def test_unsupported_request_context_key(self: Self, key: str) -> None:
-        with pytest.raises(UnsupportedTypeException):
+        with pytest.raises(UnsupportedTypeError):
             GetFeatureRequestData(request_context_map={key: "test_value"})
 
     def test_empty_join_value(self: Self) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeatureRequestData(join_key_map={"test_key": ""})
 
     def test_unsupported_join_value(self: Self) -> None:
-        with pytest.raises(UnsupportedTypeException):
+        with pytest.raises(UnsupportedTypeError):
             GetFeatureRequestData(join_key_map={"test_key": 123.45})
 
     def test_none_join_value(self: Self) -> None:
@@ -45,16 +45,16 @@ class TestRequests:
         assert get_feature_request_data.join_key_map["test_key"] is None
 
     def test_none_request_context_value(self: Self) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeatureRequestData(request_context_map={"test_key": None})
 
     def test_empty_request_context_value(self: Self) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeatureRequestData(request_context_map={"test_key": ""})
 
     @pytest.mark.parametrize("value", [False, {"test_key": "test_value"}])
     def test_unsupported_request_context_value(self: Self, value: Union[bool, dict]) -> None:
-        with pytest.raises(UnsupportedTypeException):
+        with pytest.raises(UnsupportedTypeError):
             GetFeatureRequestData(request_context_map={"test_key": value})
 
     def test_mixed_type_join_key_value(self: Self) -> None:
@@ -102,16 +102,16 @@ class TestRequests:
 
     @pytest.mark.parametrize("workspace", ["", None])
     def test_error_workspace_name(self: Self, workspace: str) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeaturesRequest(workspace, self.TEST_FEATURE_SERVICE_NAME, self.default_get_feature_request_data)
 
     @pytest.mark.parametrize("feature_service", ["", None])
     def test_error_feature_service_name(self: Self, feature_service: str) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeaturesRequest(self.TEST_WORKSPACE_NAME, feature_service, self.default_get_feature_request_data)
 
     def test_empty_maps(self: Self) -> None:
-        with pytest.raises(InvalidParameterException):
+        with pytest.raises(InvalidParameterError):
             GetFeatureRequestData()
 
     def test_simple_request_with_none_join_key(self: Self) -> None:
