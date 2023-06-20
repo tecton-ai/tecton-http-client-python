@@ -128,8 +128,15 @@ class TestDataTypes:
 
     @pytest.mark.parametrize(
         "value_type,feature_value",
-        [("string", "test_feature_value"), ("int64", 123), ("float64", 123.45), ("float32", 123.45), ("boolean", True),
-         ("int64", None), ("string", None)]
+        [
+            ("string", "test_feature_value"),
+            ("int64", 123),
+            ("float64", 123.45),
+            ("float32", 123.45),
+            ("boolean", True),
+            ("int64", None),
+            ("string", None),
+        ],
     )
     def test_basic_feature_values(self: Self, value_type: str, feature_value: str) -> None:
         feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
