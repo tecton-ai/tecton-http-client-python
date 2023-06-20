@@ -32,7 +32,7 @@ class Value:
             MismatchedTypeException: If the feature value cannot be converted to the specified type.
             UnknownTypeException: If the specified type is not supported.
         """
-        self.value = {}
+        self._value = {}
         self._data_type = data_type
 
         type_conversion_map = {
@@ -50,30 +50,23 @@ class Value:
             convert = type_conversion_map[data_type.__class__]
 
             try:
-                self.value[data_type.__str__()] = None if feature_value is None else convert(feature_value)
+                self._value[data_type.__str__()] = None if feature_value is None else convert(feature_value)
             except Exception:
                 raise MismatchedTypeException(feature_value, data_type.__str__())
         else:
             raise UnknownTypeException(data_type.__str__())
 
-    def get_value(self: Self) -> Union[int, float, str, bool, list, dict]:
+    @property
+    def value(self: Self) -> Union[int, float, str, bool, list, dict]:
         """Return the value of the feature in the specified type.
 
         Returns:
             Union[int, float, str, bool, list, dict]: The value of the feature in the specified type.
 
         """
-
-        value = self.value[self._data_type.__str__()]
-        if self._data_type.__class__ == StructType:
-            datadict = self.value[self._data_type.__str__()]
-            value = {}
-            for i in range(len(datadict)):
-                key = self._data_type.fields[i]
-                value[key.name] = datadict[key.name].value[key._data_type.__str__()]
-
-        elif self._data_type.__class__ == ArrayType:
-            arraylist = self.value[str(self._data_type.__str__())]
-            value = [item.value[self._data_type.element_type.__str__()] for item in arraylist]
-
-        return value
+        if isinstance(self._data_type, StructType):
+            return {field: value.value for field, value in self._value[self._data_type.__str__()].items()}
+        elif isinstance(self._data_type, ArrayType):
+            return [value.value for value in self._value[self._data_type.__str__()]]
+        else:
+            return self._value[self._data_type.__str__()]
