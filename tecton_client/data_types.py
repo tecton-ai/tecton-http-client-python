@@ -150,42 +150,38 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
     """
     data_type = data_type.lower()
 
-    if data_type == "int64":
-        return IntType()
-    elif data_type == "float64" or data_type == "float32":
-        return FloatType()
-    elif data_type == "string":
-        return StringType()
-    elif data_type == "boolean":
-        return BoolType()
-    elif data_type == "array":
-        if not element_type:
-            raise MissingResponseException(MISSING_EXPECTED_METADATA("elementType for ArrayType"))
-
-        inner_data_type = element_type["type"] if "type" in element_type else None
-        inner_fields = element_type["fields"] if "fields" in element_type else None
-        inner_type = element_type["elementType"] if "elementType" in element_type else None
-
-        return ArrayType(get_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields))
-    elif data_type == "struct":
-        if not fields:
-            raise MissingResponseException(MISSING_EXPECTED_METADATA("fields for StructType"))
-
-        fields_list = []
-        for field in fields:
-            if "dataType" not in field or not field["dataType"]:
-                raise MissingResponseException(MISSING_EXPECTED_METADATA("dataType for StructType"))
-
-            inner_data_type = field["dataType"]["type"] if "type" in field["dataType"] else None
-            inner_fields = field["dataType"]["fields"] if "fields" in field["dataType"] else None
-            inner_type = field["dataType"]["elementType"] if "elementType" in field["dataType"] else None
-
-            fields_list.append(
+    type_mapping = {
+        "int64": IntType,
+        "float64": FloatType,
+        "float32": FloatType,
+        "string": StringType,
+        "boolean": BoolType,
+        "array": lambda: ArrayType(
+            get_data_type(
+                data_type=element_type.get("type"),
+                element_type=element_type.get("elementType"),
+                fields=element_type.get("fields"),
+            )
+        ),
+        "struct": lambda: StructType(
+            [
                 StructField(
                     field["name"],
-                    get_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields),
+                    get_data_type(
+                        data_type=field["dataType"].get("type"),
+                        element_type=field["dataType"].get("elementType"),
+                        fields=field["dataType"].get("fields"),
+                    ),
                 )
-            )
-        return StructType(fields_list)
+                for field in fields
+            ]
+        ),
+    }
+
+    if data_type in type_mapping:
+        try:
+            return type_mapping[data_type]()
+        except Exception:
+            raise MissingResponseException(MISSING_EXPECTED_METADATA(f"for given data type {data_type}"))
     else:
         raise UnknownTypeException(data_type.__str__())
