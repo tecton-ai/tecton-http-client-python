@@ -12,10 +12,8 @@ from tecton_client.data_types import get_data_type
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
-from tecton_client.exceptions import MismatchedTypeException
-from tecton_client.exceptions import MISSING_EXPECTED_METADATA
-from tecton_client.exceptions import MissingResponseException
 from tecton_client.exceptions import MISMATCHED_TYPE_ERROR
+from tecton_client.exceptions import MISSING_EXPECTED_METADATA
 from tecton_client.exceptions import ResponseRelatedErrorMessage
 from tecton_client.exceptions import TectonClientException
 from tecton_client.exceptions import UNKNOWN_TYPE_ERROR
@@ -141,9 +139,6 @@ class FeatureValue:
             self.feature_namespace, self.feature_name = name.split(".")
         except ValueError:
             raise TectonClientException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
-
-        if not data_type:
-            raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
         self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
