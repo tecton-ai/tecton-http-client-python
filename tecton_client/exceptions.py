@@ -93,6 +93,15 @@ def INVALID_TYPE_KEY_VALUE(
         )
 
 
+class ResponseRelatedErrorMessage(str, Enum):
+    """Error messages for response related exceptions."""
+
+    MALFORMED_FEATURE_NAME = (
+        "Feature name provided is not in the expected format of 'namespace.name'."
+        "If problem persists, please contact Tecton Support for assistance."
+    )
+
+
 def UNKNOWN_TYPE(data_type: str) -> str:
     """Error message when the type of one or more feature values in the response received is not known.
 
@@ -103,7 +112,8 @@ def UNKNOWN_TYPE(data_type: str) -> str:
         str: The error message string.
     """
     message = (
-        "Received unknown data type %s in the response. " "Please contact Tecton Support for assistance." % data_type
+        f"Received unknown data type {data_type} in the response."
+        f"If problem persists, please contact Tecton Support for assistance."
     )
     return message
 
@@ -120,16 +130,10 @@ def MISMATCHED_TYPE(value: str, data_type: str) -> str:
         str: The error message string.
     """
     message = (
-        "Unexpected Error occurred while parsing the feature value %s to data type %s. "
-        "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
+        f"Unexpected Error occurred while parsing the feature value {value} to data type {data_type}. "
+        f"If problem persists, please contact Tecton Support for assistance."
     )
     return message
-
-
-class ResponseRelatedErrorMessage(str, Enum):
-    """Error messages for response related exceptions."""
-
-    MALFORMED_FEATURE_NAME = "Feature name provided is not in expected format of 'namespace.name'."
 
 
 def MISSING_EXPECTED_METADATA(metadata: str) -> str:
