@@ -244,7 +244,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         """Returns a JSON representation of the :class:`GetFeaturesRequest` object.
 
         Returns:
-            JSON formatted string.
+            Dictionary of the response in the expected format.
         """
         fields_to_remove = ["ENDPOINT", "request_data"]
         self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
