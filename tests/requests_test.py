@@ -1,4 +1,3 @@
-import json
 from typing import Self
 from typing import Union
 
@@ -145,7 +144,7 @@ class TestRequests:
             "join_key_map": {"test_key": "test_value", "test_none_key": None},
         }
 
-        expected_json_request = json.dumps({"params": expected_response})
+        expected_json_request = {"params": expected_response}
         json_request = get_features_request.to_json()
 
         assert dict_equals(json_request, expected_json_request)
