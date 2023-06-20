@@ -2,7 +2,6 @@ import abc
 from dataclasses import dataclass
 from typing import List
 from typing import Optional
-
 from tecton_client.exceptions import TectonClientError
 
 

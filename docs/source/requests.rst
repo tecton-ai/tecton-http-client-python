@@ -16,4 +16,3 @@ tecton\_client.requests module
     MetadataOptions
     GetFeatureRequestData
     GetFeaturesRequest
-
