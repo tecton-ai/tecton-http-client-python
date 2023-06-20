@@ -12,20 +12,9 @@ class TectonClient:
 
     Usage:
         tecton_client = TectonClient(url, api_key)
-        join_key_map = {"example_join_key": "example_join_value"}
-        request_context_map = {"example_request_context": "example_string_value"}
-        get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
-        get_features_request = GetFeaturesRequest(
-            feature_service_name="example_feature_service",
-            request_data=get_feature_request_data,
-            workspace_name="example_workspace",
-            )
-        get_features_response = await tecton_client.get_features(get_features_request)
-        print(get_features_response.get_feature_values_dict())
-        await tecton_client.close()
 
     Attributes:
-        tectonHttpClient (TectonHttpClient): The TectonHttpClient object, which is used to make HTTP requests.
+        _tectonHttpClient (TectonHttpClient): The TectonHttpClient object, which is used to make HTTP requests.
     """
 
     def __init__(self: Self, url: str, api_key: str) -> None:
@@ -35,7 +24,7 @@ class TectonClient:
             url (str): The URL to ping.
             api_key (str): The API Key required as part of header authorization.
         """
-        self.tectonHttpClient = TectonHttpClient(url, api_key)
+        self._tectonHttpClient = TectonHttpClient(url, api_key)
 
     async def get_features(self: Self, get_features_request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Get features from the Tecton Feature Service.
@@ -45,12 +34,24 @@ class TectonClient:
 
         Returns:
             GetFeaturesResponse: The GetFeaturesResponse object, with response data
+
+        Usage:
+            join_key_map = {"example_join_key": "example_join_value"}
+            request_context_map = {"example_request_context": "example_string_value"}
+            get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
+            get_features_request = GetFeaturesRequest(
+                feature_service_name="example_feature_service",
+                request_data=get_feature_request_data,
+                workspace_name="example_workspace",
+            )
+            get_features_response = await tecton_client.get_features(get_features_request)
+            print(get_features_response.get_feature_values_dict())
         """
-        response = await self.tectonHttpClient.execute_request(
+        response = await self._tectonHttpClient.execute_request(
             get_features_request.ENDPOINT, get_features_request.to_json()
         )
         return GetFeaturesResponse(response)
 
     async def close(self: Self) -> None:
         """Close the HTTPX Asynchronous Client."""
-        await self.tectonHttpClient.close()
+        await self._tectonHttpClient.close()
