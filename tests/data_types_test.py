@@ -128,16 +128,17 @@ class TestDataTypes:
 
     @pytest.mark.parametrize(
         "value_type,feature_value",
-        [("string", "test_feature_value"), ("int64", 123), ("float64", 123.45), ("float32", 123.45), ("boolean", True)],
+        [("string", "test_feature_value"), ("int64", 123), ("float64", 123.45), ("float32", 123.45), ("boolean", True),
+         ("int64", None), ("string", None)]
     )
     def test_basic_feature_values(self: Self, value_type: str, feature_value: str) -> None:
         feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
-        assert feature.feature_value.value[feature.value_type.__str__()] == feature_value
+        assert feature.feature_value == feature_value
 
     @pytest.mark.parametrize("value_type,feature_value", [("int64", "123")])
     def test_int_feature_value(self: Self, value_type: str, feature_value: str) -> None:
         feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
-        assert feature.feature_value.value[feature.value_type.__str__()] == int(feature_value)
+        assert feature.feature_value == int(feature_value)
 
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
     def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
@@ -145,21 +146,16 @@ class TestDataTypes:
             name="test.test_feature", value_type="struct", feature_value=feature_value, fields=fields
         )
 
-        feature_val = feature.feature_value.value[feature.value_type.__str__()]
+        feature_val = feature.feature_value
 
-        for i in range(len(feature_val)):
-            key = feature.value_type.fields[i].name
-            datatype = feature.value_type.fields[i].data_type
+        for i, (field, value) in enumerate(zip(feature.value_type.fields, feature_value)):
+            key, datatype = field.name, field.data_type
 
-            if type(datatype) == StructType:
-                result_dict = {field.name: feature_value[i][j] for j, field in enumerate(datatype.fields)}
-                self.assert_struct(feature_val[key], result_dict)
-
-            elif type(datatype) == ArrayType:
-                self.assert_array(feature_val[key], feature_value[i])
-
+            if isinstance(datatype, StructType):
+                result_dict = {field.name: value[j] for j, field in enumerate(datatype.fields)}
+                assert result_dict == feature_val[key]
             else:
-                assert feature_val[key].value[datatype.__str__()] == feature_value[i]
+                assert feature_val[key] == feature_value[i]
 
     @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields1)])
     def test_feature_value_with_arrays(self: Self, feature_value: list, fields: list) -> None:
@@ -170,7 +166,5 @@ class TestDataTypes:
             element_type=fields[0]["dataType"]["elementType"],
         )
 
-        feature_val = feature.feature_value.value[feature.value_type.__str__()]
-
-        for i in range(len(feature_val)):
-            self.assert_array(feature_val[i], feature_value[i])
+        feature_val = feature.feature_value
+        assert feature_val == feature_value

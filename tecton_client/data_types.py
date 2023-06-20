@@ -133,8 +133,8 @@ class StructType(DataType):
         return f"Struct({fields_string})"
 
 
-def parse_data_type(data_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None) -> DataType:
-    """Parse the value type of the feature value.
+def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None) -> DataType:
+    """Get the data type of the feature value.
 
     Args:
         data_type (str): The type of the feature value.
@@ -148,9 +148,6 @@ def parse_data_type(data_type: str, element_type: Optional[dict] = None, fields:
         MissingResponseException: If some expected metadata is missing in the response.
         UnknownTypeException: If the value_type is unknown or unsupported.
     """
-    if not data_type:
-        raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
-
     data_type = data_type.lower()
 
     if data_type == "int64":
@@ -169,7 +166,7 @@ def parse_data_type(data_type: str, element_type: Optional[dict] = None, fields:
         inner_fields = element_type["fields"] if "fields" in element_type else None
         inner_type = element_type["elementType"] if "elementType" in element_type else None
 
-        return ArrayType(parse_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields))
+        return ArrayType(get_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields))
     elif data_type == "struct":
         if not fields:
             raise MissingResponseException(MISSING_EXPECTED_METADATA("fields for StructType"))
@@ -186,7 +183,7 @@ def parse_data_type(data_type: str, element_type: Optional[dict] = None, fields:
             fields_list.append(
                 StructField(
                     field["name"],
-                    parse_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields),
+                    get_data_type(data_type=inner_data_type, element_type=inner_type, fields=inner_fields),
                 )
             )
         return StructType(fields_list)
