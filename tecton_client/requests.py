@@ -241,7 +241,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         super().__init__(workspace_name, feature_service_name, metadata_options)
         self.request_data = request_data
 
-    def to_json_string(self: Self) -> str:
+    def to_json(self: Self) -> dict:
         """Returns a JSON representation of the :class:`GetFeaturesRequest` object.
 
         Returns:
@@ -261,4 +261,4 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             else {}
         )
 
-        return json.dumps({"params": self_dict})
+        return {"params": self_dict}
