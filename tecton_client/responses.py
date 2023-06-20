@@ -9,10 +9,10 @@ from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
 from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
-from tecton_client.data_types import parse_data_type
+from tecton_client.data_types import get_data_type
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
-from tecton_client.exceptions import MismatchedTypeException
+from tecton_client.exceptions import MismatchedTypeException, MISSING_EXPECTED_METADATA
 from tecton_client.exceptions import MissingResponseException
 from tecton_client.exceptions import ResponseRelatedErrorMessage
 from tecton_client.exceptions import UnknownTypeException
@@ -97,7 +97,7 @@ class FeatureValue:
 
     Attributes:
         value_type (DataType): The type of the feature value.
-        feature_value (Value): The value of the feature.
+        feature_value (Union[str, int, float, bool, list, dict]): The value of the feature.
         feature_namespace (str): The namespace that the feature belongs to.
         feature_name (str): The name of the feature.
         feature_status (str): The status of the feature.
@@ -136,5 +136,9 @@ class FeatureValue:
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
         self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
-        self.value_type: DataType = parse_data_type(value_type, element_type, fields)
-        self.feature_value: Value = Value(self.value_type, feature_value)
+
+        if not value_type:
+            raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
+
+        self.value_type = get_data_type(value_type, element_type, fields)
+        self.feature_value = Value(self.value_type, feature_value).value
