@@ -94,7 +94,7 @@ def INVALID_TYPE_KEY_VALUE(
 
 
 def UNKNOWN_TYPE_ERROR(data_type: str) -> str:
-    """Exception message when the type of one or more feature values in the response received is not known.
+    """Error message when the type of one or more feature values in the response received is not known.
 
     Args:
         data_type (str): Type of the response received
@@ -109,7 +109,7 @@ def UNKNOWN_TYPE_ERROR(data_type: str) -> str:
 
 
 def MISMATCHED_TYPE_ERROR(value: str, data_type: str) -> str:
-    """Exception message for when the type of one or more feature values in the response received
+    """Error message for when the type of one or more feature values in the response received
     does not match the expected type.
 
     Args:
@@ -133,7 +133,7 @@ class ResponseRelatedErrorMessage(str, Enum):
 
 
 def MISSING_EXPECTED_METADATA(metadata: str) -> str:
-    """Exception message for when the expected metadata is missing from the response.
+    """Error message for when the expected metadata is missing from the response.
 
     Args:
         metadata (str): The metadata field.
