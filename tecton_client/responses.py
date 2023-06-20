@@ -174,20 +174,12 @@ class SloInformation:
         Args:
             slo_information (dict): The SLO information dictionary received from the server.
         """
-        self.slo_eligible = slo_information["sloEligible"] if "sloEligible" in slo_information else None
-        self.server_time_seconds = (
-            slo_information["serverTimeSeconds"] if "serverTimeSeconds" in slo_information else None
-        )
-        self.slo_server_time_seconds = (
-            slo_information["sloServerTimeSeconds"] if "sloServerTimeSeconds" in slo_information else None
-        )
-        self.dynamoDB_response_size_bytes = (
-            slo_information["dynamodbResponseSizeBytes"] if "dynamodbResponseSizeBytes" in slo_information else None
-        )
-        self.store_max_latency = slo_information["storeMaxLatency"] if "storeMaxLatency" in slo_information else None
-        self.store_response_size_bytes = (
-            slo_information["storeResponseSizeBytes"] if "storeResponseSizeBytes" in slo_information else None
-        )
+        self.slo_eligible = slo_information.get("sloEligible")
+        self.server_time_seconds = slo_information.get("serverTimeSeconds")
+        self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
+        self.dynamoDB_response_size_bytes = slo_information.get("dynamodbResponseSizeBytes")
+        self.store_max_latency = slo_information.get("storeMaxLatency")
+        self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
 
     def to_dict(self: Self) -> dict:
         """Returns the SloInformation object as a dictionary."""
@@ -234,35 +226,24 @@ class GetFeaturesResponse(AbstractTectonResponse):
         """
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
-        self.feature_values: List[FeatureValue] = []
 
         self.validate_response(feature_vector, feature_metadata)
-
-        for i in range(len(feature_vector)):
-            element_type = (
-                feature_metadata[i]["dataType"]["elementType"]
-                if "elementType" in feature_metadata[i]["dataType"]
-                else None
-            )
-            feature_status = feature_metadata[i]["status"] if "status" in feature_metadata[i] else None
-            effective_time = feature_metadata[i]["effectiveTime"] if "effectiveTime" in feature_metadata[i] else None
-            fields = feature_metadata[i]["dataType"]["fields"] if "fields" in feature_metadata[i]["dataType"] else None
-
-            feature = FeatureValue(
+        self.feature_values: List[FeatureValue] = [
+            FeatureValue(
                 name=feature_metadata[i]["name"],
                 value_type=feature_metadata[i]["dataType"]["type"],
-                element_type=element_type,
-                effective_time=effective_time,
-                feature_status=feature_status,
+                element_type=feature_metadata[i]["dataType"].get("elementType"),
+                effective_time=feature_metadata[i].get("effectiveTime"),
+                feature_status=feature_metadata[i].get("status"),
+                fields=feature_metadata[i]["dataType"].get("fields"),
                 feature_value=feature_vector[i],
-                fields=fields,
             )
+            for i in range(len(feature_vector))
+        ]
 
-            self.feature_values.append(feature)
-
-            self.slo_info: Optional[SloInformation] = (
-                SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
-            )
+        self.slo_info: Optional[SloInformation] = (
+            SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
+        )
 
     def get_feature_values_dict(self: Self) -> dict:
         """Returns a dictionary of feature values.
@@ -270,9 +251,7 @@ class GetFeaturesResponse(AbstractTectonResponse):
         Returns:
             Dictionary with feature names as keys and their corresponding values.
         """
-        feature_values_dict = {
+        return {
             f"{feature.feature_namespace}.{feature.feature_name}": feature.feature_value
             for feature in self.feature_values
         }
-
-        return feature_values_dict

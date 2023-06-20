@@ -24,25 +24,9 @@ class TestResponse:
         for i, key in enumerate(feature_values_map):
             feature_type = get_features_response.feature_values[i].value_type
             if isinstance(feature_type, StructType):
-                feature_answer = []
-                struct_val = feature_values_map[key].value[feature_type.__str__()]
-                if struct_val is None:
-                    feature_answer = None
-                else:
-                    for j, value in enumerate(struct_val.items()):
-                        feature_answer.append(value[1].value[feature_type.fields[j].data_type.__str__()])
-
-            elif isinstance(feature_type, ArrayType):
-                feature_answer = []
-                array_val = feature_values_map[key].value[feature_type.__str__()]
-                if array_val is None:
-                    feature_answer = None
-                else:
-                    for item in array_val:
-                        feature_answer.append(item.value[feature_type.element_type.__str__()])
+                feature_answer = [value for key, value in feature_values_map[key].items()]
             else:
-                feature_answer = feature_values_map[key].value[feature_type.__str__()]
-
+                feature_answer = feature_values_map[key]
             actual_answer.append(feature_answer)
 
         assert actual_answer == expected_answer
@@ -54,7 +38,7 @@ class TestResponse:
             ("resources/sample_response_null.json", [True, None, None, None, 669]),
         ],
     )
-    def test_simple_responses(self: Self, file_name: str, expected_answer: list) -> None:
+    def test_json_responses(self: Self, file_name: str, expected_answer: list) -> None:
         with open(file_name) as json_file:
             json_response = json.load(json_file)
             get_features_response = GetFeaturesResponse(json_response)
