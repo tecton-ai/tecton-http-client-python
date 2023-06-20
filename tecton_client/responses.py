@@ -12,11 +12,11 @@ from tecton_client.data_types import get_data_type
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
-from tecton_client.exceptions import MISMATCHED_TYPE_ERROR
+from tecton_client.exceptions import MISMATCHED_TYPE
 from tecton_client.exceptions import MISSING_EXPECTED_METADATA
 from tecton_client.exceptions import ResponseRelatedErrorMessage
 from tecton_client.exceptions import TectonClientException
-from tecton_client.exceptions import UNKNOWN_TYPE_ERROR
+from tecton_client.exceptions import UNKNOWN_TYPE
 
 
 class Value:
@@ -54,9 +54,9 @@ class Value:
             try:
                 self._value[data_type.__str__()] = None if feature_value is None else convert(feature_value)
             except Exception:
-                raise TectonClientException(MISMATCHED_TYPE_ERROR(feature_value, data_type.__str__()))
+                raise TectonClientException(MISMATCHED_TYPE(feature_value, data_type.__str__()))
         else:
-            raise TectonClientException(UNKNOWN_TYPE_ERROR(data_type.__str__()))
+            raise TectonClientException(UNKNOWN_TYPE(data_type.__str__()))
 
     @property
     def value(self: Self) -> Union[int, float, str, bool, list, dict, None]:

@@ -31,11 +31,11 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
 
 
 class InvalidParameterError(TectonClientException):
-    """Class for exceptions raised when one or more parameters passed are invalid."""
+    """Class for errors raised when one or more parameters passed are invalid."""
 
 
 class InvalidURLError(TectonClientException):
-    """Class for exceptions raised when the URL passed is invalid."""
+    """Class for errors raised when the URL passed is invalid."""
 
 
 class InvalidParameterMessage(str, Enum):
@@ -50,7 +50,7 @@ class InvalidParameterMessage(str, Enum):
 
 
 class UnsupportedTypeError(TectonClientException):
-    """Class for exceptions raised when the type of parameter passed is not supported by the client."""
+    """Class for errors raised when the type of parameter passed is not supported by the client."""
 
 
 def EMPTY_KEY_VALUE(key: str, value: str) -> str:
@@ -93,7 +93,7 @@ def INVALID_TYPE_KEY_VALUE(
         )
 
 
-def UNKNOWN_TYPE_ERROR(data_type: str) -> str:
+def UNKNOWN_TYPE(data_type: str) -> str:
     """Error message when the type of one or more feature values in the response received is not known.
 
     Args:
@@ -108,7 +108,7 @@ def UNKNOWN_TYPE_ERROR(data_type: str) -> str:
     return message
 
 
-def MISMATCHED_TYPE_ERROR(value: str, data_type: str) -> str:
+def MISMATCHED_TYPE(value: str, data_type: str) -> str:
     """Error message for when the type of one or more feature values in the response received
     does not match the expected type.
 
