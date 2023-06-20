@@ -15,4 +15,3 @@ tecton\_client.responses module
 
     FeatureStatus
     FeatureValue
-

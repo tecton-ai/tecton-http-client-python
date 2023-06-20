@@ -14,5 +14,3 @@ tecton\_client.http\_client module
    :toctree: generated/
 
     TectonHttpClient
-
-
