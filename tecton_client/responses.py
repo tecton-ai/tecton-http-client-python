@@ -8,11 +8,12 @@ from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
 from tecton_client.data_types import FloatType
-from tecton_client.data_types import IntType
 from tecton_client.data_types import get_data_type
+from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
-from tecton_client.exceptions import MismatchedTypeException, MISSING_EXPECTED_METADATA
+from tecton_client.exceptions import MismatchedTypeException
+from tecton_client.exceptions import MISSING_EXPECTED_METADATA
 from tecton_client.exceptions import MissingResponseException
 from tecton_client.exceptions import ResponseRelatedErrorMessage
 from tecton_client.exceptions import UnknownTypeException
