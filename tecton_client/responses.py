@@ -61,18 +61,14 @@ class Value:
             Union[int, float, str, bool, list, dict]: The value of the feature in the specified type.
 
         """
+        if self._value[self._data_type.__str__()] is None:
+            return None
+
         if isinstance(self._data_type, StructType):
-            return (
-                {field: value.value for field, value in self._value[self._data_type.__str__()].items()}
-                if self._value[self._data_type.__str__()] is not None
-                else None
-            )
+            return {field: value.value for field, value in self._value[self._data_type.__str__()].items()}
 
         elif isinstance(self._data_type, ArrayType):
-            return (
-                [value.value for value in self._value[self._data_type.__str__()]]
-                if self._value[self._data_type.__str__()] is not None
-                else None
-            )
+            return [value.value for value in self._value[self._data_type.__str__()]]
+
         else:
             return self._value[self._data_type.__str__()]
