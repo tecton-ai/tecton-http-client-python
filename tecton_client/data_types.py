@@ -155,8 +155,8 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
         DataType: The parsed :class:`DataType` of the feature value.
 
     Raises:
-        MissingResponseException: If some expected metadata is missing in the response.
-        UnknownTypeException: If the data_type is unknown or unsupported.
+        TectonClientException: If some expected metadata is missing in the response,
+            or if the data_type is unknown or unsupported.
     """
     data_type = data_type.lower()
 
