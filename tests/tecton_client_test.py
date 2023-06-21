@@ -231,7 +231,12 @@ class TestTectonClient:
             response_codes.add(exception.STATUS_CODE)
 
     client1 = httpx.AsyncClient(timeout=10, limits=httpx.Limits(max_connections=10))
+    timeout1 = httpx.Timeout(connect=2.0, read=2.0, write=10, pool=10)
+    limits1 = httpx.Limits(max_connections=None, max_keepalive_connections=10, keepalive_expiry=300)
+
     client2 = httpx.AsyncClient()
+    timeout2 = httpx.Timeout(connect=10, read=15, write=10, pool=10)
+    limits2 = httpx.Limits(max_connections=None, max_keepalive_connections=7, keepalive_expiry=500)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("client", [client1, client2, None])
@@ -251,5 +256,6 @@ class TestTectonClient:
         httpx_mock.add_response(json=self.mock_response1)
         get_features_response = local_client.get_features(self.get_features_request)
         assert get_features_response.get_feature_values_dict() == self.expected_response1
-        print(local_client.client_options.timeout, local_client.client_options.limits)
-        local_client.close()
+        assert local_client.client_options.timeout == timeout
+        assert local_client.client_options.limits == limits
+        await local_client.close()
