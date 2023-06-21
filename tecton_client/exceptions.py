@@ -7,11 +7,11 @@ class TectonException(Exception):
 
 
 class TectonClientException(TectonException):
-    """Base Class for exceptions thrown by the Python client."""
+    """Raised for exceptions thrown by the Python client."""
 
 
 class TectonServerException(TectonException):
-    """Base Class for exceptions representing error response from Tecton API."""
+    """Raised for exceptions representing error response from Tecton API."""
 
 
 def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) -> str:
@@ -31,11 +31,11 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
 
 
 class InvalidParameterError(TectonClientException):
-    """Class for errors raised when one or more parameters passed are invalid."""
+    """Raised when one or more parameters passed in the request are invalid."""
 
 
 class InvalidURLError(TectonClientException):
-    """Class for errors raised when the URL passed is invalid."""
+    """Raised when the URL passed is invalid."""
 
 
 class InvalidParameterMessage(str, Enum):
@@ -50,7 +50,7 @@ class InvalidParameterMessage(str, Enum):
 
 
 class UnsupportedTypeError(TectonClientException):
-    """Class for errors raised when the type of parameter passed is not supported by the client."""
+    """Raised when the type of parameter passed is not supported by the client."""
 
 
 def EMPTY_KEY_VALUE(key: str, value: str) -> str:
