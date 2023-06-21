@@ -44,7 +44,7 @@
     "sloInfo": {
       "sloEligible": true,
       "sloServerTimeSeconds": 0.039343822,
-      "dynamodbResponseSizeBytes": 204,
+      "storeResponseSizeBytes": 204,
       "serverTimeSeconds": 0.049082851
     }
   }

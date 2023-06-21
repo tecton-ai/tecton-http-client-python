@@ -203,16 +203,25 @@ class AbstractTectonResponse(ABC):
             feature_metadata (list): List of metadata for each feature.
 
         Raises:
-            TectonClientException: If the feature vector is empty or if the metadata is missing name or data type.
+            TectonClientError: If the feature vector is empty or if the metadata is missing fields name or data type.
         """
         if not feature_vector:
-            raise TectonClientException(ResponseRelatedErrorMessage.EMPTY_FEATURE_VECTOR)
+            message = "Received empty feature vector from Tecton."
+            raise TectonClientError(message)
 
         for metadata in feature_metadata:
             if "name" not in metadata:
-                raise TectonClientException(MISSING_EXPECTED_METADATA("name"))
+                message = (
+                    "Required metadata `name` is missing from the response."
+                    "If problem persists, please contact Tecton Support for assistance."
+                )
+                raise TectonClientError(message)
             if "dataType" not in metadata or "type" not in metadata["dataType"]:
-                raise TectonClientException(MISSING_EXPECTED_METADATA("data type"))
+                message = (
+                    "Required metadata `data type` is missing from the response."
+                    "If problem persists, please contact Tecton Support for assistance."
+                )
+                raise TectonClientError(message)
 
 
 class GetFeaturesResponse(AbstractTectonResponse):

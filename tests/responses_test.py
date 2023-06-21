@@ -42,7 +42,7 @@ class TestResponse:
             ("resources/sample_response_null.json", [True, None, None, None, 669]),
             ("resources/sample_response_struct.json", [["2.46", 2.46]]),
             ("resources/sample_response_list.json", [[0], None, [55.5, 57.88, 58.96, 57.66, None, 55.98]]),
-            ("resources/sample_response_mixed.json", [None, [1, 2, 3, None, 5], "test"]),
+            ("resources/sample_response_mixed.json", [None, ["2.46", 2.46], [1, 2, 3, None, 5], "test"]),
         ],
     )
     def test_json_responses(self: Self, file_name: str, expected_answer: list) -> None:
