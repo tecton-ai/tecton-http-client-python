@@ -24,6 +24,7 @@ This is a Python client library to make it easy to call the feature server endpo
    exceptions
    requests
    responses
+   tecton_client
 
 
 Indices and tables
