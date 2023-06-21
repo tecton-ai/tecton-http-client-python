@@ -41,6 +41,7 @@ class BoolType(DataType):
 
 class ArrayType(DataType):
     """Class to represent datatype Array.
+
     An `ArrayType` object represents an array datatype that can contain elements of another `DataType`.
 
     Usage:
@@ -55,6 +56,7 @@ class ArrayType(DataType):
 
     @property
     def element_type(self: Self) -> DataType:
+        """Return the DataType of the elements in the array."""
         return self._element_type
 
     def __str__(self: Self) -> str:
