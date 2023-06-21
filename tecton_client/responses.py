@@ -157,7 +157,7 @@ class FeatureValue:
         self.feature_value = Value(self.data_type, feature_value).value
 
 class SloInformation:
-    """Class encapsulating all the data for a SLO information returned from a GetFeatures API call.
+    """Class encapsulating all the data related to SLO information returned from a GetFeatures API call.
 
     Attributes:
         slo_eligible (bool): Whether the feature is SLO eligible.
@@ -190,7 +190,7 @@ class AbstractTectonResponse(ABC):
     """Base class for Response objects from Tecton API calls."""
 
     @staticmethod
-    def validate_response(feature_vector: list, feature_metadata: list) -> None:
+    def _validate_response(feature_vector: list, feature_metadata: list) -> None:
         """Validates the response from the Tecton API call.
 
         Args:
@@ -222,12 +222,12 @@ class GetFeaturesResponse(AbstractTectonResponse):
         """Initializes the object with data from the response.
 
         Args:
-            response (dict): JSON response from the GetFeatures API call parsed to dict.
+            response (dict): JSON response returned from the GetFeatures API call.
         """
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
 
-        self.validate_response(feature_vector, feature_metadata)
+        self._validate_response(feature_vector, feature_metadata)
         self.feature_values: List[FeatureValue] = [
             FeatureValue(
                 name=feature_metadata[i]["name"],
