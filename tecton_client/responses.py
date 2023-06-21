@@ -55,15 +55,20 @@ class Value:
 
     @property
     def value(self: Self) -> Union[int, float, str, bool, list, dict]:
-        """Return the value of the feature in the specified type.
+        """Return the feature value of the feature in the specified type.
 
         Returns:
             Union[int, float, str, bool, list, dict]: The value of the feature in the specified type.
 
         """
         if isinstance(self._data_type, StructType):
-            return {field: value.value for field, value in self._value[self._data_type.__str__()].items()}
+            value_struct = self._value[self._data_type.__str__()]
+            if value_struct is not None:
+                return {field: value.value for field, value in value_struct.items()}
+
         elif isinstance(self._data_type, ArrayType):
-            return [value.value for value in self._value[self._data_type.__str__()]]
+            value_list = self._value[self._data_type.__str__()]
+            if value_list is not None:
+                return [value.value for value in value_list]
         else:
             return self._value[self._data_type.__str__()]
