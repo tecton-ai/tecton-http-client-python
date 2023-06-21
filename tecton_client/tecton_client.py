@@ -13,8 +13,6 @@ class TectonClient:
     Usage:
         tecton_client = TectonClient(url, api_key)
 
-    Attributes:
-        _tectonHttpClient (TectonHttpClient): The TectonHttpClient object, which is used to make HTTP requests.
     """
 
     def __init__(self: Self, url: str, api_key: str) -> None:
