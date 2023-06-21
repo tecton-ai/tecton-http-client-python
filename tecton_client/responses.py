@@ -135,11 +135,10 @@ class FeatureValue:
         except ValueError:
             raise MissingResponseException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
 
-        self.feature_status = FeatureStatus(feature_status) if feature_status else None
-        self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
-
         if not value_type:
             raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
 
+        self.feature_status = FeatureStatus(feature_status) if feature_status else None
+        self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
         self.value_type = get_data_type(value_type, element_type, fields)
         self.feature_value = Value(self.value_type, feature_value).value

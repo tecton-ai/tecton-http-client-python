@@ -34,7 +34,7 @@ class TestDataTypes:
             "dataType": {"type": "array", "elementType": {"type": "array", "elementType": {"type": "int64"}}},
         }
     ]
-    
+
     array_fields3 = [
         {
             "name": "array",
