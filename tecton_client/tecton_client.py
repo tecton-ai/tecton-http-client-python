@@ -1,7 +1,10 @@
 import asyncio
 
+from tecton_client.http_client import TectonHttpClient
 import httpx
+from typing_extensions import Self
 
+from tecton_client.http_client import HttpClientOptions
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
@@ -44,8 +47,8 @@ class TectonClient:
                 Defaults to 2.0 seconds.
             read (float): (Optional) The timeout for reading the response from the server, in seconds.
                 Defaults to 2.0 seconds.
-            max_keepalive_connections (int): (Optional) The maximum number of connections to keep in the connection pool.
-                Defaults to 10.
+            max_keepalive_connections (int): (Optional) The maximum number of connections to keep in the connection
+                pool. Defaults to 10.
             keepalive_expiry (float): (Optional) The maximum time to keep a connection alive, in seconds.
                 Defaults to 300 seconds (5 minutes).
         """
