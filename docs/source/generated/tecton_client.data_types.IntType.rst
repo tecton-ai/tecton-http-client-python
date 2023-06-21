@@ -5,18 +5,18 @@
 
 .. autoclass:: IntType
 
-   
+
    .. automethod:: __init__
 
-   
+
    .. rubric:: Methods
 
    .. autosummary::
-   
-      ~IntType.__init__
-   
-   
 
-   
-   
-   
+      ~IntType.__init__
+
+
+
+
+
+
