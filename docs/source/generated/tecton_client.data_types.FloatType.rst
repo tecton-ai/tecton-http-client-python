@@ -5,12 +5,18 @@
 
 .. autoclass:: FloatType
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~FloatType.__init__
+   
+   
+
+   
+   
+   

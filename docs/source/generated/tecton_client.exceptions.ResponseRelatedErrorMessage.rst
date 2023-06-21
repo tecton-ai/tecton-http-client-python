@@ -5,16 +5,18 @@
 
 .. autoclass:: ResponseRelatedErrorMessage
 
-
+   
    .. automethod:: __init__
 
+   
+   
 
-
-
-
-
+   
+   
    .. rubric:: Attributes
 
    .. autosummary::
-
+   
       ~ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME
+   
+   
