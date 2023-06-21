@@ -5,28 +5,28 @@
 
 .. autoclass:: MetadataOptions
 
-   
+
    .. automethod:: __init__
 
-   
+
    .. rubric:: Methods
 
    .. autosummary::
-   
-      ~MetadataOptions.defaults
-   
-   
 
-   
-   
+      ~MetadataOptions.defaults
+
+
+
+
+
    .. rubric:: Attributes
 
    .. autosummary::
-   
+
       ~MetadataOptions.NAME
       ~MetadataOptions.EFFECTIVE_TIME
       ~MetadataOptions.DATA_TYPE
       ~MetadataOptions.SLO_INFO
       ~MetadataOptions.FEATURE_STATUS
-   
-   
+
+
