@@ -13,9 +13,7 @@ from tecton_client.exceptions import UnknownTypeException
 
 
 class Value:
-    """
-    Represents an object containing a feature value with a specific type.
-    """
+    """Represents an object containing a feature value with a specific type."""
 
     def __init__(self: Self, data_type: DataType, feature_value: Union[str, None, list]) -> None:
         """Set the value of the feature in the specified type.
