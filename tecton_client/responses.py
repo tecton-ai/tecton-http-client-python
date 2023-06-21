@@ -157,7 +157,7 @@ class FeatureValue:
         self.feature_value = Value(self.data_type, feature_value).value
 
 class SloInformation:
-    """Class encapsulating all the data related to SLO information returned from a GetFeatures API call.
+    """Class that represents SLO Information provided by Tecton when serving feature values.
 
     Attributes:
         slo_eligible (bool): Whether the feature is SLO eligible.
@@ -249,7 +249,7 @@ class GetFeaturesResponse(AbstractTectonResponse):
         """Returns a dictionary of feature values.
 
         Returns:
-            Dictionary with feature names as keys and their corresponding values.
+            Dictionary with feature names as keys and their corresponding feature values.
         """
         return {
             f"{feature.feature_namespace}.{feature.feature_name}": feature.feature_value
