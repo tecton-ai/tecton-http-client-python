@@ -39,7 +39,7 @@ class Value:
             BoolType: bool,
             ArrayType: lambda x: [Value(data_type.element_type, value) for value in x],
             StructType: lambda x: {
-                field.name: Value(field._data_type, x[i]) for i, field in enumerate(data_type.fields)
+                field.name: Value(field.data_type, x[i]) for i, field in enumerate(data_type.fields)
             },
         }
 
@@ -54,11 +54,11 @@ class Value:
             raise UnknownTypeException(data_type.__str__())
 
     @property
-    def value(self: Self) -> Union[int, float, str, bool, list, dict]:
+    def value(self: Self) -> Union[int, float, str, bool, list, dict, None]:
         """Return the feature value of the feature in the specified type.
 
         Returns:
-            Union[int, float, str, bool, list, dict]: The value of the feature in the specified type.
+            Union[int, float, str, bool, list, dict, None]: The value of the feature in the specified type.
 
         """
         if self._value[self._data_type.__str__()] is None:
