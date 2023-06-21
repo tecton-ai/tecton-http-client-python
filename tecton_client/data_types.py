@@ -192,7 +192,7 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
             raise TectonClientError(message)
     else:
         message = (
-            f"Received unknown data type {data_type.__str__()} in the response."
+            f"Received unknown data type {data_type} in the response."
             f"If problem persists, please contact Tecton Support for assistance."
         )
         raise TectonClientError(message)
