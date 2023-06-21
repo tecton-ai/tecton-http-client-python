@@ -60,13 +60,13 @@ class ArrayType(DataType):
         """Initialize an ArrayType object.
 
         Args:
-            element_type (DataType): The datatype of the elements in the array.
+            element_type (DataType): The DataType of the elements in the array.
         """
         self._element_type = element_type
 
     @property
     def element_type(self: Self) -> DataType:
-        """Return the datatype of the elements in the array."""
+        """Return the DataType of the elements in the array."""
         return self._element_type
 
     def __str__(self: Self) -> str:
@@ -134,19 +134,20 @@ class StructType(DataType):
 
 
 def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None) -> DataType:
-    """Get the data type of the feature value.
+    """Get the DataType of the feature value given a string representing the type in the response.
 
     Args:
-        data_type (str): The type of the feature value.
-        element_type (Optional[dict]): The type of the elements in the array, if value_type is ArrayType.
-        fields (Optional[list]): The fields of the struct, if value_type is StructType.
+        data_type (str): A string representing the type of the feature value, as returned in the response.
+        element_type (Optional[dict]): A dict representing the type of the elements in the array,
+            when the data_type is ArrayType.
+        fields (Optional[list]): A list representing the fields of the struct, when the data_type is StructType.
 
     Returns:
         DataType: The parsed data type of the feature value.
 
     Raises:
         MissingResponseException: If some expected metadata is missing in the response.
-        UnknownTypeException: If the value_type is unknown or unsupported.
+        UnknownTypeException: If the data_type is unknown or unsupported.
     """
     data_type = data_type.lower()
 

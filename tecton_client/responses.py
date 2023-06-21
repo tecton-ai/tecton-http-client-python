@@ -102,7 +102,7 @@ class FeatureValue:
         feature_namespace (str): The namespace that the feature belongs to.
         feature_name (str): The name of the feature.
         feature_status (str): The status of the feature.
-        effective_time (datetime): The effective time of the feature value.
+        effective_time (datetime): The effective serving time of the feature.
     """
 
     def __init__(
@@ -121,7 +121,7 @@ class FeatureValue:
             name (str): The name of the feature.
             value_type (str): String that indicates the type of the feature value.
             feature_value (Union[str, None, list]): The value of the feature.
-            effective_time (Optional[str]): The effective time of the feature value, sent as ISO-8601 format string.
+            effective_time (Optional[str]): The effective serving time of the feature, sent as ISO-8601 format string.
             element_type (Optional[dict]): Dictionary that indicates the type of the elements in the array,
                 present if value_type is ArrayType.
             fields (Optional[list]): List of the fields of the struct, if value_type is StructType.
