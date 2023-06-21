@@ -58,7 +58,7 @@ class TestResponse:
         actual_slo_info = {
             "slo_eligible": True,
             "slo_server_time_seconds": 0.039343822,
-            "dynamoDB_response_size_bytes": 204,
+            "store_response_size_bytes": 204,
             "server_time_seconds": 0.049082851,
         }
 

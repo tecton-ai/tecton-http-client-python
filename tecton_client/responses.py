@@ -160,12 +160,17 @@ class SloInformation:
     """Class that represents SLO Information provided by Tecton when serving feature values.
 
     Attributes:
-        slo_eligible (bool): Whether the feature is SLO eligible.
-        server_time_seconds (float): The server time in seconds.
-        slo_server_time_seconds (float): The SLO server time in seconds.
-        dynamoDB_response_size_bytes (int): The DynamoDB response size in bytes.
-        store_max_latency (float): The store max latency.
-        store_response_size_bytes (int): The store response size in bytes.
+        slo_eligible (Optional[bool]): Whether the request was eligible for the latency SLO.
+        server_time_seconds (Optional[float]): This includes the total time spent in the feature server, including
+            online transforms and store latency.
+        slo_server_time_seconds (Optional[float]): The server time minus any time spent waiting for online transforms to
+            finish after all table transforms have finished. This is the indicator used for determining whether
+            we are meeting the SLO.
+        store_max_latency (Optional[float]): Max latency observed by the request from the store in seconds.
+            Tecton fetches multiple feature views in parallel.
+        store_response_size_bytes (Optional[int]): Total store response size bytes.
+        slo_ineligibility_reasons (Optional[List[str]): List of one or more reasons indicating why the feature was not
+            SLO eligible. Only present if slo_eligible is False.
     """
 
     def __init__(self: Self, slo_information: dict) -> None:
@@ -177,9 +182,9 @@ class SloInformation:
         self.slo_eligible = slo_information.get("sloEligible")
         self.server_time_seconds = slo_information.get("serverTimeSeconds")
         self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
-        self.dynamoDB_response_size_bytes = slo_information.get("dynamodbResponseSizeBytes")
         self.store_max_latency = slo_information.get("storeMaxLatency")
         self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
+        self.slo_ineligibility_reasons = slo_information.get("sloIneligibilityReasons")
 
     def to_dict(self: Self) -> dict:
         """Returns the SloInformation object as a dictionary."""
