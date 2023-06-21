@@ -98,7 +98,7 @@ class FeatureValue:
 
     Attributes:
         value_type (DataType): The type of the feature value.
-        feature_value (Union[str, int, float, bool, list, dict]): The value of the feature.
+        feature_value (Union[str, int, float, bool, list, dict, None]): The value of the feature.
         feature_namespace (str): The namespace that the feature belongs to.
         feature_name (str): The name of the feature.
         feature_status (str): The status of the feature.
