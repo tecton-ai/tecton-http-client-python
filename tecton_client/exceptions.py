@@ -11,7 +11,7 @@ class TectonClientException(TectonException):
 
 
 class TectonServerException(TectonException):
-    """Raised for exceptions representing error response from Tecton API."""
+    """Raised for error responses received from the Tecton API."""
 
 
 def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) -> str:
@@ -35,7 +35,7 @@ class InvalidParameterError(TectonClientException):
 
 
 class InvalidURLError(TectonClientException):
-    """Raised when the URL passed is invalid."""
+    """Raised when the URL passed is invalid, such as the URL being empty or not having a valid netloc."""
 
 
 class InvalidParameterMessage(str, Enum):

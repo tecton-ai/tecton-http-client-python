@@ -82,9 +82,11 @@ class GetFeatureRequestData:
                 and the value is the request context value for this request.
 
         Raises:
-            InvalidParameterError: If both join_key_map and request_context_map are None,
-                or key or value in either map is empty. Also raised if the value is None when allow_none is False,
-                or if the value is an empty string when allow_none is True.
+            InvalidParameterError: Raised if
+                - both join_key_map and request_context_map are None
+                - key or value in either map is empty
+                - the value in the map is None when allow_none is False
+                - the value in the map is an empty string when allow_none is True.
             UnsupportedTypeError: If the key is not a string or the value is not one of the allowed types.
         """
         if join_key_map is None and request_context_map is None:
@@ -118,8 +120,10 @@ class GetFeatureRequestData:
             dict: The validated map with appropriate types for values.
 
         Raises:
-            InvalidParameterError: If key or value in either map is empty, if the value is None when allow_none is False
-                or if the value is an empty string when allow_none is True.
+            InvalidParameterError: Raised if
+                - the key or value in either map is empty
+                - the value in the map is None when allow_none is False
+                - the value in the map is an empty string when allow_none is True
             UnsupportedTypeError: If the key is not a string or the value is not one of the allowed types.
 
         """
