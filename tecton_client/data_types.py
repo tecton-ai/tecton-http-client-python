@@ -48,8 +48,6 @@ class ArrayType(DataType):
         array_type = ArrayType(element_type)
         print(array_type)  # Output: Array(Float)
 
-    Attributes:
-        element_type (DataType): The datatype of the elements in the array.
     """
 
     def __init__(self: Self, element_type: DataType) -> None:
