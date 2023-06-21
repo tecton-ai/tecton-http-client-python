@@ -24,7 +24,11 @@ class TestResponse:
         for i, key in enumerate(feature_values_map):
             feature_type = get_features_response.feature_values[i].value_type
             if isinstance(feature_type, StructType):
-                feature_answer = [value for key, value in feature_values_map[key].items()]
+                feature_answer = (
+                    [value for key, value in feature_values_map[key].items()]
+                    if feature_values_map[key] is not None
+                    else None
+                )
             else:
                 feature_answer = feature_values_map[key]
             actual_answer.append(feature_answer)
@@ -36,6 +40,9 @@ class TestResponse:
         [
             ("resources/sample_response.json", [0, False, None, "nimbostratus", 55.5]),
             ("resources/sample_response_null.json", [True, None, None, None, 669]),
+            ("resources/sample_response_struct.json", [["2.46", 2.46]]),
+            ("resources/sample_response_list.json", [[0], None, [55.5, 57.88, 58.96, 57.66, None, 55.98]]),
+            ("resources/sample_response_mixed.json", [None, [1, 2, 3, None, 5], "test"]),
         ],
     )
     def test_json_responses(self: Self, file_name: str, expected_answer: list) -> None:
@@ -47,37 +54,12 @@ class TestResponse:
             feature_values_map = get_features_response.get_feature_values_dict()
             self.assert_answers(expected_answer, get_features_response, feature_values_map)
 
-    def test_arr_response(self: Self) -> None:
-        expected_float_list = [55.5, 57.88, 58.96, 57.66, None, 55.98]
-        expected_string_list = [None]
-        expected_int_list = [0]
-        expected_answers = [expected_int_list, expected_string_list, expected_float_list]
-
-        with open("resources/sample_response_list.json") as json_file:
-            json_response = json.load(json_file)
-            get_features_response = GetFeaturesResponse(json_response)
-
-            assert get_features_response is not None
-            feature_values_map = get_features_response.get_feature_values_dict()
-            assert len(feature_values_map) == len(expected_answers)
-
-            actual_answers = []
-
-            for i, key in enumerate(feature_values_map):
-                feature_type = get_features_response.feature_values[i].value_type
-                mini_ans_list = []
-                for item in feature_values_map[key].value[feature_type.__str__()]:
-                    mini_ans_list.append(item.value[feature_type.element_type.__str__()])
-                actual_answers.append(mini_ans_list)
-
-            assert actual_answers == expected_answers
-
     def test_slo_response(self: Self) -> None:
         actual_slo_info = {
-            "sloEligible": True,
-            "sloServerTimeSeconds": 0.039343822,
-            "dynamodbResponseSizeBytes": 204,
-            "serverTimeSeconds": 0.049082851,
+            "slo_eligible": True,
+            "slo_server_time_seconds": 0.039343822,
+            "dynamoDB_response_size_bytes": 204,
+            "server_time_seconds": 0.049082851,
         }
 
         with open("resources/sample_response_slo.json") as json_file:

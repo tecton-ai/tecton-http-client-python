@@ -1,11 +1,31 @@
 {
   "result": {
-    "features": [["2.46", 2.46], [1, 2, 3, 4, 5], "test"]
+    "features": [null, ["2.46", 2.46], [1, 2, 3, null, 5], "test"]
   },
   "metadata": {
     "features": [
       {
-        "name": "test.output_struct",
+        "name": "test.output_struct1",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "string_field",
+              "dataType": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "float64_field",
+              "dataType": {
+                "type": "float64"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "test.output_struct2",
         "dataType": {
           "type": "struct",
           "fields": [
