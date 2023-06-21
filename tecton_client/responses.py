@@ -62,13 +62,17 @@ class Value:
 
         """
         if isinstance(self._data_type, StructType):
-            value_struct = self._value[self._data_type.__str__()]
-            if value_struct is not None:
-                return {field: value.value for field, value in value_struct.items()}
+            return (
+                {field: value.value for field, value in self._value[self._data_type.__str__()].items()}
+                if self._value[self._data_type.__str__()] is not None
+                else None
+            )
 
         elif isinstance(self._data_type, ArrayType):
-            value_list = self._value[self._data_type.__str__()]
-            if value_list is not None:
-                return [value.value for value in value_list]
+            return (
+                [value.value for value in self._value[self._data_type.__str__()]]
+                if self._value[self._data_type.__str__()] is not None
+                else None
+            )
         else:
             return self._value[self._data_type.__str__()]
