@@ -17,12 +17,11 @@ This is a Python client library to make it easy to call the feature server endpo
    This library is currently under development. Please contact Tecton support if you have any questions.
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 2
    :caption: Contents:
 
    data_types
    exceptions
-   http_client
    requests
    responses
 
