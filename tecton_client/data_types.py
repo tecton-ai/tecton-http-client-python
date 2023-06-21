@@ -67,10 +67,6 @@ class StructField:
     """Class to represent a field in a StructType.
 
     A `StructField` object represents a field within a `StructType`, containing a name and a corresponding `DataType`.
-
-    Attributes:
-        name (str): Name of the field
-        _data_type (str): DataType of the field
     """
 
     def __init__(self: Self, name: str, data_type: DataType) -> None:
@@ -79,10 +75,12 @@ class StructField:
 
     @property
     def name(self: Self) -> str:
+        """Return the name of the field."""
         return self._name
 
     @property
     def data_type(self: Self) -> DataType:
+        """Return the DataType of the field."""
         return self._data_type
 
     def __str__(self: Self) -> str:
@@ -99,9 +97,6 @@ class StructType(DataType):
         field2 = StructField("age", IntType())
         struct_type = StructType([field1, field2])
         print(struct_type)  # Output: Struct(Field(name, String), Field(age, Int))
-
-    Attributes:
-        fields (List[StructField]): The list of StructField objects representing the fields in the struct.
     """
 
     def __init__(self: Self, fields: List[StructField]) -> None:
@@ -109,6 +104,7 @@ class StructType(DataType):
 
     @property
     def fields(self: Self) -> List[StructField]:
+        """Return the list of StructField objects representing the fields in the struct."""
         return self._fields
 
     def __str__(self: Self) -> str:
