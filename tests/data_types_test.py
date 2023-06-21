@@ -25,6 +25,14 @@ class TestDataTypes:
         }
     ]
 
+    array_data2 = [[1, 2, 3], [4, 5, None], None]
+    array_fields2 = [
+        {
+            "name": "array",
+            "dataType": {"type": "array", "elementType": {"type": "array", "elementType": {"type": "int64"}}},
+        }
+    ]
+
     struct_type1 = StructType(
         [
             StructField(
@@ -34,7 +42,7 @@ class TestDataTypes:
             StructField("normal", IntType()),
         ]
     )
-    struct_data1 = [["test_string", 123.45], [True, False], 123]
+    struct_data1 = [["test_string", 123.45], [True, False], None]
     struct_fields1 = [
         {
             "name": "nested_struct",
@@ -58,7 +66,17 @@ class TestDataTypes:
     ]
 
     @pytest.mark.parametrize(
-        "type_name,value", [(StringType(), "test_string"), (IntType(), 123), (FloatType(), 123.45), (BoolType(), True)]
+        "type_name,value",
+        [
+            (StringType(), "test_string"),
+            (IntType(), 123),
+            (FloatType(), 123.45),
+            (BoolType(), True),
+            (BoolType(), None),
+            (StringType(), None),
+            (IntType(), None),
+            (FloatType(), None),
+        ],
     )
     def test_value(self: Self, type_name: DataType, value: Union[str, float, int, bool]) -> None:
         test_var = Value(type_name, value)
@@ -100,7 +118,7 @@ class TestDataTypes:
             else:
                 assert datadict[key] == data
 
-    @pytest.mark.parametrize("type_name,actual_data", [(array_type1, array_data1)])
+    @pytest.mark.parametrize("type_name,actual_data", [(array_type1, array_data1), (array_type1, array_data2)])
     def test_nested_array(self: Self, type_name: ArrayType, actual_data: list) -> None:
         test_var = Value(type_name, actual_data)
         arraylist = test_var.value
