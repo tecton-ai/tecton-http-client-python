@@ -6,8 +6,8 @@ class TectonException(Exception):
     """Base class for all Tecton specific exceptions."""
 
 
-class TectonClientException(TectonException):
-    """Raised for exceptions thrown by the Python client."""
+class TectonClientError(TectonException):
+    """Raised for errors thrown by the Python client."""
 
 
 class TectonServerException(TectonException):
@@ -30,12 +30,12 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
     return error_message
 
 
-class InvalidParameterError(TectonClientException):
+class InvalidParameterError(TectonClientError):
     """Raised when one or more parameters passed in the request are invalid."""
 
 
-class InvalidURLError(TectonClientException):
-    """Raised when the URL passed is invalid, such as the URL being empty or not having a valid netloc."""
+class InvalidURLError(TectonClientError):
+    """Raised when the URL passed in is invalid or empty."""
 
 
 class InvalidParameterMessage(str, Enum):
@@ -49,8 +49,8 @@ class InvalidParameterMessage(str, Enum):
     EMPTY_MAPS = "Both Join Key map and Request Context Map cannot be empty"
 
 
-class UnsupportedTypeError(TectonClientException):
-    """Raised when the type of parameter passed is not supported by the client."""
+class UnsupportedTypeError(TectonClientError):
+    """Raised when the data type of one or more parameters passed in is not supported by Tecton."""
 
 
 def EMPTY_KEY_VALUE(key: str, value: str) -> str:
@@ -91,63 +91,3 @@ def INVALID_TYPE_KEY_VALUE(
             f"{map_type} values can only be of types {allowed_types}. "
             f"Given value for {map_type} is {value} of type {type(value)}"
         )
-
-
-class ResponseRelatedErrorMessage(str, Enum):
-    """Error messages for response related exceptions."""
-
-    MALFORMED_FEATURE_NAME = (
-        "Feature name provided is not in the expected format of 'namespace.name'."
-        "If problem persists, please contact Tecton Support for assistance."
-    )
-
-
-def UNKNOWN_TYPE(data_type: str) -> str:
-    """Error message when the type of one or more feature values in the response received is not known.
-
-    Args:
-        data_type (str): Type of the response received
-
-    Returns:
-        str: The error message string.
-    """
-    message = (
-        f"Received unknown data type {data_type} in the response."
-        f"If problem persists, please contact Tecton Support for assistance."
-    )
-    return message
-
-
-def MISMATCHED_TYPE(value: str, data_type: str) -> str:
-    """Error message for when the type of one or more feature values in the response received
-    does not match the expected type.
-
-    Args:
-        value (str): Value of the response received.
-        data_type (str): Type of the response received.
-
-    Returns:
-        str: The error message string.
-    """
-    message = (
-        f"Unexpected Error occurred while parsing the feature value {value} to data type {data_type}. "
-        f"If problem persists, please contact Tecton Support for assistance."
-    )
-    return message
-
-
-def MISSING_EXPECTED_METADATA(metadata: str) -> str:
-    """Error message for when the expected metadata is missing from the response.
-
-    Args:
-        metadata (str): The metadata field.
-
-    Returns:
-        str: The error message string.
-
-    """
-    message = (
-        f"Required metadata {metadata} is missing from the response."
-        f"If problem persists, please contact Tecton Support for assistance."
-    )
-    return message

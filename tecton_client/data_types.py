@@ -3,13 +3,7 @@ from typing import List
 from typing import Optional
 from typing import Self
 
-from tecton_client.exceptions import MISSING_EXPECTED_METADATA
-from tecton_client.exceptions import TectonClientException
-from tecton_client.exceptions import UNKNOWN_TYPE
-
-from tecton_client.exceptions import MISSING_EXPECTED_METADATA
-from tecton_client.exceptions import MissingResponseException
-from tecton_client.exceptions import UnknownTypeException
+from tecton_client.exceptions import TectonClientError
 
 
 class DataType(abc.ABC):
@@ -155,8 +149,7 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
         DataType: The parsed :class:`DataType` of the feature value.
 
     Raises:
-        TectonClientException: If some expected metadata is missing in the response,
-            or if the data_type is unknown or unsupported.
+        TectonClientError: If an unexpected error occurred while processing the data types in the response.
     """
     data_type = data_type.lower()
 
@@ -192,6 +185,14 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
         try:
             return type_mapping[data_type]()
         except Exception:
-            raise TectonClientException(MISSING_EXPECTED_METADATA(f"for given data type {data_type}"))
+            message = (
+                f"Required metadata for the given data type {data_type} is missing from the response."
+                f"If problem persists, please contact Tecton Support for assistance."
+            )
+            raise TectonClientError(message)
     else:
-        raise TectonClientException(UNKNOWN_TYPE(data_type.__str__()))
+        message = (
+            f"Received unknown data type {data_type.__str__()} in the response."
+            f"If problem persists, please contact Tecton Support for assistance."
+        )
+        raise TectonClientError(message)

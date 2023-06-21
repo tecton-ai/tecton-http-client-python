@@ -97,7 +97,7 @@ class TectonHttpClient:
             str: The validated URL string.
 
         Raises:
-            InvalidURLError: If the URL is empty or does not have a valid netloc.
+            InvalidURLError: If the URL is invalid or empty.
 
         """
         if not url or not urlparse(url).netloc:

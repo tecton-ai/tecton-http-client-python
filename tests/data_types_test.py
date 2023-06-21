@@ -12,7 +12,7 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructField
 from tecton_client.data_types import StructType
-from tecton_client.exceptions import TectonClientException
+from tecton_client.exceptions import TectonClientError
 from tecton_client.responses import FeatureValue
 from tecton_client.responses import Value
 
@@ -156,7 +156,7 @@ class TestDataTypes:
 
     @pytest.mark.parametrize("data_type,feature_value", [(None, "123")])
     def test_none_feature_data_type(self: Self, data_type: str, feature_value: str) -> None:
-        with pytest.raises(TectonClientException):
+        with pytest.raises(TectonClientError):
             FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
 
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
@@ -188,7 +188,7 @@ class TestDataTypes:
 
     @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields3)])
     def test_none_feature_value_type_with_arrays(self: Self, feature_value: list, fields: list) -> None:
-        with pytest.raises(TectonClientException):
+        with pytest.raises(TectonClientError):
             FeatureValue(
                 name="test.test_feature",
                 data_type="array",
