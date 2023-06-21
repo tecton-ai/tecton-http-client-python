@@ -1,5 +1,7 @@
 import asyncio
 
+import httpx
+
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
@@ -17,7 +19,16 @@ class TectonClient:
 
     """
 
-    def __init__(self, url: str, api_key: str) -> None:
+    def __init__(
+        self,
+        url: str,
+        api_key: str,
+        client: Optional[httpx.AsyncClient] = None,
+        connect: float = 2.0,
+        read: float = 2.0,
+        max_keepalive_connections: int = 10,
+        keepalive_expiry: float = 300,
+    ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
@@ -26,6 +37,17 @@ class TectonClient:
                 <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
+            client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
+                Users can initialize their own HTTPX client and pass it in to the TectonClient object.
+                If no client is passed in, the TectonClient object will initialize its own HTTPX client.
+            connect (float): (Optional) The timeout for the initial connection to the server, in seconds.
+                Defaults to 2.0 seconds.
+            read (float): (Optional) The timeout for reading the response from the server, in seconds.
+                Defaults to 2.0 seconds.
+            max_keepalive_connections (int): (Optional) The maximum number of connections to keep in the connection pool.
+                Defaults to 10.
+            keepalive_expiry (float): (Optional) The maximum time to keep a connection alive, in seconds.
+                Defaults to 300 seconds (5 minutes).
         """
         self._tecton_http_client = TectonHttpClient(url, api_key)
         self._loop = asyncio.new_event_loop()

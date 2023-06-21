@@ -18,6 +18,20 @@ from tecton_client.exceptions import TectonServerException
 API_PREFIX = "Tecton-key"
 
 
+class HttpClientOptions:
+    def __init__(
+        self: Self,
+        connect: float = 5.0,
+        read: float = 5.0,
+        max_keepalive_connections: int = 10,
+        keepalive_expiry: float = 300,
+    ) -> None:
+        self.timeout = httpx.Timeout(10, connect=connect, read=read)
+        self.limits = httpx.Limits(
+            max_keepalive_connections=max_keepalive_connections, keepalive_expiry=keepalive_expiry
+        )
+
+
 class TectonHttpClient:
     """Basic HTTP Client to send and receive requests to a given URL."""
 
@@ -28,7 +42,9 @@ class TectonHttpClient:
         ACCEPT = "Accept"
         CONTENT_TYPE = "Content-Type"
 
-    def __init__(self, url: str, api_key: str, client: Optional[httpx.AsyncClient] = None) -> None:
+    def __init__(
+        self, url: str, api_key: str, client_options: HttpClientOptions, client: Optional[httpx.AsyncClient] = None
+    ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
@@ -41,8 +57,9 @@ class TectonHttpClient:
         self.api_key = self.validate_key(api_key)
 
         self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self.api_key}")
-
-        self.client: httpx.AsyncClient = client or httpx.AsyncClient()
+        self.client: httpx.AsyncClient = client or httpx.AsyncClient(
+            timeout=client_options.timeout, limits=client_options.limits
+        )
         self.is_client_closed: bool = False
 
     async def close(self) -> None:

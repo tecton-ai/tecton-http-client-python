@@ -1,6 +1,7 @@
 import json
 from typing import Final
 
+import httpx
 import pytest
 from pytest_httpx import HTTPXMock
 
@@ -228,3 +229,27 @@ class TestTectonClient:
         for exception in TectonServerException.__subclasses__():
             assert exception.STATUS_CODE not in response_codes
             response_codes.add(exception.STATUS_CODE)
+
+    client1 = httpx.AsyncClient(timeout=10, limits=httpx.Limits(max_connections=10))
+    client2 = httpx.AsyncClient()
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("client", [client1, client2, None])
+    async def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
+        if client is None:
+            local_client = TectonClient(
+                TestTectonClient.url,
+                TestTectonClient.api_key,
+                connect=10,
+                read=15,
+                max_keepalive_connections=7,
+                keepalive_expiry=500,
+            )
+        else:
+            local_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
+
+        httpx_mock.add_response(json=self.mock_response1)
+        get_features_response = local_client.get_features(self.get_features_request)
+        assert get_features_response.get_feature_values_dict() == self.expected_response1
+        print(local_client.client_options.timeout, local_client.client_options.limits)
+        local_client.close()
