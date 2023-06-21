@@ -143,7 +143,7 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
         fields (Optional[list]): A list representing the fields of the struct, when the data_type is StructType.
 
     Returns:
-        DataType: The parsed data type of the feature value.
+        DataType: The parsed DataType of the feature value.
 
     Raises:
         MissingResponseException: If some expected metadata is missing in the response.
