@@ -1,3 +1,6 @@
+from datetime import datetime
+from enum import Enum
+from typing import Optional
 from typing import Self
 from typing import Union
 
@@ -5,10 +8,14 @@ from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
 from tecton_client.data_types import FloatType
+from tecton_client.data_types import get_data_type
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import MismatchedTypeException
+from tecton_client.exceptions import MISSING_EXPECTED_METADATA
+from tecton_client.exceptions import MissingResponseException
+from tecton_client.exceptions import ResponseRelatedErrorMessage
 from tecton_client.exceptions import UnknownTypeException
 
 
@@ -70,3 +77,68 @@ class Value:
 
         else:
             return self._value[self._data_type.__str__()]
+
+
+class FeatureStatus(str, Enum):
+    """Enum to represent the serving status of a feature."""
+
+    PRESENT = "PRESENT"
+    """The feature values were found in the online store for the join keys requested."""
+
+    MISSING_DATA = "MISSING_DATA"
+    """The feature values were not found in the online store either because the join keys do not exist
+    or the feature values are outside ttl."""
+
+    UNKNOWN = "UNKNOWN"
+    """An unknown status code occurred, most likely because an error occurred during feature retrieval."""
+
+
+class FeatureValue:
+    """Class encapsulating all the data for a Feature value returned from a GetFeatures API call.
+
+    Attributes:
+        value_type (DataType): The type of the feature value.
+        feature_value (Union[str, int, float, bool, list, dict, None]): The value of the feature.
+        feature_namespace (str): The namespace that the feature belongs to.
+        feature_name (str): The name of the feature.
+        feature_status (str): The status of the feature.
+        effective_time (datetime): The effective time of the feature value.
+    """
+
+    def __init__(
+        self: Self,
+        name: str,
+        value_type: str,
+        feature_value: Union[str, None, list],
+        effective_time: Optional[str] = None,
+        element_type: Optional[dict] = None,
+        fields: Optional[list] = None,
+        feature_status: Optional[str] = None,
+    ) -> None:
+        """Initialize a FeatureValue object.
+
+        Args:
+            name (str): The name of the feature.
+            value_type (str): String that indicates the type of the feature value.
+            feature_value (Union[str, None, list]): The value of the feature.
+            effective_time (Optional[str]): The effective time of the feature value, sent as ISO-8601 format string.
+            element_type (Optional[dict]): Dictionary that indicates the type of the elements in the array,
+                present if value_type is ArrayType.
+            fields (Optional[list]): List of the fields of the struct, if value_type is StructType.
+            feature_status (Optional[str]): The status string of the feature value.
+
+        Raises:
+            MissingResponseException: If the name of the feature is not in the format of <namespace>.<feature_name>.
+        """
+        try:
+            self.feature_namespace, self.feature_name = name.split(".")
+        except ValueError:
+            raise MissingResponseException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
+
+        if not value_type:
+            raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
+
+        self.feature_status = FeatureStatus(feature_status) if feature_status else None
+        self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
+        self.value_type = get_data_type(value_type, element_type, fields)
+        self.feature_value = Value(self.value_type, feature_value).value

@@ -12,6 +12,8 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructField
 from tecton_client.data_types import StructType
+from tecton_client.exceptions import MissingResponseException
+from tecton_client.responses import FeatureValue
 from tecton_client.responses import Value
 
 
@@ -33,6 +35,12 @@ class TestDataTypes:
         }
     ]
 
+    array_fields3 = [
+        {
+            "name": "array",
+            "dataType": {"type": "array", "elementType": None},
+        }
+    ]
     struct_type1 = StructType(
         [
             StructField(
@@ -124,3 +132,68 @@ class TestDataTypes:
         arraylist = test_var.value
         assert len(arraylist) == len(actual_data)
         assert arraylist == actual_data
+
+    @pytest.mark.parametrize(
+        "value_type,feature_value",
+        [
+            ("string", "test_feature_value"),
+            ("int64", 123),
+            ("float64", 123.45),
+            ("float32", 123.45),
+            ("boolean", True),
+            ("int64", None),
+            ("string", None),
+        ],
+    )
+    def test_basic_feature_values(self: Self, value_type: str, feature_value: str) -> None:
+        feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+        assert feature.feature_value == feature_value
+
+    @pytest.mark.parametrize("value_type,feature_value", [("int64", "123")])
+    def test_int_feature_value(self: Self, value_type: str, feature_value: str) -> None:
+        feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+        assert feature.feature_value == int(feature_value)
+
+    @pytest.mark.parametrize("value_type,feature_value", [(None, "123")])
+    def test_none_feature_value_type(self: Self, value_type: str, feature_value: str) -> None:
+        with pytest.raises(MissingResponseException):
+            FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+
+    @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
+    def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
+        feature = FeatureValue(
+            name="test.test_feature", value_type="struct", feature_value=feature_value, fields=fields
+        )
+
+        feature_val = feature.feature_value
+
+        for i, (field, value) in enumerate(zip(feature.value_type.fields, feature_value)):
+            key, datatype = field.name, field.data_type
+
+            if isinstance(datatype, StructType):
+                result_dict = {field.name: value[j] for j, field in enumerate(datatype.fields)}
+                assert result_dict == feature_val[key]
+            else:
+                assert feature_val[key] == feature_value[i]
+
+    @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields1)])
+    def test_feature_value_with_arrays(self: Self, feature_value: list, fields: list) -> None:
+        feature = FeatureValue(
+            name="test.test_feature",
+            value_type="array",
+            feature_value=feature_value,
+            element_type=fields[0]["dataType"]["elementType"],
+        )
+
+        feature_val = feature.feature_value
+        assert feature_val == feature_value
+
+    @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields3)])
+    def test_none_feature_value_type_with_arrays(self: Self, feature_value: list, fields: list) -> None:
+        with pytest.raises(MissingResponseException):
+            FeatureValue(
+                name="test.test_feature",
+                value_type="array",
+                feature_value=feature_value,
+                element_type=fields[0]["dataType"]["elementType"],
+            )

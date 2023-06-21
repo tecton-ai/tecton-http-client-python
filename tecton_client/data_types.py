@@ -1,6 +1,11 @@
 import abc
 from typing import List
+from typing import Optional
 from typing import Self
+
+from tecton_client.exceptions import MISSING_EXPECTED_METADATA
+from tecton_client.exceptions import MissingResponseException
+from tecton_client.exceptions import UnknownTypeException
 
 
 class DataType(abc.ABC):
@@ -126,3 +131,57 @@ class StructType(DataType):
     def __str__(self: Self) -> str:
         fields_string = ", ".join(str(field) for field in self._fields)
         return f"Struct({fields_string})"
+
+
+def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None) -> DataType:
+    """Get the data type of the feature value.
+
+    Args:
+        data_type (str): The type of the feature value.
+        element_type (Optional[dict]): The type of the elements in the array, if value_type is ArrayType.
+        fields (Optional[list]): The fields of the struct, if value_type is StructType.
+
+    Returns:
+        DataType: The parsed data type of the feature value.
+
+    Raises:
+        MissingResponseException: If some expected metadata is missing in the response.
+        UnknownTypeException: If the value_type is unknown or unsupported.
+    """
+    data_type = data_type.lower()
+
+    type_mapping = {
+        "int64": IntType,
+        "float64": FloatType,
+        "float32": FloatType,
+        "string": StringType,
+        "boolean": BoolType,
+        "array": lambda: ArrayType(
+            get_data_type(
+                data_type=element_type.get("type"),
+                element_type=element_type.get("elementType"),
+                fields=element_type.get("fields"),
+            )
+        ),
+        "struct": lambda: StructType(
+            [
+                StructField(
+                    field["name"],
+                    get_data_type(
+                        data_type=field["dataType"].get("type"),
+                        element_type=field["dataType"].get("elementType"),
+                        fields=field["dataType"].get("fields"),
+                    ),
+                )
+                for field in fields
+            ]
+        ),
+    }
+
+    if data_type in type_mapping:
+        try:
+            return type_mapping[data_type]()
+        except Exception:
+            raise MissingResponseException(MISSING_EXPECTED_METADATA(f"for given data type {data_type}"))
+    else:
+        raise UnknownTypeException(data_type.__str__())
