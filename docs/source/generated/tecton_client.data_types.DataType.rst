@@ -5,18 +5,18 @@
 
 .. autoclass:: DataType
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~DataType.__init__
+   
+   
 
-
-
-
-
-
+   
+   
+   
