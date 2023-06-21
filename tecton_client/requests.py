@@ -66,9 +66,6 @@ class GetFeatureRequestData:
     ) -> None:
         """Initializes a GetFeaturesRequestData instance with the given parameters.
 
-        Either join_key_map or request_context_map must be passed in as a parameter, both cannot be empty.
-        For further reference, please see the documentation [here](https://docs.tecton.ai/http-api)
-
         Args:
             join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]): Join keys used for table-based FeatureViews.
                 The key of this map is the join key name and the value is the join key value for this request.
