@@ -47,26 +47,27 @@ class BoolType(DataType):
 class ArrayType(DataType):
     """Class to represent datatype Array.
 
-    An `ArrayType` object represents an array datatype that can contain elements of another `DataType`.
+    An :class:`ArrayType` object represents an array datatype that can contain elements of another :class:`DataType`.
 
-    Usage:
-        element_type = FloatType()
-        array_type = ArrayType(element_type)
-        print(array_type)  # Output: Array(Float)
+    Examples:
+        >>> element_type = FloatType()
+        >>> array_type = ArrayType(element_type)
+        >>>> print(array_type)
+        Array(Float)
 
     """
 
     def __init__(self: Self, element_type: DataType) -> None:
-        """Initialize an ArrayType object.
+        """Initialize an :class:`ArrayType` object.
 
         Args:
-            element_type (DataType): The DataType of the elements in the array.
+            element_type (DataType): The :class:`DataType` of the elements in the array.
         """
         self._element_type = element_type
 
     @property
     def element_type(self: Self) -> DataType:
-        """Return the DataType of the elements in the array."""
+        """Return the :class:`DataType` of the elements in the array."""
         return self._element_type
 
     def __str__(self: Self) -> str:
@@ -74,17 +75,18 @@ class ArrayType(DataType):
 
 
 class StructField:
-    """Class to represent a field in a StructType.
+    """Class to represent a field in a :class:`StructType`.
 
-    A `StructField` object represents a field within a `StructType`, containing a name and a corresponding `DataType`.
+    A :class:`StructField` object represents a field within a :class:`StructType`, containing a name and a corresponding
+    :class:`DataType`.
     """
 
     def __init__(self: Self, name: str, data_type: DataType) -> None:
-        """Initialize a StructField object.
+        """Initialize a :class:`StructField` object.
 
         Args:
             name (str): Name of the field
-            data_type (DataType): DataType of the field
+            data_type (DataType): :class:`DataType` of the field
         """
         self._name = name
         self._data_type = data_type
@@ -96,7 +98,7 @@ class StructField:
 
     @property
     def data_type(self: Self) -> DataType:
-        """Return the DataType of the field."""
+        """Return the :class:`DataType` of the field."""
         return self._data_type
 
     def __str__(self: Self) -> str:
@@ -106,26 +108,28 @@ class StructField:
 class StructType(DataType):
     """Class to represent datatype Struct.
 
-    A `StructType` object represents a struct datatype, consisting of multiple fields.
+    A :class:`StructType` object represents a struct datatype, consisting of multiple fields.
 
-    Usage:
-        field1 = StructField("name", StringType())
-        field2 = StructField("age", IntType())
-        struct_type = StructType([field1, field2])
-        print(struct_type)  # Output: Struct(Field(name, String), Field(age, Int))
+    Examples:
+        >>> field1 = StructField("name", StringType())
+        >>> field2 = StructField("age", IntType())
+        >>> struct_type = StructType([field1, field2])
+        >>> print(struct_type)
+        Struct(Field(name, String), Field(age, Int))
     """
 
     def __init__(self: Self, fields: List[StructField]) -> None:
-        """Initialize a StructType object.
+        """Initialize a :class:`StructType` object.
 
         Args:
-            fields (List[StructField]): The list of StructField objects representing the fields in the struct.
+            fields (List[:class:`StructField`]): The list of :class:`StructField` objects representing the fields in the
+                struct.
         """
         self._fields = fields
 
     @property
     def fields(self: Self) -> List[StructField]:
-        """Return the list of StructField objects representing the fields in the struct."""
+        """Return the list of :class:`StructField` objects representing the fields in the struct."""
         return self._fields
 
     def __str__(self: Self) -> str:
@@ -134,16 +138,17 @@ class StructType(DataType):
 
 
 def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: Optional[list] = None) -> DataType:
-    """Get the DataType of the feature value given a string representing the type in the response.
+    """Get the :class:`DataType` of the feature value given a string representing the type in the response.
 
     Args:
         data_type (str): A string representing the type of the feature value, as returned in the response.
         element_type (Optional[dict]): A dict representing the type of the elements in the array,
-            when the data_type is ArrayType.
-        fields (Optional[list]): A list representing the fields of the struct, when the data_type is StructType.
+            present when the data_type is :class:`ArrayType`.
+        fields (Optional[list]): A list representing the fields of the struct, present when the data_type is
+            :class:`StructType`
 
     Returns:
-        DataType: The parsed DataType of the feature value.
+        DataType: The parsed :class:`DataType` of the feature value.
 
     Raises:
         MissingResponseException: If some expected metadata is missing in the response.

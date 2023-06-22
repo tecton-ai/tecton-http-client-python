@@ -38,15 +38,15 @@ class MetadataOptions(str, Enum):
     FEATURE_STATUS = "include_serving_status"
     """Include feature serving status information of the feature"""
 
-    @staticmethod
-    def defaults() -> Set["MetadataOptions"]:
-        """Set the default options to include names and data types.
 
-        Returns:
-            Set[MetadataOptions]: The set of default MetadataOptions.
+def _defaults() -> Set["MetadataOptions"]:
+    """Set the default options to include names and data types.
 
-        """
-        return {MetadataOptions.NAME, MetadataOptions.DATA_TYPE}
+    Returns:
+        Set[":class:`MetadataOptions`"]: The set of default :class:`MetadataOptions`.
+
+    """
+    return {MetadataOptions.NAME, MetadataOptions.DATA_TYPE}
 
 
 @dataclass
@@ -54,9 +54,16 @@ class GetFeatureRequestData:
     """Class for request data needed for get-features queries.
 
     Attributes:
-        join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]): Join keys used for table-based FeatureViews
+        join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]): Join keys used for Batch and Stream FeatureViews
+            The values can be of type (int, str, NoneType) and are encoded as follows:
+                    For string keys, the value should be a string.
+                    For int keys, the value should be a string of the decimal representation of the integer.
         request_context_map (Optional[Dict[str, Union[int, str, float]]]):
-            Request context used for OnDemand FeatureViews
+            Request context used for OnDemand FeatureViews.
+            The Request Context values can be of type (int, str, float) and are encoded as follows:
+                    For string values, the value should be a string.
+                    For int values, the value should be a string of the decimal representation of the integer.
+                    For float values, the value should be a number.
     """
 
     def __init__(
@@ -64,7 +71,7 @@ class GetFeatureRequestData:
         join_key_map: Optional[Dict[str, Union[int, str, NoneType]]] = None,
         request_context_map: Optional[Dict[str, Union[int, str, float]]] = None,
     ) -> None:
-        """Initializes a GetFeaturesRequestData instance with the given parameters.
+        """Initializes a :class:`GetFeaturesRequestData` instance with the given parameters.
 
         Args:
             join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]): Join keys used for table-based FeatureViews.
@@ -177,7 +184,8 @@ class AbstractGetFeaturesRequest(TectonRequest):
     """Base class for all requests to fetch feature values from the Tecton API.
 
     Attributes:
-        metadata_options (Set["MetadataOptions"]): Set of options for retrieving additional metadata about features.
+        metadata_options (Set[":class:`MetadataOptions`"]): Set of options for retrieving additional metadata about
+            features.
 
     """
 
@@ -186,7 +194,7 @@ class AbstractGetFeaturesRequest(TectonRequest):
         endpoint: str,
         workspace_name: str,
         feature_service_name: str,
-        metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults(),
+        metadata_options: Set["MetadataOptions"] = _defaults(),
     ) -> None:
         """Initializing an object with the given parameters.
 
@@ -194,12 +202,12 @@ class AbstractGetFeaturesRequest(TectonRequest):
             endpoint (str): HTTP endpoint to send the request to.
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
-            metadata_options (Set["MetadataOptions"]): Options for retrieving additional metadata about feature values.
-                Defaults to the default set of metadata options.
+            metadata_options (Set[":class:`MetadataOptions`"]): Options for retrieving additional metadata about feature
+                values. Defaults to the default set of metadata options.
 
         """
         super().__init__(endpoint, workspace_name, feature_service_name)
-        self.metadata_options = metadata_options.union(MetadataOptions.defaults())
+        self.metadata_options = metadata_options.union(_defaults())
 
 
 @dataclass
@@ -208,8 +216,15 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
 
     Attributes:
         request_data: Request parameters for the query, consisting of a Join Key Map and/or a Request Context Map
-            sent as a GetFeaturesRequestData object.
+            sent as a :class:`GetFeaturesRequestData` object.
         ENDPOINT: Endpoint string for the get-features API.
+
+    Examples:
+        >>> request_data = GetFeaturesRequestData(join_key_map={"user_id": 1234})
+        >>> get_features_request = GetFeaturesRequest("my_workspace", "my_feature_service", request_data=request_data)
+        >>> get_features_request.to_json_string()
+            {"params":{"feature_service_name": "my_feature_service","workspace_name": "my_workspace",
+            "metadata_options": {"include_data_types": True, "include_names": True},"join_key_map": {"user_id": 1234}}}
     """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"
@@ -219,21 +234,22 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         workspace_name: str,
         feature_service_name: str,
         request_data: GetFeatureRequestData,
-        metadata_options: Set["MetadataOptions"] = MetadataOptions.defaults(),
+        metadata_options: Set["MetadataOptions"] = _defaults(),
     ) -> None:
-        """Initializing the GetFeaturesRequest object with the given parameters.
+        """Initializing the :class:`GetFeaturesRequest` object with the given parameters.
 
         Args:
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
             request_data (GetFeatureRequestData): Request parameters for the query.
-            metadata_options (Set["MetadataOptions"]): Options for retrieving additional metadata about feature values.
+            metadata_options (Set[":class:`MetadataOptions`"]): Options for retrieving additional metadata about feature
+                values.
         """
         super().__init__(GetFeaturesRequest.ENDPOINT, workspace_name, feature_service_name, metadata_options)
         self.request_data = request_data
 
     def to_json_string(self: Self) -> str:
-        """Returns a JSON representation of the GetFeaturesRequest.
+        """Returns a JSON representation of the :class:`GetFeaturesRequest` object.
 
         Returns:
             JSON formatted string.

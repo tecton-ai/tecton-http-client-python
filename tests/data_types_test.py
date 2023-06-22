@@ -134,7 +134,7 @@ class TestDataTypes:
         assert arraylist == actual_data
 
     @pytest.mark.parametrize(
-        "value_type,feature_value",
+        "data_type,feature_value",
         [
             ("string", "test_feature_value"),
             ("int64", 123),
@@ -145,29 +145,27 @@ class TestDataTypes:
             ("string", None),
         ],
     )
-    def test_basic_feature_values(self: Self, value_type: str, feature_value: str) -> None:
-        feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+    def test_basic_feature_values(self: Self, data_type: str, feature_value: str) -> None:
+        feature = FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
         assert feature.feature_value == feature_value
 
-    @pytest.mark.parametrize("value_type,feature_value", [("int64", "123")])
-    def test_int_feature_value(self: Self, value_type: str, feature_value: str) -> None:
-        feature = FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+    @pytest.mark.parametrize("data_type,feature_value", [("int64", "123")])
+    def test_int_feature_value(self: Self, data_type: str, feature_value: str) -> None:
+        feature = FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
         assert feature.feature_value == int(feature_value)
 
-    @pytest.mark.parametrize("value_type,feature_value", [(None, "123")])
-    def test_none_feature_value_type(self: Self, value_type: str, feature_value: str) -> None:
+    @pytest.mark.parametrize("data_type,feature_value", [(None, "123")])
+    def test_none_feature_data_type(self: Self, data_type: str, feature_value: str) -> None:
         with pytest.raises(MissingResponseException):
-            FeatureValue(name="test.test_feature", value_type=value_type, feature_value=feature_value)
+            FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
 
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
     def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
-        feature = FeatureValue(
-            name="test.test_feature", value_type="struct", feature_value=feature_value, fields=fields
-        )
+        feature = FeatureValue(name="test.test_feature", data_type="struct", feature_value=feature_value, fields=fields)
 
         feature_val = feature.feature_value
 
-        for i, (field, value) in enumerate(zip(feature.value_type.fields, feature_value)):
+        for i, (field, value) in enumerate(zip(feature.data_type.fields, feature_value)):
             key, datatype = field.name, field.data_type
 
             if isinstance(datatype, StructType):
@@ -180,7 +178,7 @@ class TestDataTypes:
     def test_feature_value_with_arrays(self: Self, feature_value: list, fields: list) -> None:
         feature = FeatureValue(
             name="test.test_feature",
-            value_type="array",
+            data_type="array",
             feature_value=feature_value,
             element_type=fields[0]["dataType"]["elementType"],
         )
@@ -189,11 +187,11 @@ class TestDataTypes:
         assert feature_val == feature_value
 
     @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields3)])
-    def test_none_feature_value_type_with_arrays(self: Self, feature_value: list, fields: list) -> None:
+    def test_none_feature_data_type_with_arrays(self: Self, feature_value: list, fields: list) -> None:
         with pytest.raises(MissingResponseException):
             FeatureValue(
                 name="test.test_feature",
-                value_type="array",
+                data_type="array",
                 feature_value=feature_value,
                 element_type=fields[0]["dataType"]["elementType"],
             )

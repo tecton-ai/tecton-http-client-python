@@ -26,7 +26,7 @@ class Value:
         """Set the value of the feature in the specified type.
 
         Args:
-            data_type (DataType): The type of the feature value.
+            data_type (:class:`DataType`): The type of the feature value.
             feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified
                 type.
 
@@ -97,34 +97,39 @@ class FeatureValue:
     """Class encapsulating all the data for a Feature value returned from a GetFeatures API call.
 
     Attributes:
-        value_type (DataType): The type of the feature value.
+        data_type (:class:`DataType`): The type of the feature value. Tecton supports the following data types:
+            Int, Float, String, Bool, Array, and Struct.
         feature_value (Union[str, int, float, bool, list, dict, None]): The value of the feature.
         feature_namespace (str): The namespace that the feature belongs to.
         feature_name (str): The name of the feature.
-        feature_status (str): The status of the feature.
-        effective_time (datetime): The effective serving time of the feature.
+        feature_status (:class:`FeatureStatus`): The status of the feature.
+        effective_time (datetime): The effective serving time for this feature.
+            This is the most recent time that's aligned to the interval for which a full aggregation is available for
+            this feature. Passing this in the spine of an offline feature request should guarantee retrieving the same
+            value as is in this response.
     """
 
     def __init__(
         self: Self,
         name: str,
-        value_type: str,
+        data_type: str,
         feature_value: Union[str, None, list],
         effective_time: Optional[str] = None,
         element_type: Optional[dict] = None,
         fields: Optional[list] = None,
         feature_status: Optional[str] = None,
     ) -> None:
-        """Initialize a FeatureValue object.
+        """Initialize a :class:`FeatureValue` object.
 
         Args:
             name (str): The name of the feature.
-            value_type (str): String that indicates the type of the feature value.
+            data_type (str): String that indicates the type of the feature value.
             feature_value (Union[str, None, list]): The value of the feature.
             effective_time (Optional[str]): The effective serving time of the feature, sent as ISO-8601 format string.
-            element_type (Optional[dict]): Dictionary that indicates the type of the elements in the array,
-                present if value_type is ArrayType.
-            fields (Optional[list]): List of the fields of the struct, if value_type is StructType.
+            element_type (Optional[dict]): A dict representing the type of the elements in the array,
+                present when the data_type is :class:`ArrayType`.
+            fields (Optional[list]):  A list representing the fields of the struct, present when the data_type is
+                :class:`StructType`.
             feature_status (Optional[str]): The status string of the feature value.
 
         Raises:
@@ -135,10 +140,10 @@ class FeatureValue:
         except ValueError:
             raise MissingResponseException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
 
-        if not value_type:
+        if not data_type:
             raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
         self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
-        self.value_type = get_data_type(value_type, element_type, fields)
-        self.feature_value = Value(self.value_type, feature_value).value
+        self.data_type = get_data_type(data_type, element_type, fields)
+        self.feature_value = Value(self.data_type, feature_value).value
