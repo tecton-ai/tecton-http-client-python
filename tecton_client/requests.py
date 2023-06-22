@@ -39,11 +39,11 @@ class MetadataOptions(str, Enum):
     """Include feature serving status information of the feature"""
 
 
-def _defaults() -> Set["MetadataOptions"]:
+def _defaults() -> Set[MetadataOptions]:
     """Set the default options to include names and data types.
 
     Returns:
-        Set[":class:`MetadataOptions`"]: The set of default :class:`MetadataOptions`.
+        Set[MetadataOptions]: The set of default :class:`MetadataOptions`.
 
     """
     return {MetadataOptions.NAME, MetadataOptions.DATA_TYPE}
@@ -194,7 +194,7 @@ class AbstractGetFeaturesRequest(TectonRequest):
         endpoint: str,
         workspace_name: str,
         feature_service_name: str,
-        metadata_options: Set["MetadataOptions"] = _defaults(),
+        metadata_options: Set[MetadataOptions] = _defaults(),
     ) -> None:
         """Initializing an object with the given parameters.
 
@@ -202,7 +202,7 @@ class AbstractGetFeaturesRequest(TectonRequest):
             endpoint (str): HTTP endpoint to send the request to.
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
-            metadata_options (Set["MetadataOptions"]): Options for retrieving additional metadata about feature
+            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values. Defaults to the default set of metadata options.
 
         """
@@ -234,7 +234,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         workspace_name: str,
         feature_service_name: str,
         request_data: GetFeatureRequestData,
-        metadata_options: Set["MetadataOptions"] = _defaults(),
+        metadata_options: Set[MetadataOptions] = _defaults(),
     ) -> None:
         """Initializing the :class:`GetFeaturesRequest` object with the given parameters.
 
@@ -242,7 +242,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
             request_data (GetFeatureRequestData): Request parameters for the query.
-            metadata_options (Set["MetadataOptions"]): Options for retrieving additional metadata about feature
+            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
         """
         super().__init__(GetFeaturesRequest.ENDPOINT, workspace_name, feature_service_name, metadata_options)
