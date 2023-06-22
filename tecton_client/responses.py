@@ -26,7 +26,7 @@ class Value:
         """Set the value of the feature in the specified type.
 
         Args:
-            data_type (:class:`DataType`): The type of the feature value.
+            data_type (DataType): The type of the feature value.
             feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified
                 type.
 

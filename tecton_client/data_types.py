@@ -122,7 +122,7 @@ class StructType(DataType):
         """Initialize a :class:`StructType` object.
 
         Args:
-            fields (List[:class:`StructField`]): The list of :class:`StructField` objects representing the fields in the
+            fields (List[StructField]): The list of :class:`StructField` objects representing the fields in the
                 struct.
         """
         self._fields = fields
