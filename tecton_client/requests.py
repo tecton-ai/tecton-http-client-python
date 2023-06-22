@@ -153,16 +153,14 @@ class TectonRequest(ABC):
     """Base class for all requests to the Tecton API.
 
     Attributes:
-        endpoint (str): HTTP endpoint string to send the request to.
         workspace_name (str): Name of the workspace in which the Feature Service is defined.
         feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
     """
 
-    def __init__(self: Self, endpoint: str, workspace_name: str, feature_service_name: str) -> None:
+    def __init__(self: Self, workspace_name: str, feature_service_name: str) -> None:
         """Initializing parameters required to make a request to the Tecton API.
 
         Args:
-            endpoint (str): HTTP endpoint to send the request to.
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
 
@@ -174,7 +172,6 @@ class TectonRequest(ABC):
         if not feature_service_name:
             raise InvalidParameterException(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
 
-        self.endpoint = endpoint
         self.feature_service_name = feature_service_name
         self.workspace_name = workspace_name
 
@@ -191,7 +188,6 @@ class AbstractGetFeaturesRequest(TectonRequest):
 
     def __init__(
         self: Self,
-        endpoint: str,
         workspace_name: str,
         feature_service_name: str,
         metadata_options: Set[MetadataOptions] = _defaults(),
@@ -199,14 +195,13 @@ class AbstractGetFeaturesRequest(TectonRequest):
         """Initializing an object with the given parameters.
 
         Args:
-            endpoint (str): HTTP endpoint to send the request to.
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values. Defaults to the default set of metadata options.
 
         """
-        super().__init__(endpoint, workspace_name, feature_service_name)
+        super().__init__(workspace_name, feature_service_name)
         self.metadata_options = metadata_options.union(_defaults())
 
 
@@ -245,7 +240,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
         """
-        super().__init__(GetFeaturesRequest.ENDPOINT, workspace_name, feature_service_name, metadata_options)
+        super().__init__(workspace_name, feature_service_name, metadata_options)
         self.request_data = request_data
 
     def to_json_string(self: Self) -> str:
