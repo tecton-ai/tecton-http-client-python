@@ -1,3 +1,4 @@
+import re
 from abc import ABC
 from datetime import datetime
 from enum import Enum
@@ -193,21 +194,15 @@ class SloInformation:
         Args:
             slo_information (dict): The SLO information dictionary received from the server.
         """
-        for k, v in slo_information.items():
-            setattr(self, k, v)
-
-        # self.slo_eligible = slo_information.get("sloEligible")
-        # self.server_time_seconds = slo_information.get("serverTimeSeconds")
-        # self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
-        # self.store_max_latency = slo_information.get("storeMaxLatency")
-        # self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
+        for key, value in slo_information.items():
+            setattr(self, re.sub(r"(?<!^)(?=[A-Z])", "_", key).lower(), value)  # converting camel case to snake case
 
         setattr(
             self,
             "slo_ineligibility_reasons",
             [SloIneligibilityReason(reason) for reason in slo_information.get("sloIneligibilityReasons")]
             if "sloIneligibilityReasons" in slo_information
-            else None,
+            else None
         )
 
     def to_dict(self: Self) -> dict:
