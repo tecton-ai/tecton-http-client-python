@@ -52,7 +52,7 @@ class ArrayType(DataType):
     Examples:
         >>> element_type = FloatType()
         >>> array_type = ArrayType(element_type)
-        >>>> print(array_type)
+        >>> print(array_type)
         Array(Float)
 
     """
@@ -77,8 +77,8 @@ class ArrayType(DataType):
 class StructField:
     """Class to represent a field in a :class:`StructType`.
 
-    A :class:`StructField` object represents a field within a :class:`StructType`, containing a name and a corresponding
-    :class:`DataType`.
+    A :class:`StructField` object represents a field within a :class:`StructType` object, containing a name and a
+    corresponding :class:`DataType`.
     """
 
     def __init__(self: Self, name: str, data_type: DataType) -> None:
