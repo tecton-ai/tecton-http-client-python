@@ -158,11 +158,20 @@ class FeatureValue:
         self.feature_value = Value(self.data_type, feature_value).value
 
 
+class SloIneligibilityReason(str, Enum):
+    """Reasons due to which the Feature Serving Response may be ineligible for SLO."""
+
+    UNKNOWN = "UNKNOWN"
+    DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED = "DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED"
+    REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED = "REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED"
+    REDIS_LATENCY_LIMIT_EXCEEDED = "REDIS_LATENCY_LIMIT_EXCEEDED"
+
+
 class SloInformation:
     """Class that represents SLO Information provided by Tecton when serving feature values.
 
-    Refer `here <https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata>`__
-    for more information.
+    Refer to the official documentation `here`_ for more information.
+    .. _here: <https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata>
 
     Attributes:
         slo_eligible (Optional[bool]): Whether the request was eligible for the latency SLO.
@@ -174,8 +183,8 @@ class SloInformation:
         store_max_latency (Optional[float]): Max latency observed by the request from the store in seconds.
             Tecton fetches multiple feature views in parallel.
         store_response_size_bytes (Optional[int]): Total store response size bytes.
-        slo_ineligibility_reasons (Optional[List[str]): List of one or more reasons indicating why the feature was not
-            SLO eligible. Only present if slo_eligible is False.
+        slo_ineligibility_reasons (Optional[List[SloIneligibilityReason]): List of one or more reasons indicating why
+            the feature was not SLO eligible. Only present if slo_eligible is False.
     """
 
     def __init__(self: Self, slo_information: dict) -> None:
@@ -192,7 +201,14 @@ class SloInformation:
         # self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
         # self.store_max_latency = slo_information.get("storeMaxLatency")
         # self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
-        # self.slo_ineligibility_reasons = slo_information.get("sloIneligibilityReasons")
+
+        setattr(
+            self,
+            "slo_ineligibility_reasons",
+            [SloIneligibilityReason(reason) for reason in slo_information.get("sloIneligibilityReasons")]
+            if "sloIneligibilityReasons" in slo_information
+            else None,
+        )
 
     def to_dict(self: Self) -> dict:
         """Returns the SloInformation object as a dictionary."""
