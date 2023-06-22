@@ -249,7 +249,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         Returns:
             JSON formatted string.
         """
-        fields_to_remove = ["endpoint", "request_data"]
+        fields_to_remove = ["ENDPOINT", "request_data"]
         self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
 
         if self.request_data.join_key_map:
