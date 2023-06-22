@@ -1,6 +1,7 @@
 from abc import ABC
 from datetime import datetime
 from enum import Enum
+from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Self
@@ -156,8 +157,12 @@ class FeatureValue:
         self.data_type = get_data_type(data_type, element_type, fields)
         self.feature_value = Value(self.data_type, feature_value).value
 
+
 class SloInformation:
     """Class that represents SLO Information provided by Tecton when serving feature values.
+
+    Refer `here <https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata>`__
+    for more information.
 
     Attributes:
         slo_eligible (Optional[bool]): Whether the request was eligible for the latency SLO.
@@ -179,12 +184,15 @@ class SloInformation:
         Args:
             slo_information (dict): The SLO information dictionary received from the server.
         """
-        self.slo_eligible = slo_information.get("sloEligible")
-        self.server_time_seconds = slo_information.get("serverTimeSeconds")
-        self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
-        self.store_max_latency = slo_information.get("storeMaxLatency")
-        self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
-        self.slo_ineligibility_reasons = slo_information.get("sloIneligibilityReasons")
+        for k, v in slo_information.items():
+            setattr(self, k, v)
+
+        # self.slo_eligible = slo_information.get("sloEligible")
+        # self.server_time_seconds = slo_information.get("serverTimeSeconds")
+        # self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
+        # self.store_max_latency = slo_information.get("storeMaxLatency")
+        # self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
+        # self.slo_ineligibility_reasons = slo_information.get("sloIneligibilityReasons")
 
     def to_dict(self: Self) -> dict:
         """Returns the SloInformation object as a dictionary."""
@@ -194,42 +202,15 @@ class SloInformation:
 class AbstractTectonResponse(ABC):
     """Base class for Response objects from Tecton API calls."""
 
-    @staticmethod
-    def _validate_response(feature_vector: list, feature_metadata: list) -> None:
-        """Validates the response from the Tecton API call.
-
-        Args:
-            feature_vector (list): List of features returned.
-            feature_metadata (list): List of metadata for each feature.
-
-        Raises:
-            TectonClientError: If the feature vector is empty or if the metadata is missing fields name or data type.
-        """
-        if not feature_vector:
-            message = "Received empty feature vector from Tecton."
-            raise TectonClientError(message)
-
-        for metadata in feature_metadata:
-            if "name" not in metadata:
-                message = (
-                    "Required metadata `name` is missing from the response."
-                    "If problem persists, please contact Tecton Support for assistance."
-                )
-                raise TectonClientError(message)
-            if "dataType" not in metadata or "type" not in metadata["dataType"]:
-                message = (
-                    "Required metadata `data type` is missing from the response."
-                    "If problem persists, please contact Tecton Support for assistance."
-                )
-                raise TectonClientError(message)
-
 
 class GetFeaturesResponse(AbstractTectonResponse):
     """Response object for GetFeatures API call.
 
     Attributes:
-        feature_values (List[FeatureValue]): List of FeatureValue objects, one for each feature in the feature vector.
-        slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector's SLO.
+        feature_values (Dict[str, FeatureValue]): Dictionary with feature names as keys and their corresponding feature
+            values, one for each feature in the feature vector.
+        slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector's SLO,
+            present only if requested in the request.
     """
 
     def __init__(self: Self, response: dict) -> None:
@@ -241,31 +222,19 @@ class GetFeaturesResponse(AbstractTectonResponse):
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
 
-        self._validate_response(feature_vector, feature_metadata)
-        self.feature_values: List[FeatureValue] = [
-            FeatureValue(
-                name=feature_metadata[i]["name"],
-                value_type=feature_metadata[i]["dataType"]["type"],
-                element_type=feature_metadata[i]["dataType"].get("elementType"),
-                effective_time=feature_metadata[i].get("effectiveTime"),
-                feature_status=feature_metadata[i].get("status"),
-                fields=feature_metadata[i]["dataType"].get("fields"),
-                feature_value=feature_vector[i],
+        self.feature_values: Dict[str, FeatureValue] = {
+            metadata["name"]: FeatureValue(
+                name=metadata["name"],
+                data_type=metadata["dataType"]["type"],
+                element_type=metadata["dataType"].get("elementType"),
+                effective_time=metadata.get("effectiveTime"),
+                feature_status=metadata.get("status"),
+                fields=metadata["dataType"].get("fields"),
+                feature_value=feature,
             )
-            for i in range(len(feature_vector))
-        ]
+            for feature, metadata in zip(feature_vector, feature_metadata)
+        }
 
         self.slo_info: Optional[SloInformation] = (
             SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
         )
-
-    def get_feature_values_dict(self: Self) -> dict:
-        """Returns a dictionary of feature values.
-
-        Returns:
-            Dictionary with feature names as keys and their corresponding feature values.
-        """
-        return {
-            f"{feature.feature_namespace}.{feature.feature_name}": feature.feature_value
-            for feature in self.feature_values
-        }
