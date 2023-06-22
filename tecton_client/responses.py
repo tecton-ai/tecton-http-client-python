@@ -148,7 +148,7 @@ class FeatureValue:
                 f"If problem persists, please contact Tecton Support for assistance."
             )
             raise TectonClientError(message)
-        
+
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
         self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
         self.data_type = get_data_type(data_type, element_type, fields)

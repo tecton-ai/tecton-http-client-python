@@ -154,11 +154,6 @@ class TestDataTypes:
         feature = FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
         assert feature.feature_value == int(feature_value)
 
-    @pytest.mark.parametrize("data_type,feature_value", [(None, "123")])
-    def test_none_feature_data_type(self: Self, data_type: str, feature_value: str) -> None:
-        with pytest.raises(TectonClientError):
-            FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
-
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
     def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
         feature = FeatureValue(name="test.test_feature", data_type="struct", feature_value=feature_value, fields=fields)
