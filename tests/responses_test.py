@@ -56,8 +56,7 @@ class TestResponse:
             get_features_response = GetFeaturesResponse(json_response)
 
             assert get_features_response.slo_info is not None
-            print(get_features_response.slo_info.to_dict())
-            assert get_features_response.slo_info.to_dict() == actual_slo_info
+            assert vars(get_features_response.slo_info) == actual_slo_info
 
     @pytest.mark.parametrize(
         "filename, expected_answers, expected_metadata",
@@ -93,11 +92,12 @@ class TestResponse:
             get_features_response = GetFeaturesResponse(json_response)
 
             assert get_features_response is not None
-            for i, feature in enumerate(get_features_response.feature_values.values()):
-                assert isinstance(feature.data_type, expected_metadata[i][0])
-                assert feature.feature_status == expected_metadata[i][1]
-                if feature.effective_time:
-                    assert feature.effective_time.isoformat(timespec="seconds") == expected_metadata[i][2]
-
             assert get_features_response.slo_info is not None
+
+            for feature, metadata in zip(get_features_response.feature_values.values(), expected_metadata):
+                assert isinstance(feature.data_type, metadata[0])
+                assert feature.feature_status == metadata[1]
+                if feature.effective_time:
+                    assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
+
             self.assert_answers(expected_answers, get_features_response)

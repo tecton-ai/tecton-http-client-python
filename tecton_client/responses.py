@@ -171,8 +171,8 @@ class SloIneligibilityReason(str, Enum):
 class SloInformation:
     """Class that represents SLO Information provided by Tecton when serving feature values.
 
-    Refer to the official documentation `here`_ for more information.
-    .. _here: <https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata>
+    Refer to the official documentation
+    `here <https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata>`_ for more information.
 
     Attributes:
         slo_eligible (Optional[bool]): Whether the request was eligible for the latency SLO.
@@ -183,8 +183,8 @@ class SloInformation:
             we are meeting the SLO.
         store_max_latency (Optional[float]): Max latency observed by the request from the store in seconds.
             Tecton fetches multiple feature views in parallel.
-        store_response_size_bytes (Optional[int]): Total store response size bytes.
-        slo_ineligibility_reasons (Optional[List[SloIneligibilityReason]): List of one or more reasons indicating why
+        store_response_size_bytes (Optional[int]): Total store response size in bytes.
+        slo_ineligibility_reasons (Optional[List[SloIneligibilityReason]]): List of one or more reasons indicating why
             the feature was not SLO eligible. Only present if slo_eligible is False.
     """
 
@@ -197,17 +197,12 @@ class SloInformation:
         for key, value in slo_information.items():
             setattr(self, re.sub(r"(?<!^)(?=[A-Z])", "_", key).lower(), value)  # converting camel case to snake case
 
-        setattr(
-            self,
-            "slo_ineligibility_reasons",
-            [SloIneligibilityReason(reason) for reason in slo_information.get("sloIneligibilityReasons")]
-            if "sloIneligibilityReasons" in slo_information
-            else None
-        )
-
-    def to_dict(self: Self) -> dict:
-        """Returns the SloInformation object as a dictionary."""
-        return {k: v for k, v in vars(self).items() if v is not None}
+        if "sloIneligibilityReasons" in slo_information:
+            setattr(
+                self,
+                "slo_ineligibility_reasons",
+                [SloIneligibilityReason(reason) for reason in slo_information["sloIneligibilityReasons"]],
+            )
 
 
 class AbstractTectonResponse(ABC):
