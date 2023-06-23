@@ -1,7 +1,7 @@
-from typing import Self
 from typing import Union
 
 import pytest
+from typing_extensions import Self
 
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import UnsupportedTypeError

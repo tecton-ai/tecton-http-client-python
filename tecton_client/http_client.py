@@ -1,11 +1,11 @@
 from enum import Enum
 from typing import Optional
-from typing import Self
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 import httpx
 from httpx_auth import HeaderApiKey
+from typing_extensions import Self
 
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterError

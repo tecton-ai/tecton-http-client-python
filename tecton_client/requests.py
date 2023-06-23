@@ -1,13 +1,13 @@
 from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
-from types import NoneType
 from typing import Dict
 from typing import Final
 from typing import Optional
-from typing import Self
 from typing import Set
 from typing import Union
+
+from typing_extensions import Self
 
 from tecton_client.exceptions import EMPTY_KEY_VALUE
 from tecton_client.exceptions import INVALID_TYPE_KEY_VALUE
@@ -15,7 +15,7 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import UnsupportedTypeError
 
-SUPPORTED_JOIN_KEY_VALUE_TYPES: Final[set] = {int, str, NoneType}
+SUPPORTED_JOIN_KEY_VALUE_TYPES: Final[set] = {int, str, type(None)}
 SUPPORTED_REQUEST_CONTEXT_MAP_TYPES: Final[set] = {int, str, float}
 
 
@@ -53,8 +53,9 @@ class GetFeatureRequestData:
     """Class for request data needed for get-features queries.
 
     Attributes:
-        join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]): Join keys used for Batch and Stream FeatureViews
-            The values can be of type (int, str, NoneType) and are encoded as follows:
+        join_key_map (Optional[Dict[str, Union[int, str, type(None)]]]):
+            Join keys used for Batch and Stream FeatureViews
+            The values can be of type (int, str, type(None)) and are encoded as follows:
                     For string keys, the value should be a string.
                     For int keys, the value should be a string of the decimal representation of the integer.
         request_context_map (Optional[Dict[str, Union[int, str, float]]]):
@@ -67,13 +68,14 @@ class GetFeatureRequestData:
 
     def __init__(
         self: Self,
-        join_key_map: Optional[Dict[str, Union[int, str, NoneType]]] = None,
+        join_key_map: Optional[Dict[str, Union[int, str, type(None)]]] = None,
         request_context_map: Optional[Dict[str, Union[int, str, float]]] = None,
     ) -> None:
         """Initializes a :class:`GetFeaturesRequestData` instance with the given parameters.
 
         Args:
-            join_key_map (Optional[Dict[str, Union[int, str, NoneType]]]): Join keys used for table-based FeatureViews.
+            join_key_map (Optional[Dict[str, Union[int, str, type(None)]]]):
+                Join keys used for table-based FeatureViews.
                 The key of this map is the join key name and the value is the join key value for this request.
             request_context_map (Optional[Dict[str, Union[int, str, float]]]):
                 Request context used for OnDemand FeatureViews.

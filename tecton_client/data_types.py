@@ -1,7 +1,8 @@
 import abc
 from typing import List
 from typing import Optional
-from typing import Self
+
+from typing_extensions import Self
 
 from tecton_client.exceptions import TectonClientError
 

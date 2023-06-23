@@ -1,8 +1,8 @@
 from typing import List
-from typing import Self
 from typing import Union
 
 import pytest
+from typing_extensions import Self
 
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType

@@ -1,7 +1,6 @@
-from typing import Self
-
 import pytest
 from pytest_httpx import HTTPXMock
+from typing_extensions import Self
 
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidURLError
