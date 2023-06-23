@@ -1,4 +1,4 @@
-from typing_extensions import Self
+from typing import Self
 
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
