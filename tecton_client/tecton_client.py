@@ -29,14 +29,21 @@ class TectonClientOptions:
         read_timeout (float): (Optional) The maximum duration to wait for a chunk of data to be received (for example,
             a chunk of the response body). If HTTPX is unable to receive data within this time frame, a ReadTimeout
             exception is raised. Defaults to 2.0 seconds.
+        pool_timeout (float): (Optional) The maximum duration to wait for acquiring a connection from the connection
+            pool. If HTTPX is unable to acquire a connection within this time frame, a PoolTimeout exception is raised.
+            Defaults to 2.0 seconds.
         keepalive_expiry (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
             or None for no limits. Defaults to 300 seconds (5 minutes).
+        max_connections (Optional[int]): (Optional) maximum number of allowable connections, or None for no limits.
+            Defaults to 10.
 
     """
 
     connect_timeout: float = 2.0
     read_timeout: float = 2.0
+    pool_timeout: float = 2.0
     keepalive_expiry: Optional[int] = 300
+    max_connections: Optional[int] = 10
 
 
 class TectonClient:
@@ -79,7 +86,9 @@ class TectonClient:
             api_key,
             read_timeout=client_options.read_timeout,
             connect_timeout=client_options.connect_timeout,
+            pool_timeout=client_options.pool_timeout,
             keepalive_expiry=client_options.keepalive_expiry,
+            max_connections=client_options.max_connections,
             client=client,
         )
         self._loop = asyncio.new_event_loop()
