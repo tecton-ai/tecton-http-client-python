@@ -41,7 +41,7 @@ class TectonClient:
             ...     workspace_name="example_workspace",
             ... )
             >>> get_features_response = await tecton_client.get_features(get_features_request)
-            >>> print([feature.feature_value for feature in get_features_response.feature_values])
+            >>> print([feature.feature_value for feature in get_features_response.feature_values.values()])
             [1, 2, 3, "test_feature", ["test", "array"]]
 
         """
@@ -49,6 +49,11 @@ class TectonClient:
             get_features_request.ENDPOINT, get_features_request.to_json()
         )
         return GetFeaturesResponse(response)
+
+    @property
+    def is_closed(self) -> bool:
+        """Returns the open or closed status of the HTTPS Asynchronous Client."""
+        return self._tectonHttpClient.is_closed
 
     async def close(self) -> None:
         """Close the HTTPX Asynchronous Client."""
