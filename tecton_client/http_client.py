@@ -14,22 +14,7 @@ from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import SERVER_ERRORS
 from tecton_client.exceptions import TectonServerException
 
-
 API_PREFIX = "Tecton-key"
-
-
-class HttpClientOptions:
-    def __init__(
-        self: Self,
-        connect: float = 5.0,
-        read: float = 5.0,
-        max_keepalive_connections: int = 10,
-        keepalive_expiry: float = 300,
-    ) -> None:
-        self.timeout = httpx.Timeout(10, connect=connect, read=read)
-        self.limits = httpx.Limits(
-            max_keepalive_connections=max_keepalive_connections, keepalive_expiry=keepalive_expiry
-        )
 
 
 class TectonHttpClient:
@@ -43,14 +28,30 @@ class TectonHttpClient:
         CONTENT_TYPE = "Content-Type"
 
     def __init__(
-        self, url: str, api_key: str, client_options: HttpClientOptions, client: Optional[httpx.AsyncClient] = None
+        self,
+        url: str,
+        api_key: str,
+        connect_timeout: float,
+        read_timeout: float,
+        keepalive_expiry: Optional[int],
+        client: Optional[httpx.AsyncClient] = None,
     ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
             url (str): The URL to ping.
             api_key (str): The API Key required as part of header authorization.
+            connect_timeout (float): The maximum amount of time to wait until a socket connection to the requested host
+                is established. If HTTPX is unable to connect within this time frame,
+                a ConnectTimeout exception is raised.
+            read_timeout (float): The maximum duration to wait for a chunk of data to be received
+                (for example, a chunk of the response body). If HTTPX is unable to receive data within this time frame,
+                a ReadTimeout exception is raised.
+            keepalive_expiry (Optional[int]): The time limit on idle keep-alive connections in seconds,
+                or None for no limits.
             client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
+                Users can initialize their own HTTPX client and pass it in, otherwise the TectonHttpClient object
+                will initialize its own HTTPX client.
 
         """
         self.url = self.validate_url(url)
@@ -58,7 +59,8 @@ class TectonHttpClient:
 
         self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self.api_key}")
         self.client: httpx.AsyncClient = client or httpx.AsyncClient(
-            timeout=client_options.timeout, limits=client_options.limits
+            timeout=httpx.Timeout(5, connect=connect_timeout, read=read_timeout),
+            limits=httpx.Limits(keepalive_expiry=keepalive_expiry),
         )
         self.is_client_closed: bool = False
 

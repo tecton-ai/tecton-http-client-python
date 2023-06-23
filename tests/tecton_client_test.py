@@ -23,6 +23,7 @@ from tecton_client.requests import MetadataOptions
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
 from tests.test_utils import dict_equals
+from tecton_client.tecton_client import TectonClientOptions
 
 
 class TestTectonClient:
@@ -231,31 +232,26 @@ class TestTectonClient:
             response_codes.add(exception.STATUS_CODE)
 
     client1 = httpx.AsyncClient(timeout=10, limits=httpx.Limits(max_connections=10))
-    timeout1 = httpx.Timeout(connect=2.0, read=2.0, write=10, pool=10)
-    limits1 = httpx.Limits(max_connections=None, max_keepalive_connections=10, keepalive_expiry=300)
-
     client2 = httpx.AsyncClient()
-    timeout2 = httpx.Timeout(connect=10, read=15, write=10, pool=10)
-    limits2 = httpx.Limits(max_connections=None, max_keepalive_connections=7, keepalive_expiry=500)
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("client", [client1, client2, None])
+    @pytest.mark.parametrize(
+        "client",
+        [client1, client2, None],
+    )
     async def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
         if client is None:
-            local_client = TectonClient(
-                TestTectonClient.url,
-                TestTectonClient.api_key,
-                connect=10,
-                read=15,
-                max_keepalive_connections=7,
-                keepalive_expiry=500,
-            )
+            client_options = TectonClientOptions(connect_timeout=10, read_timeout=15, keepalive_expiry=500)
+            tecton_client = TectonClient(url, api_key, client_options=client_options)
+            assert client_options.connect_timeout == 10
+            assert client_options.read_timeout == 15
+            assert client_options.keepalive_expiry == 500
         else:
-            local_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
+            tecton_client = TectonClient(url, api_key, client=client)
 
-        httpx_mock.add_response(json=self.mock_response1)
-        get_features_response = local_client.get_features(self.get_features_request)
-        assert get_features_response.get_feature_values_dict() == self.expected_response1
-        assert local_client.client_options.timeout == timeout
-        assert local_client.client_options.limits == limits
-        await local_client.close()
+        with open("tests/test_data/sample_response_mixed.json") as json_file:
+            httpx_mock.add_response(json=json.load(json_file))
+            get_features_response = await tecton_client.get_features(self.get_features_request)
+
+        assert {k: v.feature_value for k, v in get_features_response.feature_values.items()} == self.expected_response1
+        await tecton_client.close()

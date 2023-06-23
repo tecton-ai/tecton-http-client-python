@@ -3,11 +3,39 @@ import asyncio
 from tecton_client.http_client import TectonHttpClient
 import httpx
 from typing_extensions import Self
+from dataclasses import dataclass
+from typing import Optional
 
-from tecton_client.http_client import HttpClientOptions
+import httpx
+
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
+
+
+@dataclass
+class TectonClientOptions:
+    """Class to represent the Tecton Client options.
+
+    Examples:
+        >>> options = TectonClientOptions(connect_timeout=10, read_timeout=10, keepalive_expiry=600)
+        >>> tecton_client = TectonClient(url, api_key, client_options=options)
+
+    Attributes:
+        connect_timeout (float): (Optional) The maximum amount of time to wait until a socket connection to the
+            requested host is established. If HTTPX is unable to connect within this time frame, a ConnectTimeout
+            exception is raised. Defaults to 2.0 seconds.
+        read_timeout (float): (Optional) The maximum duration to wait for a chunk of data to be received (for example,
+            a chunk of the response body). If HTTPX is unable to receive data within this time frame, a ReadTimeout
+            exception is raised. Defaults to 2.0 seconds.
+        keepalive_expiry (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
+            or None for no limits. Defaults to 300 seconds (5 minutes).
+
+    """
+
+    connect_timeout: float = 2.0
+    read_timeout: float = 2.0
+    keepalive_expiry: Optional[int] = 300
 
 
 class TectonClient:
@@ -27,10 +55,7 @@ class TectonClient:
         url: str,
         api_key: str,
         client: Optional[httpx.AsyncClient] = None,
-        connect: float = 2.0,
-        read: float = 2.0,
-        max_keepalive_connections: int = 10,
-        keepalive_expiry: float = 300,
+        client_options: TectonClientOptions = TectonClientOptions(),
     ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
@@ -41,20 +66,22 @@ class TectonClient:
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
             client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
-                Users can initialize their own HTTPX client and pass it in to the TectonClient object.
-                If no client is passed in, the TectonClient object will initialize its own HTTPX client.
-            connect (float): (Optional) The timeout for the initial connection to the server, in seconds.
-                Defaults to 2.0 seconds.
-            read (float): (Optional) The timeout for reading the response from the server, in seconds.
-                Defaults to 2.0 seconds.
-            max_keepalive_connections (int): (Optional) The maximum number of connections to keep in the connection
-                pool. Defaults to 10.
-            keepalive_expiry (float): (Optional) The maximum time to keep a connection alive, in seconds.
-                Defaults to 300 seconds (5 minutes).
-        """
-        self._tecton_http_client = TectonHttpClient(url, api_key)
-        self._loop = asyncio.new_event_loop()
+                Users can initialize their own HTTPX client and pass it in to the :class:`TectonClient` object.
+                If no client is passed in, the :class:`TectonClient` object will initialize its own HTTPX client.
+            client_options (TectonClientOptions): (Optional) The HTTPX client options.
+                Defaults to :class:`TectonClientOptions()` with set default values.
 
+        """
+        self._tecton_http_client = TectonHttpClient(
+            url,
+            api_key,
+            read_timeout=client_options.read_timeout,
+            connect_timeout=client_options.connect_timeout,
+            keepalive_expiry=client_options.keepalive_expiry,
+            client=client,
+        )
+        self._loop = asyncio.new_event_loop()
+        
     def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Makes a request to the /get-features endpoint and returns the response in the form of a
         :class:`GetFeaturesResponse` object
