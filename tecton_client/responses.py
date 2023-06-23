@@ -195,9 +195,11 @@ class SloInformation:
         Args:
             slo_information (dict): The SLO information dictionary received from the server.
         """
-        for key, value in slo_information.items():
-            setattr(self, re.sub(r"(?<!^)(?=[A-Z])", "_", key).lower(), value)  # converting camel case to snake case
-
+        setattr(self, "slo_eligible", slo_information.get("sloEligible"))
+        setattr(self, "server_time_seconds", slo_information.get("serverTimeSeconds"))
+        setattr(self, "slo_server_time_seconds", slo_information.get("sloServerTimeSeconds"))
+        setattr(self, "store_max_latency", slo_information.get("storeMaxLatency"))
+        setattr(self, "store_response_size_bytes", slo_information.get("storeResponseSizeBytes"))
         if "sloIneligibilityReasons" in slo_information:
             setattr(
                 self,
