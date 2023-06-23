@@ -46,6 +46,7 @@ class TestResponse:
 
     def test_slo_response(self: Self) -> None:
         actual_slo_info = {
+            "dynamodb_response_size_bytes": None,
             "server_time_seconds": 0.049082851,
             "slo_eligible": True,
             "slo_ineligibility_reasons": None,

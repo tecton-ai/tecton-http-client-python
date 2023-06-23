@@ -184,6 +184,7 @@ class SloInformation:
         store_max_latency (Optional[float]): Max latency observed by the request from the store in seconds.
             Tecton fetches multiple feature views in parallel.
         store_response_size_bytes (Optional[int]): Total store response size in bytes.
+        dynamodb_response_size_bytes (Optional[int]): Total DynamoDB store response size in bytes.
         slo_ineligibility_reasons (Optional[List[SloIneligibilityReason]]): List of one or more reasons indicating why
             the feature was not SLO eligible. Only present if slo_eligible is False.
     """
@@ -199,6 +200,7 @@ class SloInformation:
         self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
         self.store_max_latency = slo_information.get("storeMaxLatency")
         self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
+        self.dynamodb_response_size_bytes = slo_information.get("dynamoDBResponseSizeBytes")
         self.slo_ineligibility_reasons = (
             [SloIneligibilityReason(reason) for reason in slo_information["sloIneligibilityReasons"]]
             if "sloIneligibilityReasons" in slo_information
