@@ -1,3 +1,4 @@
 httpx~=0.24.1
+httpx_auth
 pytest~=7.3.1
 pytest_httpx~=0.22.0
