@@ -1,6 +1,6 @@
 {
   "result": {
-    "features": [null, ["2.46", 2.46], [1, 2, 3, null, 5], "test"]
+    "features": [null, ["2.46", 2.46], [1, 2, 3, null, 5], "test", 24, 691]
   },
   "metadata": {
     "features": [
@@ -57,6 +57,18 @@
         "name":"test.output_string",
         "dataType": {
           "type": "string"
+        }
+      },
+      {
+        "name":"test.output_int1",
+        "dataType": {
+          "type": "int64"
+        }
+      },
+      {
+        "name":"test.output_int2",
+        "dataType": {
+          "type": "int64"
         }
       }
     ]
