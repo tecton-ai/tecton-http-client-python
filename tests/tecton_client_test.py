@@ -246,6 +246,8 @@ class TestTectonClient:
             assert client_options.connect_timeout == 10
             assert client_options.read_timeout == 15
             assert client_options.keepalive_expiry == 500
+            assert client_options.pool_timeout == 2
+            assert client_options.max_connections == 10
         else:
             tecton_client = TectonClient(url, api_key, client=client)
 
@@ -253,5 +255,7 @@ class TestTectonClient:
             httpx_mock.add_response(json=json.load(json_file))
             get_features_response = await tecton_client.get_features(self.get_features_request)
 
-        assert {k: v.feature_value for k, v in get_features_response.feature_values.items()} == self.expected_response1
+        assert {
+            k: v.feature_value for k, v in get_features_response.feature_values.items()
+        } == self.expected_response_mixed
         await tecton_client.close()

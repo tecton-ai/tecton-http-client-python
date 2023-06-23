@@ -20,7 +20,9 @@ class TestHttpClient:
             self.API_KEY,
             self.client_options.connect_timeout,
             self.client_options.read_timeout,
+            self.client_options.pool_timeout,
             self.client_options.keepalive_expiry,
+            self.client_options.max_connections,
         )
         assert not http_client.is_closed
         await http_client.close()
@@ -36,7 +38,9 @@ class TestHttpClient:
             self.API_KEY,
             self.client_options.connect_timeout,
             self.client_options.read_timeout,
+            self.client_options.pool_timeout,
             self.client_options.keepalive_expiry,
+            self.client_options.max_connections,
         )
 
         endpoint = "api/v1/feature-service/get-features"
@@ -72,7 +76,9 @@ class TestHttpClient:
             self.API_KEY,
             self.client_options.connect_timeout,
             self.client_options.read_timeout,
+            self.client_options.pool_timeout,
             self.client_options.keepalive_expiry,
+            self.client_options.max_connections,
         )
 
         endpoint = "api/v1/feature-service/get-features"
@@ -102,7 +108,9 @@ class TestHttpClient:
                 "1234",
                 self.client_options.connect_timeout,
                 self.client_options.read_timeout,
+                self.client_options.pool_timeout,
                 self.client_options.keepalive_expiry,
+                self.client_options.max_connections,
             )
 
     @pytest.mark.parametrize("key", ["", None])
@@ -113,7 +121,9 @@ class TestHttpClient:
                 key,
                 self.client_options.connect_timeout,
                 self.client_options.read_timeout,
+                self.client_options.pool_timeout,
                 self.client_options.keepalive_expiry,
+                self.client_options.max_connections,
             )
 
     def test_invalid_api_key(self, httpx_mock: HTTPXMock) -> None:
@@ -128,7 +138,9 @@ class TestHttpClient:
                 self.API_KEY,
                 self.client_options.connect_timeout,
                 self.client_options.read_timeout,
+                self.client_options.pool_timeout,
                 self.client_options.keepalive_expiry,
+                self.client_options.max_connections,
             )
         except TectonServerException as e:
             assert e == expected_message
