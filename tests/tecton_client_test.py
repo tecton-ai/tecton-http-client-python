@@ -2,7 +2,6 @@ import json
 
 import pytest
 from pytest_httpx import HTTPXMock
-from typing import Self
 
 from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
@@ -48,7 +47,7 @@ class TestTectonClient:
         "file_name, expected_response",
         [("sample_response_mixed.json", expected_response1), ("sample_response_metadata.json", expected_response2)],
     )
-    async def test_get_features(self: Self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
+    async def test_get_features(self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
         tecton_client = TectonClient(url, api_key)
         file_name = f"tests/test_data/{file_name}"
         with open(file_name) as json_file:

@@ -1,5 +1,3 @@
-from typing import Self
-
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
@@ -15,7 +13,7 @@ class TectonClient:
 
     """
 
-    def __init__(self: Self, url: str, api_key: str) -> None:
+    def __init__(self, url: str, api_key: str) -> None:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
@@ -24,7 +22,7 @@ class TectonClient:
         """
         self._tectonHttpClient = TectonHttpClient(url, api_key)
 
-    async def get_features(self: Self, get_features_request: GetFeaturesRequest) -> GetFeaturesResponse:
+    async def get_features(self, get_features_request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Get features from the Tecton Feature Service.
 
         Args:
@@ -51,6 +49,6 @@ class TectonClient:
         )
         return GetFeaturesResponse(response)
 
-    async def close(self: Self) -> None:
+    async def close(self) -> None:
         """Close the HTTPX Asynchronous Client."""
         await self._tectonHttpClient.close()
