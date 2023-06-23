@@ -12,7 +12,7 @@ url = "https://thisisaurl.ai"
 
 
 class TestTectonClient:
-    expected_response1 = {
+    expected_response_mixed = {
         "test.output_struct1": None,
         "test.output_struct2": {"float64_field": 2.46, "string_field": "2.46"},
         "test.output_array": [1, 2, 3, None, 5],
@@ -20,7 +20,7 @@ class TestTectonClient:
         "test.output_int1": 24,
         "test.output_int2": 691,
     }
-    expected_response2 = {
+    expected_response_metadata = {
         "transaction_amount.is_present": True,
         "merchant_fraud_rate.is_fraud_mean_90d_1d": None,
         "user_transaction_counts.transaction_id_last_3_1d_1d": 669,
@@ -45,7 +45,10 @@ class TestTectonClient:
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "file_name, expected_response",
-        [("sample_response_mixed.json", expected_response1), ("sample_response_metadata.json", expected_response2)],
+        [
+            ("sample_response_mixed.json", expected_response_mixed),
+            ("sample_response_metadata.json", expected_response_metadata),
+        ],
     )
     async def test_get_features(self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
         tecton_client = TectonClient(url, api_key)

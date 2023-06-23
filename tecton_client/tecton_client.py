@@ -36,10 +36,10 @@ class TectonClient:
             >>> request_context_map = {"example_request_context": "example_string_value"}
             >>> get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
             >>> get_features_request = GetFeaturesRequest(
-            >>>    feature_service_name="example_feature_service",
-            >>>    request_data=get_feature_request_data,
-            >>>    workspace_name="example_workspace",
-            >>> )
+            ...     feature_service_name="example_feature_service",
+            ...     request_data=get_feature_request_data,
+            ...     workspace_name="example_workspace",
+            ... )
             >>> get_features_response = await tecton_client.get_features(get_features_request)
             >>> print([feature.feature_value for feature in get_features_response.feature_values])
             [1, 2, 3, "test_feature", ["test", "array"]]
