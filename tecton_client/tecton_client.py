@@ -61,7 +61,7 @@ class TectonClient:
     def __init__(
         self,
         url: str,
-        api_key: Optional[str] = os.getenv("TECTON_API_KEY"),
+        api_key: Optional[str] = None,
         client: Optional[httpx.AsyncClient] = None,
         client_options: TectonClientOptions = TectonClientOptions(),
     ) -> None:
@@ -81,6 +81,9 @@ class TectonClient:
                 Defaults to :class:`TectonClientOptions()` with set default values.
 
         """
+        if api_key is None:
+            api_key = os.getenv("TECTON_API_KEY")
+
         self._tecton_http_client = TectonHttpClient(
             url,
             api_key,

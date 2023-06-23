@@ -1,5 +1,6 @@
 import json
 from typing import Final
+import os
 
 import httpx
 import pytest
@@ -17,6 +18,7 @@ from tecton_client.exceptions import ResourcesExhaustedError
 from tecton_client.exceptions import ServiceUnavailableError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
+from tecton_client.exceptions import InvalidParameterError
 from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import MetadataOptions
@@ -259,3 +261,14 @@ class TestTectonClient:
             k: v.feature_value for k, v in get_features_response.feature_values.items()
         } == self.expected_response_mixed
         await tecton_client.close()
+
+    def test_no_api_key(self) -> None:
+        with pytest.raises(InvalidParameterError):
+            TectonClient(url="https://thisisaurl.ai")
+
+    @pytest.mark.asyncio
+    async def test_api_key_env_var(self) -> None:
+        os.environ["TECTON_API_KEY"] = "SOME_API_KEY"
+        client = TectonClient(url="https://thisisaurl.ai")
+        assert not client.is_closed
+        await client.close()
