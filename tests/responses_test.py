@@ -36,10 +36,8 @@ class TestResponse:
         ],
     )
     def test_json_responses(self: Self, file_name: str, expected_answer: list) -> None:
-        file_name = f"tests/test_data/{file_name}"
-        with open(file_name) as json_file:
-            json_response = json.load(json_file)
-            get_features_response = GetFeaturesResponse(json_response)
+        with open(f"tests/test_data/{file_name}") as json_file:
+            get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response.slo_info is None
             self.assert_answers(expected_answer, get_features_response)
@@ -56,8 +54,7 @@ class TestResponse:
         }
 
         with open("tests/test_data/sample_response_slo.json") as json_file:
-            json_response = json.load(json_file)
-            get_features_response = GetFeaturesResponse(json_response)
+            get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response.slo_info is not None
             assert vars(get_features_response.slo_info) == actual_slo_info
@@ -92,8 +89,7 @@ class TestResponse:
         self: Self, filename: str, expected_answers: list, expected_metadata: List[tuple]
     ) -> None:
         with open(filename) as json_file:
-            json_response = json.load(json_file)
-            get_features_response = GetFeaturesResponse(json_response)
+            get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response is not None
             assert get_features_response.slo_info is not None
