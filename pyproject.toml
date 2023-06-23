@@ -28,3 +28,11 @@ ignore = [
   "E501", # E501 line length (we use black auto-formatter to handle line length)
   "E741", #	ambiguous-variable-name
 ]
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.pydoclint]
+style = 'google'
+exclude = '\.git|\.tox|tests/.'
+allow-init-docstring = true

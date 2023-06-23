@@ -123,10 +123,10 @@ class TestRequests:
             self.TEST_WORKSPACE_NAME,
             self.TEST_FEATURE_SERVICE_NAME,
             local_get_feature_request_data,
-            MetadataOptions.defaults(),
+            {MetadataOptions.NAME, MetadataOptions.DATA_TYPE},
         )
 
-        assert get_features_request.endpoint == GetFeaturesRequest.ENDPOINT
+        assert get_features_request.ENDPOINT == GetFeaturesRequest.ENDPOINT
         assert get_features_request.workspace_name == self.TEST_WORKSPACE_NAME
         assert get_features_request.feature_service_name == self.TEST_FEATURE_SERVICE_NAME
 
@@ -159,10 +159,10 @@ class TestRequests:
             self.TEST_WORKSPACE_NAME,
             self.TEST_FEATURE_SERVICE_NAME,
             local_get_feature_request_data,
-            MetadataOptions.defaults(),
+            {MetadataOptions.NAME, MetadataOptions.DATA_TYPE},
         )
 
-        assert get_features_request.endpoint == GetFeaturesRequest.ENDPOINT
+        assert get_features_request.ENDPOINT == GetFeaturesRequest.ENDPOINT
         assert get_features_request.workspace_name == self.TEST_WORKSPACE_NAME
         assert get_features_request.feature_service_name == self.TEST_FEATURE_SERVICE_NAME
 

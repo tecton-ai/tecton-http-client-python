@@ -1,3 +1,6 @@
+from datetime import datetime
+from enum import Enum
+from typing import Optional
 from typing import Self
 from typing import Union
 
@@ -5,17 +8,19 @@ from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
 from tecton_client.data_types import FloatType
+from tecton_client.data_types import get_data_type
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import MismatchedTypeException
+from tecton_client.exceptions import MISSING_EXPECTED_METADATA
+from tecton_client.exceptions import MissingResponseException
+from tecton_client.exceptions import ResponseRelatedErrorMessage
 from tecton_client.exceptions import UnknownTypeException
 
 
 class Value:
-    """
-    Represents an object containing a feature value with a specific type.
-    """
+    """Represents an object containing a feature value with a specific type."""
 
     def __init__(self: Self, data_type: DataType, feature_value: Union[str, None, list]) -> None:
         """Set the value of the feature in the specified type.
@@ -23,7 +28,7 @@ class Value:
         Args:
             data_type (DataType): The type of the feature value.
             feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified
-            type.
+                type.
 
         Raises:
             MismatchedTypeException: If the feature value cannot be converted to the specified type.
@@ -72,3 +77,73 @@ class Value:
 
         else:
             return self._value[self._data_type.__str__()]
+
+
+class FeatureStatus(str, Enum):
+    """Enum to represent the serving status of a feature."""
+
+    PRESENT = "PRESENT"
+    """The feature values were found in the online store for the join keys requested."""
+
+    MISSING_DATA = "MISSING_DATA"
+    """The feature values were not found in the online store either because the join keys do not exist
+    or the feature values are outside ttl."""
+
+    UNKNOWN = "UNKNOWN"
+    """An unknown status code occurred, most likely because an error occurred during feature retrieval."""
+
+
+class FeatureValue:
+    """Class encapsulating all the data for a Feature value returned from a GetFeatures API call.
+
+    Attributes:
+        data_type (:class:`DataType`): The type of the feature value. Tecton supports the following data types:
+            Int, Float, String, Bool, Array, and Struct.
+        feature_value (Union[str, int, float, bool, list, dict, None]): The value of the feature.
+        feature_namespace (str): The namespace that the feature belongs to.
+        feature_name (str): The name of the feature.
+        feature_status (:class:`FeatureStatus`): The status of the feature.
+        effective_time (datetime): The effective serving time for this feature.
+            This is the most recent time that's aligned to the interval for which a full aggregation is available for
+            this feature. Passing this in the spine of an offline feature request should guarantee retrieving the same
+            value as is in this response.
+    """
+
+    def __init__(
+        self: Self,
+        name: str,
+        data_type: str,
+        feature_value: Union[str, None, list],
+        effective_time: Optional[str] = None,
+        element_type: Optional[dict] = None,
+        fields: Optional[list] = None,
+        feature_status: Optional[str] = None,
+    ) -> None:
+        """Initialize a :class:`FeatureValue` object.
+
+        Args:
+            name (str): The name of the feature.
+            data_type (str): String that indicates the type of the feature value.
+            feature_value (Union[str, None, list]): The value of the feature.
+            effective_time (Optional[str]): The effective serving time of the feature, sent as ISO-8601 format string.
+            element_type (Optional[dict]): A dict representing the type of the elements in the array,
+                present when the data_type is :class:`ArrayType`.
+            fields (Optional[list]):  A list representing the fields of the struct, present when the data_type is
+                :class:`StructType`.
+            feature_status (Optional[str]): The status string of the feature value.
+
+        Raises:
+            MissingResponseException: If the name of the feature is not in the format of <namespace>.<feature_name>.
+        """
+        try:
+            self.feature_namespace, self.feature_name = name.split(".")
+        except ValueError:
+            raise MissingResponseException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
+
+        if not data_type:
+            raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
+
+        self.feature_status = FeatureStatus(feature_status) if feature_status else None
+        self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
+        self.data_type = get_data_type(data_type, element_type, fields)
+        self.feature_value = Value(self.data_type, feature_value).value
