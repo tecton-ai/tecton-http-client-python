@@ -6,7 +6,9 @@ from tecton_client.responses import GetFeaturesResponse
 class TectonClient:
     """Class to represent a Tecton Client.
 
-    A `TectonClient` object represents a client that can be used to make requests to a Tecton Feature Service.
+    A `TectonClient` object represents a client that can be used to interact with the Tecton FeatureService API.
+    It provides a collection of methods to make HTTP requests to the respective API endpoints and returns the response
+    as a Python object.
 
     Example:
         >>> tecton_client = TectonClient(url, api_key)
