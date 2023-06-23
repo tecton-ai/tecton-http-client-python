@@ -46,10 +46,12 @@ class TestResponse:
 
     def test_slo_response(self: Self) -> None:
         actual_slo_info = {
-            "slo_eligible": True,
-            "slo_server_time_seconds": 0.039343822,
-            "store_response_size_bytes": 204,
             "server_time_seconds": 0.049082851,
+            "slo_eligible": True,
+            "slo_ineligibility_reasons": None,
+            "slo_server_time_seconds": 0.039343822,
+            "store_max_latency": None,
+            "store_response_size_bytes": 204,
         }
 
         with open("tests/test_data/sample_response_slo.json") as json_file:

@@ -1,4 +1,3 @@
-import re
 from abc import ABC
 from datetime import datetime
 from enum import Enum
@@ -195,17 +194,16 @@ class SloInformation:
         Args:
             slo_information (dict): The SLO information dictionary received from the server.
         """
-        setattr(self, "slo_eligible", slo_information.get("sloEligible"))
-        setattr(self, "server_time_seconds", slo_information.get("serverTimeSeconds"))
-        setattr(self, "slo_server_time_seconds", slo_information.get("sloServerTimeSeconds"))
-        setattr(self, "store_max_latency", slo_information.get("storeMaxLatency"))
-        setattr(self, "store_response_size_bytes", slo_information.get("storeResponseSizeBytes"))
-        if "sloIneligibilityReasons" in slo_information:
-            setattr(
-                self,
-                "slo_ineligibility_reasons",
-                [SloIneligibilityReason(reason) for reason in slo_information["sloIneligibilityReasons"]],
-            )
+        self.slo_eligible = slo_information.get("sloEligible")
+        self.server_time_seconds = slo_information.get("serverTimeSeconds")
+        self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
+        self.store_max_latency = slo_information.get("storeMaxLatency")
+        self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
+        self.slo_ineligibility_reasons = (
+            [SloIneligibilityReason(reason) for reason in slo_information["sloIneligibilityReasons"]]
+            if "sloIneligibilityReasons" in slo_information
+            else None
+        )
 
 
 class AbstractTectonResponse(ABC):
