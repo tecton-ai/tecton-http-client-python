@@ -42,6 +42,7 @@ class TectonClient:
             >>> )
             >>> get_features_response = await tecton_client.get_features(get_features_request)
             >>> print([feature.feature_value for feature in get_features_response.feature_values])
+            [1, 2, 3, "test_feature", ["test", "array"]]
 
         """
         response = await self._tectonHttpClient.execute_request(

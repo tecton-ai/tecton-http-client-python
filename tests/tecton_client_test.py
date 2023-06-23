@@ -49,10 +49,9 @@ class TestTectonClient:
     )
     async def test_get_features(self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
         tecton_client = TectonClient(url, api_key)
-        file_name = f"tests/test_data/{file_name}"
-        with open(file_name) as json_file:
-            json_response = json.load(json_file)
-            httpx_mock.add_response(json=json_response)
+
+        with open(f"tests/test_data/{file_name}") as json_file:
+            httpx_mock.add_response(json=json.load(json_file))
             get_features_response = await tecton_client.get_features(self.get_features_request)
 
         assert {k: v.feature_value for k, v in get_features_response.feature_values.items()} == expected_response
