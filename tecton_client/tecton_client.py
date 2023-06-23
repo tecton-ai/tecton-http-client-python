@@ -10,8 +10,8 @@ class TectonClient:
 
     A `TectonClient` object represents a client that can be used to make requests to a Tecton Feature Service.
 
-    Usage:
-        tecton_client = TectonClient(url, api_key)
+    Example:
+        >>> tecton_client = TectonClient(url, api_key)
 
     """
 
@@ -28,22 +28,23 @@ class TectonClient:
         """Get features from the Tecton Feature Service.
 
         Args:
-            get_features_request (GetFeaturesRequest): The GetFeaturesRequest object, with request data
+            get_features_request (GetFeaturesRequest): The :class:`GetFeaturesRequest` object, with request data
 
         Returns:
-            GetFeaturesResponse: The GetFeaturesResponse object, with response data
+            GetFeaturesResponse: The :class:`GetFeaturesResponse` object, with response data
 
-        Usage:
-            join_key_map = {"example_join_key": "example_join_value"}
-            request_context_map = {"example_request_context": "example_string_value"}
-            get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
-            get_features_request = GetFeaturesRequest(
-                feature_service_name="example_feature_service",
-                request_data=get_feature_request_data,
-                workspace_name="example_workspace",
-            )
-            get_features_response = await tecton_client.get_features(get_features_request)
-            print(get_features_response.get_feature_values_dict())
+        Example:
+            >>> join_key_map = {"example_join_key": "example_join_value"}
+            >>> request_context_map = {"example_request_context": "example_string_value"}
+            >>> get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
+            >>> get_features_request = GetFeaturesRequest(
+            >>>    feature_service_name="example_feature_service",
+            >>>    request_data=get_feature_request_data,
+            >>>    workspace_name="example_workspace",
+            >>> )
+            >>> get_features_response = await tecton_client.get_features(get_features_request)
+            >>> print([feature.feature_value for feature in get_features_response.feature_values])
+
         """
         response = await self._tectonHttpClient.execute_request(
             get_features_request.ENDPOINT, get_features_request.to_json()
