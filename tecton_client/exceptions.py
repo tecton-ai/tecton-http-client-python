@@ -1,18 +1,17 @@
 from enum import Enum
 from typing import Optional
-from typing import Self
 
 
 class TectonException(Exception):
     """Base class for all Tecton specific exceptions."""
 
 
-class TectonClientException(TectonException):
-    """Base Class for exceptions thrown by the Python client."""
+class TectonClientError(TectonException):
+    """Raised for errors thrown by the Python client."""
 
 
 class TectonServerException(TectonException):
-    """Base Class for exceptions representing error response from Tecton API."""
+    """Base class for exceptions raised when the Tecton API returns an error response."""
 
 
 def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) -> str:
@@ -31,12 +30,12 @@ def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) 
     return error_message
 
 
-class InvalidParameterException(TectonClientException):
-    """Class for exceptions raised when one or more parameters passed are invalid."""
+class InvalidParameterError(TectonClientError):
+    """Raised when one or more parameters passed in the request are invalid."""
 
 
-class InvalidURLException(TectonClientException):
-    """Class for exceptions raised when the URL passed is invalid."""
+class InvalidURLError(TectonClientError):
+    """Raised when the URL passed is invalid or empty."""
 
 
 class InvalidParameterMessage(str, Enum):
@@ -50,8 +49,8 @@ class InvalidParameterMessage(str, Enum):
     EMPTY_MAPS = "Both Join Key map and Request Context Map cannot be empty"
 
 
-class UnsupportedTypeException(TectonClientException):
-    """Class for exceptions raised when the type of parameter passed is not supported by the client."""
+class UnsupportedTypeError(TectonClientError):
+    """Raised when the data type of one or more parameters passed in is not supported by Tecton."""
 
 
 def EMPTY_KEY_VALUE(key: str, value: str) -> str:
@@ -92,66 +91,3 @@ def INVALID_TYPE_KEY_VALUE(
             f"{map_type} values can only be of types {allowed_types}. "
             f"Given value for {map_type} is {value} of type {type(value)}"
         )
-
-
-class UnknownTypeException(TectonClientException):
-    """Class for exceptions raised when the type of one or more feature values in the response received is not known."""
-
-    def __init__(self: Self, data_type: str) -> None:
-        """Initializes the exception with the error message for when the data type of one or more feature values
-        in the response is not known.
-
-        Args:
-             data_type (str): Type of the response received
-        """
-        message = (
-            "Received unknown data type %s in the response. "
-            "Please contact Tecton Support for assistance." % data_type
-        )
-
-        super().__init__(message)
-
-
-class MismatchedTypeException(TectonClientException):
-    """Class for exceptions raised when the type of one or more feature values in the response received
-    does not match the expected type.
-    """
-
-    def __init__(self: Self, value: str, data_type: str) -> None:
-        """Initializes the exception with the error message for when the type of one or more feature values
-        in the response received does not match the expected type.
-
-        Args:
-            value (str): Value of the response received.
-            data_type (str): Type of the response received.
-        """
-        message = (
-            "Unexpected Error occurred while parsing the feature value %s to data type %s. "
-            "If problem persists, please contact Tecton Support for assistance." % (value, data_type)
-        )
-
-        super().__init__(message)
-
-
-class MissingResponseException(TectonClientException):
-    """Class for exceptions raised when the response received from Tecton is empty or misses feature vectors."""
-
-
-class ResponseRelatedErrorMessage(str, Enum):
-    """Error messages for response related exceptions."""
-
-    MALFORMED_FEATURE_NAME = "Feature name provided is not in expected format of 'namespace.name'."
-
-
-def MISSING_EXPECTED_METADATA(metadata: str) -> str:
-    """Exception message for when the expected metadata is missing from the response.
-
-    Args:
-        metadata (str): The metadata field.
-
-    Returns:
-        str: The error message string.
-
-    """
-    message = f"Required metadata {metadata} is missing from the response"
-    return message

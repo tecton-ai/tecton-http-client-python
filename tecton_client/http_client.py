@@ -8,9 +8,9 @@ import httpx
 from httpx_auth import HeaderApiKey
 
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
-from tecton_client.exceptions import InvalidParameterException
+from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
-from tecton_client.exceptions import InvalidURLException
+from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import TectonServerException
 
 
@@ -97,11 +97,11 @@ class TectonHttpClient:
             str: The validated URL string.
 
         Raises:
-            InvalidURLException: If the URL is empty or does not have a valid netloc.
+            InvalidURLError: If the URL is invalid or empty.
 
         """
         if not url or not urlparse(url).netloc:
-            raise InvalidURLException(InvalidParameterMessage.URL.value)
+            raise InvalidURLError(InvalidParameterMessage.URL.value)
 
         return url
 
@@ -116,10 +116,10 @@ class TectonHttpClient:
             str: The validated API key string.
 
         Raises:
-            InvalidParameterException: If the API key is empty.
+            InvalidParameterError: If the API key is empty.
 
         """
         if not api_key:
-            raise InvalidParameterException(InvalidParameterMessage.KEY.value)
+            raise InvalidParameterError(InvalidParameterMessage.KEY.value)
 
         return api_key

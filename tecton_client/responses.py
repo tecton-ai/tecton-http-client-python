@@ -12,11 +12,7 @@ from tecton_client.data_types import get_data_type
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
-from tecton_client.exceptions import MismatchedTypeException
-from tecton_client.exceptions import MISSING_EXPECTED_METADATA
-from tecton_client.exceptions import MissingResponseException
-from tecton_client.exceptions import ResponseRelatedErrorMessage
-from tecton_client.exceptions import UnknownTypeException
+from tecton_client.exceptions import TectonClientError
 
 
 class Value:
@@ -31,8 +27,8 @@ class Value:
                 type.
 
         Raises:
-            MismatchedTypeException: If the feature value cannot be converted to the specified type.
-            UnknownTypeException: If the specified type is not supported.
+            TectonClientError: If the feature value cannot be converted to the specified type or
+                if the specified type is not supported.
         """
         self._value = {}
         self._data_type = data_type
@@ -54,9 +50,18 @@ class Value:
             try:
                 self._value[data_type.__str__()] = None if feature_value is None else convert(feature_value)
             except Exception:
-                raise MismatchedTypeException(feature_value, data_type.__str__())
+                message = (
+                    f"Unexpected Error occurred while parsing the feature value {feature_value} "
+                    f"to data type {data_type.__str__()}. "
+                    f"If problem persists, please contact Tecton Support for assistance."
+                )
+                raise TectonClientError(message)
         else:
-            raise UnknownTypeException(data_type.__str__())
+            message = (
+                f"Received unknown data type {data_type.__str__()} in the response."
+                f"If problem persists, please contact Tecton Support for assistance."
+            )
+            raise TectonClientError(message)
 
     @property
     def value(self: Self) -> Union[int, float, str, bool, list, dict, None]:
@@ -133,15 +138,16 @@ class FeatureValue:
             feature_status (Optional[str]): The status string of the feature value.
 
         Raises:
-            MissingResponseException: If the name of the feature is not in the format of <namespace>.<feature_name>.
+            TectonClientError: If the name of the feature is not in the format of <namespace>.<feature_name>.
         """
         try:
             self.feature_namespace, self.feature_name = name.split(".")
         except ValueError:
-            raise MissingResponseException(ResponseRelatedErrorMessage.MALFORMED_FEATURE_NAME)
-
-        if not data_type:
-            raise MissingResponseException(MISSING_EXPECTED_METADATA("Type of the feature value"))
+            message = (
+                f"Feature name provided {name} is not in the expected format of 'namespace.name'."
+                f"If problem persists, please contact Tecton Support for assistance."
+            )
+            raise TectonClientError(message)
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
         self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None

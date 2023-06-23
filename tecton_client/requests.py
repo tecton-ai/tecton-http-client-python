@@ -12,9 +12,9 @@ from typing import Union
 
 from tecton_client.exceptions import EMPTY_KEY_VALUE
 from tecton_client.exceptions import INVALID_TYPE_KEY_VALUE
-from tecton_client.exceptions import InvalidParameterException
+from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
-from tecton_client.exceptions import UnsupportedTypeException
+from tecton_client.exceptions import UnsupportedTypeError
 
 SUPPORTED_JOIN_KEY_VALUE_TYPES: Final[set] = {int, str, NoneType}
 SUPPORTED_REQUEST_CONTEXT_MAP_TYPES: Final[set] = {int, str, float}
@@ -82,14 +82,13 @@ class GetFeatureRequestData:
                 and the value is the request context value for this request.
 
         Raises:
-            InvalidParameterException: If both join_key_map and request_context_map are None,
-                or key or value in either map is empty.
-            UnsupportedTypeException: If the key is not a string or the value is not one of the allowed types.
-            InvalidParameterException: If the value is None when allow_none is False,
-                or if the value is an empty string when allow_none is True.
+            InvalidParameterError: Raised if
+                (1) both join_key_map and request_context_map are None
+                (2) key or value in either map is empty, or value in request_context_map is None
+            UnsupportedTypeError: If the key is not a string or the value is not one of the allowed types.
         """
         if join_key_map is None and request_context_map is None:
-            raise InvalidParameterException(InvalidParameterMessage.EMPTY_MAPS.value)
+            raise InvalidParameterError(InvalidParameterMessage.EMPTY_MAPS.value)
 
         self.join_key_map = (
             self._get_processed_map(join_key_map, True, SUPPORTED_JOIN_KEY_VALUE_TYPES, map_type="Join Key-Map")
@@ -119,29 +118,28 @@ class GetFeatureRequestData:
             dict: The validated map with appropriate types for values.
 
         Raises:
-            InvalidParameterException: If key or value in either map is empty.
-            UnsupportedTypeException: If the key is not a string or the value is not one of the allowed types.
-            InvalidParameterException: If the value is None when allow_none is False,
-                or if the value is an empty string when allow_none is True.
+            InvalidParameterError: Raised if the key or value in either map is empty,
+                or value in request_context_map is None
+            UnsupportedTypeError: If the key is not a string or the value is not one of the allowed types.
 
         """
         for key, value in request_map.items():
             if not key:
-                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
+                raise InvalidParameterError(EMPTY_KEY_VALUE(key, value))
 
             if type(key) != str:
                 message = INVALID_TYPE_KEY_VALUE(map_type=map_type, key=key)
-                raise UnsupportedTypeException(message)
+                raise UnsupportedTypeError(message)
 
             if value is not None:
                 if type(value) not in tuple(allowed_types):
                     message = INVALID_TYPE_KEY_VALUE(map_type=map_type, allowed_types=tuple(allowed_types), value=value)
-                    raise UnsupportedTypeException(message)
+                    raise UnsupportedTypeError(message)
 
             if not allow_none and not value:
-                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
+                raise InvalidParameterError(EMPTY_KEY_VALUE(key, value))
             if allow_none and value == "":
-                raise InvalidParameterException(EMPTY_KEY_VALUE(key, value))
+                raise InvalidParameterError(EMPTY_KEY_VALUE(key, value))
 
             request_map[key] = str(value) if type(value) == int else value
 
@@ -165,12 +163,12 @@ class TectonRequest(ABC):
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
 
         Raises:
-            InvalidParameterException: If the workspace_name or feature_service_name is empty.
+            InvalidParameterError: If the workspace_name or feature_service_name is empty.
         """
         if not workspace_name:
-            raise InvalidParameterException(InvalidParameterMessage.WORKSPACE_NAME.value)
+            raise InvalidParameterError(InvalidParameterMessage.WORKSPACE_NAME.value)
         if not feature_service_name:
-            raise InvalidParameterException(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
+            raise InvalidParameterError(InvalidParameterMessage.FEATURE_SERVICE_NAME.value)
 
         self.feature_service_name = feature_service_name
         self.workspace_name = workspace_name
