@@ -1,8 +1,8 @@
 import json
 from typing import List
-from typing import Self
 
 import pytest
+from typing_extensions import Self
 
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
@@ -28,14 +28,15 @@ class TestResponse:
     @pytest.mark.parametrize(
         "file_name, expected_answer",
         [
-            ("resources/sample_response.json", [0, False, None, "nimbostratus", 55.5]),
-            ("resources/sample_response_null.json", [True, None, None, None, 669]),
-            ("resources/sample_response_struct.json", [["2.46", 2.46]]),
-            ("resources/sample_response_list.json", [[0], None, [55.5, 57.88, 58.96, 57.66, None, 55.98]]),
-            ("resources/sample_response_mixed.json", [None, ["2.46", 2.46], [1, 2, 3, None, 5], "test"]),
+            ("sample_response.json", [0, False, None, "nimbostratus", 55.5]),
+            ("sample_response_null.json", [True, None, None, None, 669]),
+            ("sample_response_struct.json", [["2.46", 2.46]]),
+            ("sample_response_list.json", [[0], None, [55.5, 57.88, 58.96, 57.66, None, 55.98]]),
+            ("sample_response_mixed.json", [None, ["2.46", 2.46], [1, 2, 3, None, 5], "test"]),
         ],
     )
     def test_json_responses(self: Self, file_name: str, expected_answer: list) -> None:
+        file_name = f"tests/test_data/{file_name}"
         with open(file_name) as json_file:
             json_response = json.load(json_file)
             get_features_response = GetFeaturesResponse(json_response)
@@ -51,7 +52,7 @@ class TestResponse:
             "server_time_seconds": 0.049082851,
         }
 
-        with open("resources/sample_response_slo.json") as json_file:
+        with open("tests/test_data/sample_response_slo.json") as json_file:
             json_response = json.load(json_file)
             get_features_response = GetFeaturesResponse(json_response)
 
@@ -62,7 +63,7 @@ class TestResponse:
         "filename, expected_answers, expected_metadata",
         [
             (
-                "resources/sample_response_metadata.json",
+                "tests/test_data/sample_response_metadata.json",
                 [
                     True,
                     None,
@@ -76,10 +77,10 @@ class TestResponse:
                 ],
                 [
                     (BoolType, FeatureStatus.PRESENT, 0),
-                    (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00+00:00"),
-                    (IntType, FeatureStatus.PRESENT, "2023-05-04T00:00:00+00:00"),
-                    (FloatType, FeatureStatus.PRESENT, "2023-05-04T15:50:00+00:00"),
-                    (ArrayType, FeatureStatus.PRESENT, "2023-05-03T00:00:00+00:00"),
+                    (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00"),
+                    (IntType, FeatureStatus.PRESENT, "2023-05-04T00:00:00"),
+                    (FloatType, FeatureStatus.PRESENT, "2023-05-04T15:50:00"),
+                    (ArrayType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
                 ],
             )
         ],
