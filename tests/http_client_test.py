@@ -5,15 +5,23 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.http_client import TectonHttpClient
+from tecton_client.tecton_client import TectonClientOptions
 
 
 class TestHttpClient:
     URL = "https://thisisaurl.ai"
     API_KEY = "abcd1234"
+    client_options = TectonClientOptions()
 
     @pytest.mark.asyncio
     async def test_http_client(self) -> None:
-        http_client = TectonHttpClient(self.URL, self.API_KEY)
+        http_client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            self.client_options.connect_timeout,
+            self.client_options.read_timeout,
+            self.client_options.keepalive_expiry,
+        )
         assert not http_client.is_closed
         await http_client.close()
 
@@ -23,7 +31,13 @@ class TestHttpClient:
             json={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
         )
 
-        http_client = TectonHttpClient(self.URL, self.API_KEY)
+        http_client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            self.client_options.connect_timeout,
+            self.client_options.read_timeout,
+            self.client_options.keepalive_expiry,
+        )
 
         endpoint = "api/v1/feature-service/get-features"
         params = {
@@ -53,7 +67,13 @@ class TestHttpClient:
             },
         )
 
-        http_client = TectonHttpClient(self.URL, self.API_KEY)
+        http_client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            self.client_options.connect_timeout,
+            self.client_options.read_timeout,
+            self.client_options.keepalive_expiry,
+        )
 
         endpoint = "api/v1/feature-service/get-features"
         params = {
@@ -77,12 +97,24 @@ class TestHttpClient:
     @pytest.mark.parametrize("url", ["", None, "###", "somesite"])
     def test_invalid_url(self, url: object) -> None:
         with pytest.raises(InvalidURLError):
-            TectonHttpClient(url, "1234")
+            TectonHttpClient(
+                url,
+                "1234",
+                self.client_options.connect_timeout,
+                self.client_options.read_timeout,
+                self.client_options.keepalive_expiry,
+            )
 
     @pytest.mark.parametrize("key", ["", None])
     def test_empty_or_none_key(self, key: object) -> None:
         with pytest.raises(InvalidParameterError):
-            TectonHttpClient(self.URL, key)
+            TectonHttpClient(
+                self.URL,
+                key,
+                self.client_options.connect_timeout,
+                self.client_options.read_timeout,
+                self.client_options.keepalive_expiry,
+            )
 
     def test_invalid_api_key(self, httpx_mock: HTTPXMock) -> None:
         expected_message = (
@@ -91,6 +123,12 @@ class TestHttpClient:
         )
 
         try:
-            TectonHttpClient(self.URL, self.API_KEY)
+            TectonHttpClient(
+                self.URL,
+                self.API_KEY,
+                self.client_options.connect_timeout,
+                self.client_options.read_timeout,
+                self.client_options.keepalive_expiry,
+            )
         except TectonServerException as e:
             assert e == expected_message

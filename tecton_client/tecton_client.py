@@ -3,6 +3,7 @@ import asyncio
 from tecton_client.http_client import TectonHttpClient
 import httpx
 from typing_extensions import Self
+import os
 from dataclasses import dataclass
 from typing import Optional
 
@@ -53,7 +54,7 @@ class TectonClient:
     def __init__(
         self,
         url: str,
-        api_key: str,
+        api_key: Optional[str] = os.getenv("TECTON_API_KEY"),
         client: Optional[httpx.AsyncClient] = None,
         client_options: TectonClientOptions = TectonClientOptions(),
     ) -> None:
@@ -65,6 +66,7 @@ class TectonClient:
                 <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
+                It can be provided through an environment variable called `TECTON_API_KEY` or passed in as a parameter.
             client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
                 Users can initialize their own HTTPX client and pass it in to the :class:`TectonClient` object.
                 If no client is passed in, the :class:`TectonClient` object will initialize its own HTTPX client.
