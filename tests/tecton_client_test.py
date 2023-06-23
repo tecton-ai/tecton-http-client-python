@@ -1,7 +1,8 @@
-from typing import Self
+import json
 
 import pytest
 from pytest_httpx import HTTPXMock
+from typing_extensions import Self
 
 from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
@@ -12,21 +13,13 @@ url = "https://thisisaurl.ai"
 
 
 class TestTectonClient:
-    mock_response1 = {
-        "result": {"features": ["1", 11292.571748310578]},
-        "metadata": {
-            "features": [
-                {
-                    "name": "transaction_amount_is_high.transaction_amount_is_high",
-                    "dataType": {"type": "int64"},
-                },
-                {"name": "transaction_distance_from_home.dist_km", "dataType": {"type": "float64"}},
-            ]
-        },
-    }
     expected_response1 = {
-        "transaction_amount_is_high.transaction_amount_is_high": 1,
-        "transaction_distance_from_home.dist_km": 11292.571748310578,
+        "test.output_struct1": None,
+        "test.output_struct2": {"float64_field": 2.46, "string_field": "2.46"},
+        "test.output_array": [1, 2, 3, None, 5],
+        "test.output_string": "test",
+        "test.output_int1": 24,
+        "test.output_int2": 691,
     }
 
     tecton_client = TectonClient(url, api_key)
@@ -41,12 +34,13 @@ class TestTectonClient:
     )
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("mock_http_response, expected_response", [(mock_response1, expected_response1)])
-    async def test_get_features(
-        self: Self, httpx_mock: HTTPXMock, mock_http_response: dict, expected_response: dict
-    ) -> None:
-        httpx_mock.add_response(json=mock_http_response)
-        get_features_response = await self.tecton_client.get_features(self.get_features_request)
+    @pytest.mark.parametrize("file_name, expected_response", [("sample_response_mixed.json", expected_response1)])
+    async def test_get_features(self: Self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
+        file_name = f"tests/test_data/{file_name}"
+        with open(file_name) as json_file:
+            json_response = json.load(json_file)
+            httpx_mock.add_response(json=json_response)
+            get_features_response = await self.tecton_client.get_features(self.get_features_request)
 
-        assert get_features_response.get_feature_values_dict() == expected_response
+        assert {k: v.feature_value for k, v in get_features_response.feature_values.items()} == expected_response
         await self.tecton_client.close()
