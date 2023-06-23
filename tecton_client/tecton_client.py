@@ -52,7 +52,7 @@ class TectonClient:
 
     @property
     def is_closed(self) -> bool:
-        """Returns the open or closed status of the HTTPS Asynchronous Client."""
+        """Returns the open or closed status of the HTTPX Asynchronous Client."""
         return self._tectonHttpClient.is_closed
 
     async def close(self) -> None:
