@@ -2,7 +2,7 @@ import json
 
 import pytest
 from pytest_httpx import HTTPXMock
-from typing_extensions import Self
+from typing import Self
 
 from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
