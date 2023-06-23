@@ -7,8 +7,6 @@ from typing import Optional
 from typing import Set
 from typing import Union
 
-from typing_extensions import Self
-
 from tecton_client.exceptions import EMPTY_KEY_VALUE
 from tecton_client.exceptions import INVALID_TYPE_KEY_VALUE
 from tecton_client.exceptions import InvalidParameterError
@@ -67,7 +65,7 @@ class GetFeatureRequestData:
     """
 
     def __init__(
-        self: Self,
+        self,
         join_key_map: Optional[Dict[str, Union[int, str, type(None)]]] = None,
         request_context_map: Optional[Dict[str, Union[int, str, float]]] = None,
     ) -> None:
@@ -156,7 +154,7 @@ class TectonRequest(ABC):
         feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
     """
 
-    def __init__(self: Self, workspace_name: str, feature_service_name: str) -> None:
+    def __init__(self, workspace_name: str, feature_service_name: str) -> None:
         """Initializing parameters required to make a request to the Tecton API.
 
         Args:
@@ -186,7 +184,7 @@ class AbstractGetFeaturesRequest(TectonRequest):
     """
 
     def __init__(
-        self: Self,
+        self,
         workspace_name: str,
         feature_service_name: str,
         metadata_options: Set[MetadataOptions] = _defaults(),
@@ -224,7 +222,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features"
 
     def __init__(
-        self: Self,
+        self,
         workspace_name: str,
         feature_service_name: str,
         request_data: GetFeatureRequestData,
@@ -242,7 +240,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         super().__init__(workspace_name, feature_service_name, metadata_options)
         self.request_data = request_data
 
-    def to_json(self: Self) -> dict:
+    def to_json(self) -> dict:
         """Returns a JSON representation of the :class:`GetFeaturesRequest` object.
 
         Returns:

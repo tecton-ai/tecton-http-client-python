@@ -4,7 +4,6 @@ from typing import Final
 from typing import List
 
 import pytest
-from typing_extensions import Self
 
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
@@ -20,7 +19,7 @@ from tests.test_utils import dict_equals
 class TestResponse:
     TEST_DATA_REL_PATH: Final[str] = "tests/test_data/"
 
-    def assert_answers(self: Self, expected_answer: list, get_features_response: GetFeaturesResponse) -> None:
+    def assert_answers(self, expected_answer: list, get_features_response: GetFeaturesResponse) -> None:
         assert len(get_features_response.feature_values) == len(expected_answer)
 
         # For StructType data, the feature_values are stored as a dictionary of field.name: field.value pairs.
@@ -44,14 +43,14 @@ class TestResponse:
             ("sample_response_mixed.json", [None, ["2.46", 2.46], [1, 2, 3, None, 5], "test", 24, 691]),
         ],
     )
-    def test_json_responses(self: Self, file_name: str, expected_answer: list) -> None:
+    def test_json_responses(self, file_name: str, expected_answer: list) -> None:
         with open(f"{TestResponse.TEST_DATA_REL_PATH}{file_name}") as json_file:
             get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response.slo_info is None
             self.assert_answers(expected_answer, get_features_response)
 
-    def test_slo_response(self: Self) -> None:
+    def test_slo_response(self) -> None:
         actual_slo_info = {
             "dynamodb_response_size_bytes": None,
             "server_time_seconds": 0.049082851,
@@ -94,9 +93,7 @@ class TestResponse:
             )
         ],
     )
-    def test_metadata_response(
-        self: Self, filename: str, expected_answers: list, expected_metadata: List[tuple]
-    ) -> None:
+    def test_metadata_response(self, filename: str, expected_answers: list, expected_metadata: List[tuple]) -> None:
         with open(f"{TestResponse.TEST_DATA_REL_PATH}{filename}") as json_file:
             get_features_response = GetFeaturesResponse(json.load(json_file))
 

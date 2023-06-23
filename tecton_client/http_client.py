@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 
 import httpx
 from httpx_auth import HeaderApiKey
-from typing_extensions import Self
 
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterError
@@ -27,7 +26,7 @@ class TectonHttpClient:
         ACCEPT = "Accept"
         CONTENT_TYPE = "Content-Type"
 
-    def __init__(self: Self, url: str, api_key: str, client: Optional[httpx.AsyncClient] = None) -> None:
+    def __init__(self, url: str, api_key: str, client: Optional[httpx.AsyncClient] = None) -> None:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
@@ -44,13 +43,13 @@ class TectonHttpClient:
         self.client: httpx.AsyncClient = client or httpx.AsyncClient()
         self.is_client_closed: bool = False
 
-    async def close(self: Self) -> None:
+    async def close(self) -> None:
         """Close the HTTPX Asynchronous Client."""
         await self.client.aclose()
         self.is_client_closed = True
 
     @property
-    def is_closed(self: Self) -> bool:
+    def is_closed(self) -> bool:
         """Checks if the client is closed.
 
         Returns:
@@ -59,7 +58,7 @@ class TectonHttpClient:
         """
         return self.is_client_closed
 
-    async def execute_request(self: Self, endpoint: str, request_body: dict) -> dict:
+    async def execute_request(self, endpoint: str, request_body: dict) -> dict:
         """Performs an HTTP request to a specified endpoint using the client.
 
         This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
