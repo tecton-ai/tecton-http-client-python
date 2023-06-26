@@ -51,6 +51,9 @@ class TectonClient:
             ...     workspace_name="example_workspace",
             ... )
             >>> response = tecton_client.get_features(request)
+            `response.feature_values()` returns a dictionary of {feature_name: `FeatureValue`} pairs.
+
+            To access the values of the features stored as :class:`FeatureValue` objects in the dictionary, use:
             >>> print([feature.feature_value for feature in response.feature_values.values()])
             [1, 2, 3, "test_feature", ["test", "array"]]
 
@@ -62,10 +65,10 @@ class TectonClient:
 
     @property
     def is_closed(self) -> bool:
-        """Returns the open or closed status of the client."""
+        """Returns the open or closed status of the HTTP client."""
         return self._tecton_http_client.is_closed
 
     def close(self) -> None:
-        """Close the client."""
+        """Close the HTTP client."""
         self._loop.run_until_complete(self._tecton_http_client.close())
         self._loop.close()
