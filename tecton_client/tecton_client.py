@@ -91,6 +91,7 @@ class TectonClient:
             client=client,
         )
         self._loop = asyncio.new_event_loop()
+
     def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Makes a request to the /get-features endpoint and returns the response in the form of a
         :class:`GetFeaturesResponse` object

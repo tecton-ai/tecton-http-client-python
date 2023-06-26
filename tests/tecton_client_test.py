@@ -256,9 +256,7 @@ class TestTectonClient:
             httpx_mock.add_response(json=json.load(json_file))
             response = tecton_client.get_features(self.test_request)
 
-        assert {
-            k: v.feature_value for k, v in response.feature_values.items()
-        } == self.expected_response_mixed
+        assert {k: v.feature_value for k, v in response.feature_values.items()} == self.expected_response_mixed
         tecton_client.close()
 
     def test_no_api_key(self) -> None:
