@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Optional
 
+from tecton_client.requests import MAX_MICRO_BATCH_SIZE
+
 
 class TectonException(Exception):
     """Base class for all Tecton specific exceptions."""
@@ -52,6 +54,8 @@ class InvalidParameterMessage(str, Enum):
     WORKSPACE_NAME = "Workspace Name cannot be None or empty"
     FEATURE_SERVICE_NAME = "FeatureService Name cannot be None or empty"
     EMPTY_MAPS = "Both Join Key map and Request Context Map cannot be empty"
+    REQUEST_DATA_LIST = "List of GetFeaturesRequestData for get-features-batch/ cannot be empty"
+    INVALID_BATCH_SIZE = f"Micro batch size for get-features-batch/ must be between 1 and {MAX_MICRO_BATCH_SIZE}"
 
 
 class UnsupportedTypeError(TectonClientError):
