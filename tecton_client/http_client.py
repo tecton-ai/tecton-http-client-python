@@ -61,20 +61,20 @@ class TectonHttpClient:
                 will initialize its own HTTPX client.
 
         """
-        self.url = self.validate_url(url)
-        self.api_key = self.validate_key(api_key)
+        self._url = self._validate_url(url)
+        self._api_key = self._validate_key(api_key)
 
-        self.auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self.api_key}")
-        self.client: httpx.AsyncClient = client or httpx.AsyncClient(
+        self._auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self._api_key}")
+        self._client: httpx.AsyncClient = client or httpx.AsyncClient(
             timeout=httpx.Timeout(5, connect=connect_timeout, read=read_timeout, pool=pool_timeout),
             limits=httpx.Limits(keepalive_expiry=keepalive_expiry, max_connections=max_connections),
         )
-        self.is_client_closed: bool = False
+        self._is_client_closed: bool = False
 
     async def close(self) -> None:
         """Close the HTTPX Asynchronous Client."""
-        await self.client.aclose()
-        self.is_client_closed = True
+        await self._client.aclose()
+        self._is_client_closed = True
 
     @property
     def is_closed(self) -> bool:
@@ -84,7 +84,7 @@ class TectonHttpClient:
             bool: True if the client is closed, False otherwise.
 
         """
-        return self.is_client_closed
+        return self._is_client_closed
 
     async def execute_request(self, endpoint: str, request_body: dict) -> dict:
         """Performs an HTTP request to a specified endpoint using the client.
@@ -103,12 +103,12 @@ class TectonHttpClient:
                 error response are raised.
 
         """
-        url = urljoin(self.url, endpoint)
+        url = urljoin(self._url, endpoint)
 
         # HTTPX requires the data provided to the request to be a string and not a dictionary.
         # The request dictionary is therefore converted to a JSON formatted string and passed in.
         # For more information, please check the HTTPX documentation `here <https://www.python-httpx.org/quickstart/>`_.
-        response = await self.client.post(url, data=json.dumps(request_body), auth=self.auth)
+        response = await self._client.post(url, data=json.dumps(request_body), auth=self._auth)
 
         if response.status_code == 200:
             return response.json()
@@ -121,7 +121,7 @@ class TectonHttpClient:
                 raise TectonServerException(message)
 
     @staticmethod
-    def validate_url(url: Optional[str]) -> str:
+    def _validate_url(url: Optional[str]) -> str:
         """Validate that a given URL string is a valid URL.
 
         Args:
@@ -140,7 +140,7 @@ class TectonHttpClient:
         return url
 
     @staticmethod
-    def validate_key(api_key: Optional[str]) -> str:
+    def _validate_key(api_key: Optional[str]) -> str:
         """Validate that a given API key string is valid.
 
         Args:

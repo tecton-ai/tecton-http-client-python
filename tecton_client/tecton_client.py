@@ -34,7 +34,7 @@ class TectonClientOptions:
             Defaults to 2.0 seconds.
         keepalive_expiry (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
             or None for no limits. Defaults to 300 seconds (5 minutes).
-        max_connections (Optional[int]): (Optional) maximum number of allowable connections, or None for no limits.
+        max_connections (Optional[int]): (Optional) The maximum number of allowable connections, or None for no limits.
             Defaults to 10.
 
     """
@@ -69,11 +69,11 @@ class TectonClient:
 
         Args:
             url (str): The Tecton Base URL
-            api_key (str): API Key for authenticating with the FeatureService API. See `Authenticating with an API key
-                <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
+            api_key (Optional[str]): API Key for authenticating with the FeatureService API. See `Authenticating with an
+                API key <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
-                It can be provided through an environment variable called `TECTON_API_KEY` or passed in as a parameter.
+                It can be passed in as a parameter or provided through an environment variable called `TECTON_API_KEY`.
             client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
                 Users can initialize their own HTTPX client and pass it in to the :class:`TectonClient` object.
                 If no client is passed in, the :class:`TectonClient` object will initialize its own HTTPX client.
@@ -95,7 +95,6 @@ class TectonClient:
             client=client,
         )
         self._loop = asyncio.new_event_loop()
-        
     def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Makes a request to the /get-features endpoint and returns the response in the form of a
         :class:`GetFeaturesResponse` object

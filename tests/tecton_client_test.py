@@ -236,12 +236,11 @@ class TestTectonClient:
     client1 = httpx.AsyncClient(timeout=10, limits=httpx.Limits(max_connections=10))
     client2 = httpx.AsyncClient()
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "client",
         [client1, client2, None],
     )
-    async def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
+    def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
         if client is None:
             client_options = TectonClientOptions(connect_timeout=10, read_timeout=15, keepalive_expiry=500)
             tecton_client = TectonClient(url, api_key, client_options=client_options)
@@ -255,20 +254,19 @@ class TestTectonClient:
 
         with open("tests/test_data/sample_response_mixed.json") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
-            get_features_response = await tecton_client.get_features(self.get_features_request)
+            get_features_response = tecton_client.get_features(self.get_features_request)
 
         assert {
             k: v.feature_value for k, v in get_features_response.feature_values.items()
         } == self.expected_response_mixed
-        await tecton_client.close()
+        tecton_client.close()
 
     def test_no_api_key(self) -> None:
         with pytest.raises(InvalidParameterError):
             TectonClient(url="https://thisisaurl.ai")
 
-    @pytest.mark.asyncio
-    async def test_api_key_env_var(self) -> None:
+    def test_api_key_env_var(self) -> None:
         os.environ["TECTON_API_KEY"] = "SOME_API_KEY"
         client = TectonClient(url="https://thisisaurl.ai")
         assert not client.is_closed
-        await client.close()
+        client.close()
