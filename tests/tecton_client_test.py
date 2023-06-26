@@ -254,10 +254,10 @@ class TestTectonClient:
 
         with open("tests/test_data/sample_response_mixed.json") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
-            get_features_response = tecton_client.get_features(self.get_features_request)
+            response = tecton_client.get_features(self.test_request)
 
         assert {
-            k: v.feature_value for k, v in get_features_response.feature_values.items()
+            k: v.feature_value for k, v in response.feature_values.items()
         } == self.expected_response_mixed
         tecton_client.close()
 
