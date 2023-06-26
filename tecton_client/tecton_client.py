@@ -1,8 +1,4 @@
 import asyncio
-
-from tecton_client.http_client import TectonHttpClient
-import httpx
-from typing_extensions import Self
 import os
 from dataclasses import dataclass
 from typing import Optional
