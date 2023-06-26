@@ -10,17 +10,6 @@ Short summary of your change and why are you making it (at least 1-2 sentences).
 How have you tested (or planning to test) this change?
 -->
 
-# Rollout and Rollback Plan
+# GitHub Issue:
 
-<!--
-Any special considerations for how this change needs to be rolled out?
-
-In case anything goes wrong - can this change be reverted? Or does it need special handling while reverting?
--->
-
-- [ ] No special rollout plan - this change can be reverted if needed.
-- [ ] Rollout and rollback plan - Please fill this out for backwards-incompatible changes, such as changes to configuration or data models, or changes that need multiple steps to rollout correctly.
-
-# JIRA
-
-https://tecton.atlassian.net/browse/TEC-XXXXX
+https://github.com/tecton-ai/tecton-http-client-python/issues/XXX
