@@ -28,7 +28,7 @@ class TectonClient:
                 the-http-api>`_  for more information.
         """
         self._tecton_http_client = TectonHttpClient(url, api_key)
-        self.loop = asyncio.get_event_loop()
+        self.loop = asyncio.new_event_loop()
 
     def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Makes a request to the /get-features endpoint and returns the response in the form of a

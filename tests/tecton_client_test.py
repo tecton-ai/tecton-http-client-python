@@ -42,7 +42,6 @@ class TestTectonClient:
         workspace_name="test-workspace",
     )
 
-    @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "file_name, expected_response",
         [
