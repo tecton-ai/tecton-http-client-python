@@ -37,9 +37,9 @@ class TestTectonClient:
 
     get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
     get_features_request = GetFeaturesRequest(
-        feature_service_name="fraud_detection_feature_service",
+        feature_service_name="test_feature_service",
         request_data=get_feature_request_data,
-        workspace_name="tecton-fundamentals-tutorial-live",
+        workspace_name="test-workspace",
     )
 
     @pytest.mark.asyncio
@@ -50,12 +50,12 @@ class TestTectonClient:
             ("sample_response_metadata.json", expected_response_metadata),
         ],
     )
-    async def test_get_features(self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
+    def test_get_features(self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
         tecton_client = TectonClient(url, api_key)
 
         with open(f"tests/test_data/{file_name}") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
-            get_features_response = await tecton_client.get_features(self.get_features_request)
+            get_features_response = tecton_client.get_features(self.get_features_request)
 
         assert {k: v.feature_value for k, v in get_features_response.feature_values.items()} == expected_response
-        await tecton_client.close()
+        tecton_client.close()

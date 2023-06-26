@@ -1,3 +1,5 @@
+import asyncio
+
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
@@ -19,27 +21,32 @@ class TectonClient:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
-            url (str): The URL to ping.
-            api_key (str): The API Key required as part of header authorization.
+            url (str): The Tecton Base URL
+            api_key (str): API Key for authenticating with the FeatureService API. See `Authenticating with an API key
+                <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
+                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
+                the-http-api>`_  for more information.
         """
-        self._tectonHttpClient = TectonHttpClient(url, api_key)
+        self._tecton_http_client = TectonHttpClient(url, api_key)
+        self.loop = asyncio.get_event_loop()
 
-    async def get_features(self, get_features_request: GetFeaturesRequest) -> GetFeaturesResponse:
-        """Get features from the Tecton Feature Service.
+    def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
+        """Makes a request to the /get-features endpoint and returns the response in the form of a
+        :class:`GetFeaturesResponse` object
 
         Args:
-            get_features_request (GetFeaturesRequest): The :class:`GetFeaturesRequest` object, with request data
+            request (GetFeaturesRequest): The :class:`GetFeaturesRequest` object with the request parameters
 
         Returns:
-            GetFeaturesResponse: The :class:`GetFeaturesResponse` object, with response data
+            GetFeaturesResponse: The :class:`GetFeaturesResponse` object representing the response from the HTTP API
 
         Example:
             >>> join_key_map = {"example_join_key": "example_join_value"}
             >>> request_context_map = {"example_request_context": "example_string_value"}
-            >>> get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
-            >>> get_features_request = GetFeaturesRequest(
+            >>> request_data = GetFeatureRequestData(join_key_map, request_context_map)
+            >>> request = GetFeaturesRequest(
             ...     feature_service_name="example_feature_service",
-            ...     request_data=get_feature_request_data,
+            ...     request_data=request_data,
             ...     workspace_name="example_workspace",
             ... )
             >>> get_features_response = await tecton_client.get_features(get_features_request)
@@ -47,16 +54,17 @@ class TectonClient:
             [1, 2, 3, "test_feature", ["test", "array"]]
 
         """
-        response = await self._tectonHttpClient.execute_request(
-            get_features_request.ENDPOINT, get_features_request.to_json()
+        response = self.loop.run_until_complete(
+            self._tecton_http_client.execute_request(request.ENDPOINT, request.to_json())
         )
         return GetFeaturesResponse(response)
 
     @property
     def is_closed(self) -> bool:
-        """Returns the open or closed status of the HTTPX Asynchronous Client."""
-        return self._tectonHttpClient.is_closed
+        """Returns the open or closed status of the client."""
+        return self._tecton_http_client.is_closed
 
-    async def close(self) -> None:
-        """Close the HTTPX Asynchronous Client."""
-        await self._tectonHttpClient.close()
+    def close(self) -> None:
+        """Close the client."""
+        self.loop.run_until_complete(self._tecton_http_client.close())
+        self.loop.close()
