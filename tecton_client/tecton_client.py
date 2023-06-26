@@ -28,7 +28,7 @@ class TectonClient:
                 the-http-api>`_  for more information.
         """
         self._tecton_http_client = TectonHttpClient(url, api_key)
-        self.loop = asyncio.new_event_loop()
+        self._loop = asyncio.new_event_loop()
 
     def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Makes a request to the /get-features endpoint and returns the response in the form of a
@@ -49,12 +49,12 @@ class TectonClient:
             ...     request_data=request_data,
             ...     workspace_name="example_workspace",
             ... )
-            >>> get_features_response = await tecton_client.get_features(get_features_request)
-            >>> print([feature.feature_value for feature in get_features_response.feature_values.values()])
+            >>> response = tecton_client.get_features(request)
+            >>> print([feature.feature_value for feature in response.feature_values.values()])
             [1, 2, 3, "test_feature", ["test", "array"]]
 
         """
-        response = self.loop.run_until_complete(
+        response = self._loop.run_until_complete(
             self._tecton_http_client.execute_request(request.ENDPOINT, request.to_json())
         )
         return GetFeaturesResponse(response)
@@ -66,5 +66,5 @@ class TectonClient:
 
     def close(self) -> None:
         """Close the client."""
-        self.loop.run_until_complete(self._tecton_http_client.close())
-        self.loop.close()
+        self._loop.run_until_complete(self._tecton_http_client.close())
+        self._loop.close()
