@@ -220,7 +220,7 @@ class GetFeaturesResponse(AbstractTectonResponse):
         feature_values (Dict[str, FeatureValue]): Dictionary with feature names as keys and their corresponding feature
             values, one for each feature in the feature vector.
         slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector's SLO,
-            present only if requested in the request.
+            present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
     """
 
     def __init__(self: Self, response: dict) -> None:
