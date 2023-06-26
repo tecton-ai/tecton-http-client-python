@@ -17,6 +17,9 @@ class TestResponse:
     def assert_answers(self: Self, expected_answer: list, get_features_response: GetFeaturesResponse) -> None:
         assert len(get_features_response.feature_values) == len(expected_answer)
 
+        # For StructType data, the feature_values are stored as a dictionary of field.name: field.value pairs.
+        # While testing, we retrieve only the values from the dictionary and compare them to the expected response.
+        # For other data types, we can directly compare the stored feature_value to the expected response.
         actual_answer = [
             [value for value in feature.feature_value.values()]
             if isinstance(feature.data_type, StructType) and feature.feature_value is not None
