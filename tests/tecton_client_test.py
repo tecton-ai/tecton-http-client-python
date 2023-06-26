@@ -35,10 +35,9 @@ class TestTectonClient:
     join_key_map = {"test_join_key_1": "test_join_value_1", "test_join_key_2": "test_join_value_2"}
     request_context_map = {"test_request_context_1": 1234, "test_request_context_2": "test_string_value"}
 
-    get_feature_request_data = GetFeatureRequestData(join_key_map, request_context_map)
-    get_features_request = GetFeaturesRequest(
+    test_request = GetFeaturesRequest(
         feature_service_name="test_feature_service",
-        request_data=get_feature_request_data,
+        request_data=GetFeatureRequestData(join_key_map, request_context_map),
         workspace_name="test-workspace",
     )
 
@@ -54,7 +53,7 @@ class TestTectonClient:
 
         with open(f"tests/test_data/{file_name}") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
-            get_features_response = tecton_client.get_features(self.get_features_request)
+            response = tecton_client.get_features(self.test_request)
 
-        assert {k: v.feature_value for k, v in get_features_response.feature_values.items()} == expected_response
+        assert {k: v.feature_value for k, v in response.feature_values.items()} == expected_response
         tecton_client.close()
