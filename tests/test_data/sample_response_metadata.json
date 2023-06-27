@@ -16,6 +16,7 @@
     "features": [
       {
         "name": "transaction_amount.is_present",
+        "effectiveTime": "2023-06-22T08:30Z",
         "dataType": {
           "type": "boolean"
         },
@@ -31,7 +32,7 @@
       },
       {
         "name": "user_transaction_counts.transaction_id_last_3_1d_1d",
-        "effectiveTime": "2023-05-04T00:00:00Z",
+        "effectiveTime": "2023-06-22T08:30:45+00:00",
         "dataType": {
           "type": "int64"
         },
@@ -39,7 +40,7 @@
       },
       {
         "name": "user_transaction_amount_metrics.amt_mean_1d_10m",
-        "effectiveTime": "2023-05-04T15:50:00Z",
+        "effectiveTime": "2023-06-22T08:30:45.123Z",
         "dataType": {
           "type": "float64"
         },
@@ -47,7 +48,7 @@
       },
       {
         "name": "user_transaction_counts.test",
-        "effectiveTime": "2023-05-03T00:00:00Z",
+        "effectiveTime": "2023-06-22T08:30:45.123+00:00",
         "dataType": {
           "type": "array",
           "elementType": {

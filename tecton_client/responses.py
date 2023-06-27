@@ -154,7 +154,7 @@ class FeatureValue:
             raise TectonClientError(message)
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
-        self.effective_time = datetime.strptime(effective_time, "%Y-%m-%dT%H:%M:%SZ") if effective_time else None
+        self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
         self.data_type = get_data_type(data_type, element_type, fields)
         self.feature_value = Value(self.data_type, feature_value).value
 
@@ -163,8 +163,11 @@ class SloIneligibilityReason(str, Enum):
     """Reasons due to which the Feature Serving Response may be ineligible for SLO."""
 
     UNKNOWN = "UNKNOWN"
+    """Reason is unknown."""
     DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED = "DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED"
+    """The 2MiB limit for DynamoDB response size was exceeded."""
     REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED = "REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED"
+    """The 2MiB limit for DynamoDB response size was exceeded."""
     REDIS_LATENCY_LIMIT_EXCEEDED = "REDIS_LATENCY_LIMIT_EXCEEDED"
 
 

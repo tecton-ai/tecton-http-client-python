@@ -79,11 +79,11 @@ class TestResponse:
                     ],
                 ],
                 [
-                    (BoolType, FeatureStatus.PRESENT, 0),
-                    (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00"),
-                    (IntType, FeatureStatus.PRESENT, "2023-05-04T00:00:00"),
-                    (FloatType, FeatureStatus.PRESENT, "2023-05-04T15:50:00"),
-                    (ArrayType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
+                    (BoolType, FeatureStatus.PRESENT, "2023-06-22T08:30:00+00:00"),
+                    (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00+00:00"),
+                    (IntType, FeatureStatus.PRESENT, "2023-06-22T08:30:45+00:00"),
+                    (FloatType, FeatureStatus.PRESENT, "2023-06-22T08:30:45+00:00"),
+                    (ArrayType, FeatureStatus.PRESENT, "2023-06-22T08:30:45+00:00"),
                 ],
             )
         ],
@@ -100,7 +100,6 @@ class TestResponse:
             for feature, metadata in zip(get_features_response.feature_values.values(), expected_metadata):
                 assert isinstance(feature.data_type, metadata[0])
                 assert feature.feature_status == metadata[1]
-                if feature.effective_time:
-                    assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
+                assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
 
             self.assert_answers(expected_answers, get_features_response)
