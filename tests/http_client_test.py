@@ -69,7 +69,8 @@ class TestHttpClient:
             await http_client.execute_request(endpoint, request)
 
         except Exception as e:
-            assert isinstance(e, TectonServerException)  # Confirm that a child error of TectonServerException is raised
+            # Confirm that a child error of :class:`TectonServerException` is raised
+            assert isinstance(e, TectonServerException)
 
         await http_client.close()
 
