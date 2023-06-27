@@ -142,29 +142,12 @@ class GatewayTimeoutError(TectonServerException):
     """
 
 
-def RAISE_SERVER_ERROR(status_code: int, message: str) -> None:
-    """Raise the appropriate TectonServerException based on the status code of the response.
-
-    Args:
-        status_code (int): The HTTP status code of the response.
-        message (str): The error message received from the Tecton server.
-
-    Raises:
-        TectonServerException: The appropriate exception based on the status code of the response.
-    """
-    if status_code == 400:
-        raise BadRequestError(message)
-    elif status_code == 401:
-        raise UnauthorizedError(message)
-    elif status_code == 403:
-        raise ForbiddenError(message)
-    elif status_code == 404:
-        raise NotFoundError(message)
-    elif status_code == 429:
-        raise ResourcesExhaustedError(message)
-    elif status_code == 503:
-        raise ServiceUnavailableError(message)
-    elif status_code == 504:
-        raise GatewayTimeoutError(message)
-    else:
-        raise TectonServerException(message)
+SERVER_ERRORS = {
+    400: BadRequestError,
+    401: UnauthorizedError,
+    403: ForbiddenError,
+    404: NotFoundError,
+    429: ResourcesExhaustedError,
+    503: ServiceUnavailableError,
+    504: GatewayTimeoutError,
+}

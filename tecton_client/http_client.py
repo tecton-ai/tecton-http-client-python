@@ -11,7 +11,7 @@ from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import InvalidURLError
-from tecton_client.exceptions import RAISE_SERVER_ERROR
+from tecton_client.exceptions import SERVER_ERRORS
 
 
 API_PREFIX = "Tecton-key"
@@ -71,6 +71,10 @@ class TectonHttpClient:
         Returns:
             dict: The response in JSON format.
 
+        Raises:
+            TectonServerException: If the server returns an error response, different child exceptions based on the
+                error response are raised.
+
         """
         url = urljoin(self.url, endpoint)
 
@@ -82,8 +86,7 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            RAISE_SERVER_ERROR(
-                response.status_code,
+            raise SERVER_ERRORS[response.status_code](
                 INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"]),
             )
 
