@@ -92,8 +92,9 @@ class TectonClient:
                 unavailable or Tecton's feature server deployment is down.
             GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
                 that processing the request exceeded the 2 seconds timeout limit set by Tecton.
-            For more detailed information on the errors, please refer to the error responses [here]
-            (https://docs.tecton.ai/http-api#operation/GetFeatures).
+
+                For more detailed information on the errors, please refer to the error responses [here]
+                (https://docs.tecton.ai/http-api#operation/GetFeatures).
 
         """
         response = self._loop.run_until_complete(
