@@ -8,6 +8,14 @@ from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
+from tecton_client.exceptions import BadRequestError
+from tecton_client.exceptions import ForbiddenError
+from tecton_client.exceptions import GatewayTimeoutError
+from tecton_client.exceptions import NotFoundError
+from tecton_client.exceptions import ResourcesExhaustedError
+from tecton_client.exceptions import ServiceUnavailableError
+from tecton_client.exceptions import TectonServerException
+from tecton_client.exceptions import UnauthorizedError
 from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import MetadataOptions
@@ -131,4 +139,86 @@ class TestTectonClient:
         assert dict_equals(
             {k: v.feature_value for k, v in response.feature_values.items()}, self.expected_response_metadata
         )
+        tecton_client.close()
+
+    @pytest.mark.parametrize(
+        "exception, status_code, error_json",
+        [
+            (
+                BadRequestError,
+                400,
+                {
+                    "error": "Missing required join key: `user_id`",
+                    "message": "Missing required join key: `user_id`",
+                    "code": 3,
+                },
+            ),
+            (
+                UnauthorizedError,
+                401,
+                {
+                    "error": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
+                    "take up to 60 seconds to be usable.",
+                    "message": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
+                    "take up to 60 seconds to be usable.",
+                    "code": 16,
+                },
+            ),
+            (
+                ForbiddenError,
+                403,
+                {
+                    "error": "Not Authorized. Note that access control changes may take up to 60 seconds to apply.",
+                    "message": "Not Authorized. Note that access control changes may take up to 60 seconds to apply.",
+                    "code": 7,
+                },
+            ),
+            (
+                NotFoundError,
+                404,
+                {
+                    "error": "Unable to query FeatureService `fs` for workspace `ws`. Newly created feature "
+                    "services may take up to 60 seconds to query. Also, ensure that the workspace "
+                    "is a live workspace.",
+                    "message": "Unable to query FeatureService `fs` for workspace `ws`. Newly created feature "
+                    "services may take up to 60 seconds to query. Also, ensure that the workspace "
+                    "is a live workspace.",
+                    "code": 5,
+                },
+            ),
+            (
+                ResourcesExhaustedError,
+                429,
+                {
+                    "error": "GetFeatures exceeded the concurrent request limit, please retry later",
+                    "message": "GetFeatures exceeded the concurrent request limit, please retry later",
+                    "code": 8,
+                },
+            ),
+            (
+                ServiceUnavailableError,
+                503,
+                {
+                    "error": "503 Service Temporarily Unavailable",
+                    "message": "503 Service Temporarily Unavailable",
+                    "code": 14,
+                },
+            ),
+            (
+                GatewayTimeoutError,
+                504,
+                {"error": "Timed out", "message": "Timed out", "code": 4},
+            ),
+        ],
+    )
+    def test_get_features_error_response(
+        self, httpx_mock: HTTPXMock, exception: TectonServerException, status_code: int, error_json: dict
+    ) -> None:
+        tecton_client = TectonClient(url, api_key)
+        with pytest.raises(exception):
+            httpx_mock.add_response(
+                status_code=status_code,
+                json=error_json,
+            )
+            tecton_client.get_features(self.test_request_normal)
         tecton_client.close()

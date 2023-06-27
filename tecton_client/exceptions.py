@@ -91,3 +91,80 @@ def INVALID_TYPE_KEY_VALUE(
             f"{map_type} values can only be of types {allowed_types}. "
             f"Given value for {map_type} is {value} of type {type(value)}"
         )
+
+
+class BadRequestError(TectonServerException):
+    """Raised when the Tecton API returns a 400 Bad Request error.
+
+    Please refer to the message for more details on the error.
+    """
+
+
+class UnauthorizedError(TectonServerException):
+    """Raised when the Tecton API returns a 401 Unauthorized error.
+
+    Please refer to the message for more details on the error.
+    """
+
+
+class ForbiddenError(TectonServerException):
+    """Raised when the Tecton API returns a 403 Forbidden error.
+
+    Please refer to the message for more details on the error.
+    """
+
+
+class NotFoundError(TectonServerException):
+    """Raised when the Tecton API returns a 404 Not Found error.
+
+    Please refer to the message for more details on the error.
+    """
+
+
+class ResourcesExhaustedError(TectonServerException):
+    """Raised when the Tecton API returns a 429 Resources Exhausted error.
+
+    Please refer to the message for more details on the error.
+    """
+
+
+class ServiceUnavailableError(TectonServerException):
+    """Raised when the Tecton API returns a 503 Service Unavailable error.
+
+    Please refer to the message for more details on the error.
+    """
+
+
+class GatewayTimeoutError(TectonServerException):
+    """Raised when the Tecton API returns a 504 Gateway Timeout error.
+
+    Please refer to the message for more details on the error.
+    """
+
+
+def RAISE_SERVER_ERROR(status_code: int, message: str) -> None:
+    """Raise the appropriate TectonServerException based on the status code of the response.
+
+    Args:
+        status_code (int): The HTTP status code of the response.
+        message (str): The error message received from the Tecton server.
+
+    Raises:
+        TectonServerException: The appropriate exception based on the status code of the response.
+    """
+    if status_code == 400:
+        raise BadRequestError(message)
+    elif status_code == 401:
+        raise UnauthorizedError(message)
+    elif status_code == 403:
+        raise ForbiddenError(message)
+    elif status_code == 404:
+        raise NotFoundError(message)
+    elif status_code == 429:
+        raise ResourcesExhaustedError(message)
+    elif status_code == 503:
+        raise ServiceUnavailableError(message)
+    elif status_code == 504:
+        raise GatewayTimeoutError(message)
+    else:
+        raise TectonServerException(message)

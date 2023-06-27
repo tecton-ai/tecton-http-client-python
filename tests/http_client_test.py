@@ -4,6 +4,7 @@ from pytest_httpx import HTTPXMock
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import TectonServerException
+from tecton_client.exceptions import UnauthorizedError
 from tecton_client.http_client import TectonHttpClient
 
 
@@ -69,7 +70,7 @@ class TestHttpClient:
             await http_client.execute_request(endpoint, request)
 
         except Exception as e:
-            assert type(e) == TectonServerException
+            assert type(e) == UnauthorizedError
 
         await http_client.close()
 

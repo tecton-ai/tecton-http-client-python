@@ -57,6 +57,86 @@ class TectonClient:
             >>> print([feature.feature_value for feature in response.feature_values.values()])
             [1, 2, 3, "test_feature", ["test", "array"]]
 
+        Raises:
+            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request
+                1. Error: Missing required join key: user_id
+                This error indicates that the request is missing one or more of the required join keys for your feature
+                service. To resolve this, ensure that the `join_key_map` in your request includes a union of all join
+                keys across all feature views in the feature service.
+                2. Error: Expected key not found: [xxx] in requestContextMap
+                This error indicates that an expected key `xxx` was not found in the query's `requestContextMap` for an
+                On Demand Feature View (ODFV). Please verify that the `requestContextMap` includes a union of all
+                request context keys across all ODFVs in the feature service.
+                3. Error: Unexpected JSON type for xxx in joinKeyMap. Expected int64 or null
+                This error indicates that your feature service expects a join_key `xxx` of type int64 but your request
+                contains a join_key `xxx` of type string. Please ensure that the join_key types in the request match the
+                data types for the corresponding join keys in your feature view definitions.
+                4. Error: Unknown join key: join_key, expected one of: [xxxx zzzz]
+                This error indicates that your feature service expects join keys `xxx` and `zzzz` but received an
+                unknown join key. Please ensure that the join keys in your request match the entity key strings
+                defined for your feature views.
+            UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized
+                1. Error: invalid 'Tecton-key' authorization header. Note that newly created credentials may take up to
+                    60 seconds to be usable.
+                Tecton does not recognize the API Key in your request. Please refer to the [API Key Documentation]
+                (https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\
+                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\
+                to-the-http-api) for more information on how to create a Service Account with an API Key.
+                Note that it may take up to 60 seconds for newly created API Keys to be accepted by the API.
+            ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden
+                1. Error: Not Authorized. Note that access control changes may take up to 60 seconds to apply.
+                The Service Account associated with your API Key does not have the necessary permissions to query the
+                feature service. Note that the Service Account needs to have at least Consumer privileges for a
+                workspace in order to query a feature service in that workspace. Please refer to the
+                [Tecton Documentation](https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-\
+                inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-\
+                authenticate-to-the-http-api) for more information.
+            NotFoundError: If the response returned from the Tecton Server is 404 Not Found
+                1. Error: Unable to query FeatureService my_feature_service for workspace my_workspace.
+                    Newly created feature services may take up to 60 seconds to query.
+                    Also, ensure that the workspace is a live workspace.
+                Please ensure that the workspace is a Live workspace and the feature service exists in the workspace.
+                2. Error: Cannot retrieve features. FeatureView: xxx has no materialized data in the online store.
+                Check that your materialization jobs have completed successfully so that the feature view has
+                materialized data in the online store.
+                3. Error: Cannot retrieve features. An input for FeatureView: xxx has no materialized data in the
+                    online store.
+                This error indicates that one or more of the Feature Views that the ODFV my_odfv depends on has no
+                materialized data in the online store. Verify that all Feature Views that my_odfv depends on have online
+                materialization enabled and have successfully completed materialization jobs.
+                4. Error: The DynamoDB table was not found. If this package was newly created and is serving in multiple
+                    regions, you may need to wait for DynamoDB Global Tables to finish creating a replica table.
+                This error occurs when using DynamoDB as the Online Store and indicates that Tecton was unable to find
+                or read from the DynamoDB Table for one or more Feature Views in the Feature Service. Please review any
+                permission changes in DynamoDB Tables on your end and if this issue persists,
+                please contact Tecton Support for assistance.
+            ResourceExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted
+                1. Error: GetFeatures exceeded the concurrent request limit, please retry later
+                This error indicates that you have exceeded the concurrent request limit for your deployment, and you
+                need to either reduce your request rate or scale up your feature server deployment. Please refer to the
+                Scaling Documentation for more information and contact Tecton support for further assistance
+                2. Error: DynamoDB throttled the request. The request rate exceeds the AWS account's throughput limit.
+                Tecton uses DynamoDB as the Online Store in OnDemand mode which autoscales the DynamoDB Tables based on
+                workloads. This error indicates that the current rate of requests exceeds the allowed throughput for
+                your AWS account and the DynamoDB Tables cannot be scaled further. Please reduce your request rate or
+                contact AWS Support to request a limit increase for your account. For more information on Throughput
+                Default Quotas please refer to the AWS Documentation
+                3. Error: DynamoDB throttled the request. You may be requesting a hot key.
+                In DynamoDB, each partition on a table can serve up to 3000 Read Request Units and this error indicates
+                that the traffic to a partition exceeds this limit. Please reduce your request rate and retry your
+                request.
+            ServiceUnavailableError: If the response returned from the Tecton Server is 503 Service Unavailable
+                1. Error: 503 Service Temporarily Unavailable
+                This error indicates that Tecton is currently unable to process your request because either the Online
+                Store is unavailable or Tecton's feature server deployment is down. Please check the Online Store
+                availability on your end and if the error persists, please contact Tecton Support for assistance.
+            GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout
+                1. Error: Timed out
+                This error indicates that processing the request exceeded the 2 seconds timeout limit set by Tecton,
+                because either the Online Store did not respond or Tecton was unable to process the response within the
+                time limit. Please verify the availability of your Online Store, and if the problem persists, please
+                contact Tecton Support for assistance.
+
         """
         response = self._loop.run_until_complete(
             self._tecton_http_client.execute_request(request.ENDPOINT, request.to_json())
