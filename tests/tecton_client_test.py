@@ -121,8 +121,7 @@ class TestTectonClient:
         for feature, metadata in zip(response.feature_values.values(), self.expected_metadata):
             assert isinstance(feature.data_type, metadata[0])
             assert feature.feature_status == metadata[1]
-            if feature.effective_time:
-                assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
+            assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
 
         assert {k: v.feature_value for k, v in response.feature_values.items()} == self.expected_response_metadata
         tecton_client.close()
