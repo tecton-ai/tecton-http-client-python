@@ -72,7 +72,7 @@ class TectonHttpClient:
             dict: The response in JSON format.
 
         Raises:
-            TectonServerException: If the server returns an error response, different child exceptions based on the
+            TectonServerException: If the server returns an error response, different child errors based on the
                 error response are raised.
 
         """
@@ -87,7 +87,7 @@ class TectonHttpClient:
             return response.json()
         else:
             raise SERVER_ERRORS[response.status_code](
-                INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"]),
+                INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
             )
 
     @staticmethod
