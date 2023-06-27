@@ -14,7 +14,6 @@
    .. autosummary::
    
       ~GetFeaturesResponse.__init__
-      ~GetFeaturesResponse.get_feature_values_dict
    
    
 

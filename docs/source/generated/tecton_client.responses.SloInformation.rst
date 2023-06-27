@@ -14,7 +14,6 @@
    .. autosummary::
    
       ~SloInformation.__init__
-      ~SloInformation.to_dict
    
    
 

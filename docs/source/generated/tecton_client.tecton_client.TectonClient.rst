@@ -21,4 +21,10 @@
 
    
    
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~TectonClient.is_closed
+   
    
