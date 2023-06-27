@@ -82,8 +82,10 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            message = INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
-            RAISE_SERVER_ERROR(response.status_code, message)
+            RAISE_SERVER_ERROR(
+                response.status_code,
+                INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"]),
+            )
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:
