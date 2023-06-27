@@ -259,6 +259,7 @@ class TestTectonClient:
         tecton_client.close()
 
     def test_no_api_key(self) -> None:
+        # Testing that no API key is provided as a parameter and the environment variable `TECTON_API_KEY` is not set
         with pytest.raises(InvalidParameterError):
             TectonClient(url="https://thisisaurl.ai")
 
