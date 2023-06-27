@@ -2,8 +2,9 @@ from enum import Enum
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Self
 from typing import Union
+
+from typing_extensions import Self
 
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
