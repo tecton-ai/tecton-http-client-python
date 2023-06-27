@@ -79,11 +79,11 @@ class TestResponse:
                     ],
                 ],
                 [
-                    (BoolType, FeatureStatus.PRESENT, "2023-06-22T08:30:00+00:00"),
-                    (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00+00:00"),
-                    (IntType, FeatureStatus.PRESENT, "2023-06-22T08:30:45+00:00"),
-                    (FloatType, FeatureStatus.PRESENT, "2023-06-22T08:30:45+00:00"),
-                    (ArrayType, FeatureStatus.PRESENT, "2023-06-22T08:30:45+00:00"),
+                    (BoolType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
+                    (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00"),
+                    (IntType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
+                    (FloatType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
+                    (ArrayType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
                 ],
             )
         ],
