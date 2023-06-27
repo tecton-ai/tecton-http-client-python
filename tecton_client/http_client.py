@@ -34,7 +34,6 @@ class TectonHttpClient:
         api_key: str,
         connect_timeout: float,
         read_timeout: float,
-        pool_timeout: float,
         keepalive_expiry: Optional[int],
         max_connections: Optional[int],
         client: Optional[httpx.AsyncClient] = None,
@@ -45,14 +44,11 @@ class TectonHttpClient:
             url (str): The URL to ping.
             api_key (str): The API Key required as part of header authorization.
             connect_timeout (float): The maximum amount of time to wait until a socket connection to the requested host
-                is established. If HTTPX is unable to connect within this time frame,
+                is established. If the HTTP client is unable to connect within this time frame,
                 a ConnectTimeout exception is raised.
             read_timeout (float): The maximum duration to wait for a chunk of data to be received
-                (for example, a chunk of the response body). If HTTPX is unable to receive data within this time frame,
-                a ReadTimeout exception is raised.
-            pool_timeout (float): (Optional) The maximum duration to wait to acquire a connection from the connection
-                pool. If HTTPX is unable to acquire a connection within this time frame,
-                a PoolTimeout exception is raised.
+                (for example, a chunk of the response body). If the HTTP client is unable to receive data within this
+                time frame, a ReadTimeout exception is raised.
             keepalive_expiry (Optional[int]): The time limit on idle keep-alive connections in seconds,
                 or None for no limits.
             max_connections (Optional[int]): (Optional) maximum number of allowable connections, or None for no limits.
@@ -66,7 +62,7 @@ class TectonHttpClient:
 
         self._auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self._api_key}")
         self._client: httpx.AsyncClient = client or httpx.AsyncClient(
-            timeout=httpx.Timeout(5, connect=connect_timeout, read=read_timeout, pool=pool_timeout),
+            timeout=httpx.Timeout(5, connect=connect_timeout, read=read_timeout),
             limits=httpx.Limits(keepalive_expiry=keepalive_expiry, max_connections=max_connections),
         )
         self._is_client_closed: bool = False

@@ -20,14 +20,11 @@ class TectonClientOptions:
 
     Attributes:
         connect_timeout (float): (Optional) The maximum amount of time to wait until a socket connection to the
-            requested host is established. If HTTPX is unable to connect within this time frame, a ConnectTimeout
+            requested host is established. If the client is unable to connect within this time frame, a ConnectTimeout
             exception is raised. Defaults to 2.0 seconds.
         read_timeout (float): (Optional) The maximum duration to wait for a chunk of data to be received (for example,
-            a chunk of the response body). If HTTPX is unable to receive data within this time frame, a ReadTimeout
+            a chunk of the response body). If the client is unable to receive data within this time frame, a ReadTimeout
             exception is raised. Defaults to 2.0 seconds.
-        pool_timeout (float): (Optional) The maximum duration to wait for acquiring a connection from the connection
-            pool. If HTTPX is unable to acquire a connection within this time frame, a PoolTimeout exception is raised.
-            Defaults to 2.0 seconds.
         keepalive_expiry (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
             or None for no limits. Defaults to 300 seconds (5 minutes).
         max_connections (Optional[int]): (Optional) The maximum number of allowable connections, or None for no limits.
@@ -37,7 +34,6 @@ class TectonClientOptions:
 
     connect_timeout: float = 2.0
     read_timeout: float = 2.0
-    pool_timeout: float = 2.0
     keepalive_expiry: Optional[int] = 300
     max_connections: Optional[int] = 10
 
@@ -70,10 +66,10 @@ class TectonClient:
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
                 It can be passed in as a parameter or provided through an environment variable called `TECTON_API_KEY`.
-            client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
-                Users can initialize their own HTTPX client and pass it in to the :class:`TectonClient` object.
-                If no client is passed in, the :class:`TectonClient` object will initialize its own HTTPX client.
-            client_options (TectonClientOptions): (Optional) The HTTPX client options.
+            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
+                Users can initialize their own HTTP client and pass it in to the :class:`TectonClient` object.
+                If no client is passed in, the :class:`TectonClient` object will initialize its own HTTP client.
+            client_options (TectonClientOptions): (Optional) The HTTP client options.
                 Defaults to :class:`TectonClientOptions()` with set default values.
 
         """
@@ -85,7 +81,6 @@ class TectonClient:
             api_key,
             read_timeout=client_options.read_timeout,
             connect_timeout=client_options.connect_timeout,
-            pool_timeout=client_options.pool_timeout,
             keepalive_expiry=client_options.keepalive_expiry,
             max_connections=client_options.max_connections,
             client=client,

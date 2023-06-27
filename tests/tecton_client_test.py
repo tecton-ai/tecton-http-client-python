@@ -247,14 +247,13 @@ class TestTectonClient:
             assert client_options.connect_timeout == 10
             assert client_options.read_timeout == 15
             assert client_options.keepalive_expiry == 500
-            assert client_options.pool_timeout == 2
             assert client_options.max_connections == 10
         else:
             tecton_client = TectonClient(url, api_key, client=client)
 
         with open("tests/test_data/sample_response_mixed.json") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
-            response = tecton_client.get_features(self.test_request)
+            response = tecton_client.get_features(self.test_request_normal)
 
         assert {k: v.feature_value for k, v in response.feature_values.items()} == self.expected_response_mixed
         tecton_client.close()

@@ -20,7 +20,6 @@ class TestHttpClient:
             self.API_KEY,
             self.client_options.connect_timeout,
             self.client_options.read_timeout,
-            self.client_options.pool_timeout,
             self.client_options.keepalive_expiry,
             self.client_options.max_connections,
         )
@@ -38,7 +37,6 @@ class TestHttpClient:
             self.API_KEY,
             self.client_options.connect_timeout,
             self.client_options.read_timeout,
-            self.client_options.pool_timeout,
             self.client_options.keepalive_expiry,
             self.client_options.max_connections,
         )
@@ -76,7 +74,6 @@ class TestHttpClient:
             self.API_KEY,
             self.client_options.connect_timeout,
             self.client_options.read_timeout,
-            self.client_options.pool_timeout,
             self.client_options.keepalive_expiry,
             self.client_options.max_connections,
         )
@@ -108,7 +105,6 @@ class TestHttpClient:
                 "1234",
                 self.client_options.connect_timeout,
                 self.client_options.read_timeout,
-                self.client_options.pool_timeout,
                 self.client_options.keepalive_expiry,
                 self.client_options.max_connections,
             )
@@ -121,7 +117,6 @@ class TestHttpClient:
                 key,
                 self.client_options.connect_timeout,
                 self.client_options.read_timeout,
-                self.client_options.pool_timeout,
                 self.client_options.keepalive_expiry,
                 self.client_options.max_connections,
             )
@@ -138,7 +133,6 @@ class TestHttpClient:
                 self.API_KEY,
                 self.client_options.connect_timeout,
                 self.client_options.read_timeout,
-                self.client_options.pool_timeout,
                 self.client_options.keepalive_expiry,
                 self.client_options.max_connections,
             )
