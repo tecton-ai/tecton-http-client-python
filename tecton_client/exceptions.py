@@ -43,7 +43,10 @@ class InvalidURLError(TectonClientError):
 class InvalidParameterMessage(str, Enum):
     """Error Messages for Invalid Parameters passed."""
 
-    KEY = "API Key cannot be empty"
+    KEY = (
+        "API Key cannot be empty. Please check to make sure you have set the TECTON_API_KEY environment variable, "
+        "or are passing in a valid API key."
+    )
     URL = "Cannot connect to Tecton because the URL is invalid"
 
     WORKSPACE_NAME = "Workspace Name cannot be None or empty"

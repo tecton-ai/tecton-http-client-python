@@ -52,9 +52,9 @@ class TectonHttpClient:
             keepalive_expiry (Optional[int]): The time limit on idle keep-alive connections in seconds,
                 or None for no limits.
             max_connections (Optional[int]): (Optional) maximum number of allowable connections, or None for no limits.
-            client (Optional[httpx.AsyncClient]): (Optional) The HTTPX Asynchronous Client.
-                Users can initialize their own HTTPX client and pass it in, otherwise the TectonHttpClient object
-                will initialize its own HTTPX client.
+            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
+                Users can initialize their own HTTP client and pass it in, otherwise the TectonHttpClient object
+                will initialize its own HTTP client.
 
         """
         self._url = self._validate_url(url)
@@ -68,7 +68,7 @@ class TectonHttpClient:
         self._is_client_closed: bool = False
 
     async def close(self) -> None:
-        """Close the HTTPX Asynchronous Client."""
+        """Close the HTTP Asynchronous Client."""
         await self._client.aclose()
         self._is_client_closed = True
 
