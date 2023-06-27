@@ -1,7 +1,6 @@
 from datetime import datetime
 from enum import Enum
 from typing import Dict
-from typing import Final
 from typing import List
 from typing import Optional
 from typing import Self
@@ -18,7 +17,10 @@ from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
 
 
-DATETIME_ISO: Final[str] = "%Y-%m-%dT%H:%M:%SZ"
+DATETIME_ISO = {
+    20: "%Y-%m-%dT%H:%M:%SZ",
+    24: "%Y-%m-%dT%H:%M:%S.%fZ",
+}
 
 
 class Value:
@@ -156,7 +158,9 @@ class FeatureValue:
             raise TectonClientError(message)
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
-        self.effective_time = datetime.strptime(effective_time, DATETIME_ISO) if effective_time else None
+        self.effective_time = (
+            datetime.strptime(effective_time, DATETIME_ISO[len(effective_time)]) if effective_time else None
+        )
         self.data_type = get_data_type(data_type, element_type, fields)
         self.feature_value = Value(self.data_type, feature_value).value
 
