@@ -5,7 +5,7 @@ tecton\_client.exceptions module
 -----------------------------------
 
 .. automodule:: tecton_client.exceptions
-   :members: TectonClientException, TectonServerException, InvalidParameterError, InvalidURLError, UnsupportedTypeError
+   :members: TectonClientError, TectonServerException, InvalidParameterError, InvalidURLError, UnsupportedTypeError
    :undoc-members:
    :show-inheritance:
    :noindex:
@@ -13,7 +13,7 @@ tecton\_client.exceptions module
 .. autosummary::
    :toctree: generated/
 
-    TectonClientException
+    TectonClientError
     TectonServerException
     InvalidParameterError
     InvalidURLError
