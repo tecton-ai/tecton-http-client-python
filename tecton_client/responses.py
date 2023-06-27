@@ -1,4 +1,3 @@
-from abc import ABC
 from datetime import datetime
 from enum import Enum
 from typing import Dict
@@ -164,11 +163,15 @@ class SloIneligibilityReason(str, Enum):
 
     UNKNOWN = "UNKNOWN"
     """Reason is unknown."""
+
     DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED = "DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED"
     """The 2MiB limit for DynamoDB response size was exceeded."""
+
     REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED = "REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED"
-    """The 2MiB limit for DynamoDB response size was exceeded."""
+    """The 2MiB limit for Redis response size was exceeded."""
+
     REDIS_LATENCY_LIMIT_EXCEEDED = "REDIS_LATENCY_LIMIT_EXCEEDED"
+    """The 25ms limit for Redis latency was exceeded."""
 
 
 class SloInformation:
@@ -212,11 +215,7 @@ class SloInformation:
         )
 
 
-class AbstractTectonResponse(ABC):
-    """Base class for Response objects from Tecton API calls."""
-
-
-class GetFeaturesResponse(AbstractTectonResponse):
+class GetFeaturesResponse:
     """Response object for GetFeatures API call.
 
     Attributes:
