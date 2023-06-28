@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
-from typing import List, Final
+from typing import Final
+from typing import List
 
 import pytest
 from typing_extensions import Self
@@ -17,7 +18,6 @@ from tests.test_utils import dict_equals
 
 
 class TestResponse:
-
     TEST_DATA_REL_PATH: Final[str] = "tests/test_data/"
 
     def assert_answers(self: Self, expected_answer: list, get_features_response: GetFeaturesResponse) -> None:
