@@ -13,6 +13,7 @@ from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import MetadataOptions
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
+from tests.test_utils import dict_equals
 
 
 class TestTectonClient:
@@ -109,7 +110,7 @@ class TestTectonClient:
             httpx_mock.add_response(json=json.load(json_file))
             response = tecton_client.get_features(self.test_request_normal)
 
-        assert {k: v.feature_value for k, v in response.feature_values.items()} == expected_response
+        assert dict_equals({k: v.feature_value for k, v in response.feature_values.items()}, expected_response)
         tecton_client.close()
 
     @pytest.mark.parametrize("metadata_path", ["sample_response_metadata.json"])
@@ -127,5 +128,7 @@ class TestTectonClient:
             assert feature.feature_status == metadata[1]
             assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
 
-        assert {k: v.feature_value for k, v in response.feature_values.items()} == self.expected_response_metadata
+        assert dict_equals(
+            {k: v.feature_value for k, v in response.feature_values.items()}, self.expected_response_metadata
+        )
         tecton_client.close()
