@@ -113,17 +113,17 @@ class TestTectonClient:
         assert dict_equals({k: v.feature_value for k, v in response.feature_values.items()}, expected_response)
         tecton_client.close()
 
-    @pytest.mark.parametrize("metadata_path", ["sample_response_metadata.json"])
-    def test_get_features_metadata(self, httpx_mock: HTTPXMock, metadata_path: str) -> None:
+    @pytest.mark.parametrize("metadata_path, expected_metadata", [("sample_response_metadata.json", expected_metadata)])
+    def test_get_features_metadata(self, httpx_mock: HTTPXMock, metadata_path: str, expected_metadata: list) -> None:
         tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
         with open(f"{TestTectonClient.TEST_DATA_REL_PATH}{metadata_path}") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
             response = tecton_client.get_features(self.test_request_metadata)
 
         assert response.slo_info is not None
-        assert vars(response.slo_info) == self.expected_slo_info
+        assert dict_equals(vars(response.slo_info), self.expected_slo_info)
 
-        for feature, metadata in zip(response.feature_values.values(), self.expected_metadata):
+        for feature, metadata in zip(response.feature_values.values(), expected_metadata):
             assert isinstance(feature.data_type, metadata[0])
             assert feature.feature_status == metadata[1]
             assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
