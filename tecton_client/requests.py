@@ -2,8 +2,9 @@ from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
 from itertools import zip_longest
-from typing import Dict, List
+from typing import Dict
 from typing import Final
+from typing import List
 from typing import Optional
 from typing import Set
 from typing import Union
@@ -89,6 +90,7 @@ class GetFeaturesRequestData:
                 (1) both join_key_map and request_context_map are None
                 (2) key or value in either map is empty, or value in request_context_map is None
             UnsupportedTypeError: If the key is not a string or the value is not one of the allowed types.
+
         """
         if join_key_map is None and request_context_map is None:
             raise InvalidParameterError(InvalidParameterMessage.EMPTY_MAPS.value)
@@ -167,6 +169,7 @@ class TectonRequest(ABC):
 
         Raises:
             InvalidParameterError: If the workspace_name or feature_service_name is empty.
+
         """
         if not workspace_name:
             raise InvalidParameterError(InvalidParameterMessage.WORKSPACE_NAME.value)
@@ -184,7 +187,6 @@ class AbstractGetFeaturesRequest(TectonRequest):
     Attributes:
         metadata_options (Set[":class:`MetadataOptions`"]): Set of options for retrieving additional metadata about
             features.
-
     """
 
     def __init__(
@@ -216,7 +218,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         ENDPOINT: Endpoint string for the get-features API.
 
     Examples:
-        >>> request_data = GetFeaturesRequestData(join_key_map={"user_id": 1234})
+        >>> request_data = GetFeatureRequestData(join_key_map={"user_id": 1234})
         >>> get_features_request = GetFeaturesRequest("my_workspace", "my_feature_service", request_data=request_data)
         >>> get_features_request.to_json()
             {"params":{"feature_service_name": "my_feature_service","workspace_name": "my_workspace",
@@ -240,6 +242,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             request_data (GetFeaturesRequestData): Request parameters for the query.
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
+
         """
         super().__init__(workspace_name, feature_service_name, metadata_options)
         self.request_data = request_data
@@ -248,7 +251,8 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         """Returns a JSON representation of the :class:`GetFeaturesRequest` object.
 
         Returns:
-            Dictionary of the response in the expected format.
+            Dictionary of the request in the expected format.
+
         """
         fields_to_remove = ["ENDPOINT", "request_data"]
         self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
@@ -356,9 +360,9 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
         ...      micro_batch_size=2
         ...     )
         >>> request.to_json_list()
-            {"params": {"feature_service_name": "my_feature_service", "workspace_name": "my_workspace",
-            "metadata_options": {"include_data_types": true, "include_names": true},
-            "request_data": [{"join_key_map": {"user_id": 1234}}, {"join_key_map": {"user_id": 1234}}]}}
+            {"params":{"feature_service_name": "my_feature_service","workspace_name": "my_workspace",
+            "metadata_options": {"include_data_types": True, "include_names": True},
+            "request_data": [ {"join_key_map": {"user_id": 1234}}, {"join_key_map": {"user_id": 1234}}]}}
     """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features-batch"
