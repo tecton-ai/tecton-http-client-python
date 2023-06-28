@@ -24,7 +24,6 @@ from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import MetadataOptions
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
-from tests.test_utils import dict_equals
 from tecton_client.tecton_client import TectonClientOptions
 from tests.test_utils import dict_equals
 
