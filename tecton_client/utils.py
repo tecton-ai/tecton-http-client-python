@@ -10,7 +10,7 @@ def parse_string_to_isotime(datetime_string: str) -> datetime:
     """Parse a string into a datetime object.
 
     Args:
-        datetime_string (str): The datetime string to parse.
+        datetime_string (str): The string to parse to datetime.
 
     Returns:
         datetime: The parsed datetime object.
