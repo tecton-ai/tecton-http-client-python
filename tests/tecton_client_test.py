@@ -1,4 +1,5 @@
 import json
+from typing import Final
 
 import pytest
 from pytest_httpx import HTTPXMock
@@ -13,11 +14,13 @@ from tecton_client.requests import MetadataOptions
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
 
-api_key = "1234"
-url = "https://thisisaurl.ai"
-
 
 class TestTectonClient:
+    api_key: Final[str] = "1234"
+    url: Final[str] = "https://thisisaurl.ai"
+
+    TEST_DATA_REL_PATH: Final[str] = "tests/test_data/"
+
     expected_response_mixed = {
         "test.output_struct1": None,
         "test.output_struct2": {"float64_field": 2.46, "string_field": "2.46"},
@@ -100,18 +103,19 @@ class TestTectonClient:
         ],
     )
     def test_get_features(self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
-        tecton_client = TectonClient(url, api_key)
+        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
 
-        with open(f"tests/test_data/{file_name}") as json_file:
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH}{file_name}") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
             response = tecton_client.get_features(self.test_request_normal)
 
         assert {k: v.feature_value for k, v in response.feature_values.items()} == expected_response
         tecton_client.close()
 
-    def test_get_features_metadata(self, httpx_mock: HTTPXMock) -> None:
-        tecton_client = TectonClient(url, api_key)
-        with open("tests/test_data/sample_response_metadata.json") as json_file:
+    @pytest.mark.parametrize("metadata_path", ["sample_response_metadata.json"])
+    def test_get_features_metadata(self, httpx_mock: HTTPXMock, metadata_path: str) -> None:
+        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH}{metadata_path}") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
             response = tecton_client.get_features(self.test_request_metadata)
 
