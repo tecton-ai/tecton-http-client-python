@@ -15,6 +15,7 @@ from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
 from tecton_client.responses import FeatureValue
 from tecton_client.responses import Value
+from tests.test_utils import dict_equals
 
 
 class TestDataTypes:
@@ -106,7 +107,7 @@ class TestDataTypes:
     def assert_struct(test_var: Value, expected_dict: dict) -> None:
         datadict = test_var.value
         assert len(datadict) == len(expected_dict)
-        assert datadict == expected_dict
+        assert dict_equals(datadict, expected_dict)
 
     def test_struct_value(self: Self) -> None:
         type_name = StructType([StructField("field1", StringType()), StructField("field2", IntType())])
@@ -122,7 +123,7 @@ class TestDataTypes:
             key, datatype = field.name, field.data_type
             if type(datatype) == StructType:
                 result_dict = {field.name: data[j] for j, field in enumerate(datatype.fields)}
-                assert datadict[key] == result_dict
+                assert dict_equals(datadict[key], result_dict)
             else:
                 assert datadict[key] == data
 
@@ -165,7 +166,7 @@ class TestDataTypes:
 
             if isinstance(datatype, StructType):
                 result_dict = {field.name: value[j] for j, field in enumerate(datatype.fields)}
-                assert result_dict == feature_val[key]
+                assert dict_equals(result_dict, feature_val[key])
             else:
                 assert feature_val[key] == feature_value[i]
 

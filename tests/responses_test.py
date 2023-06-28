@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from typing import List
 
 import pytest
@@ -11,6 +12,8 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StructType
 from tecton_client.responses import FeatureStatus
 from tecton_client.responses import GetFeaturesResponse
+from tecton_client.utils import parse_time
+from tests.test_utils import dict_equals
 
 
 class TestResponse:
@@ -26,7 +29,7 @@ class TestResponse:
             else feature.feature_value
             for key, feature in get_features_response.feature_values.items()
         ]
-        assert actual_answer == expected_answer
+        assert dict_equals(actual_answer, expected_answer)
 
     @pytest.mark.parametrize(
         "file_name, expected_answer",
@@ -60,7 +63,7 @@ class TestResponse:
             get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response.slo_info is not None
-            assert vars(get_features_response.slo_info) == actual_slo_info
+            assert dict_equals(vars(get_features_response.slo_info), actual_slo_info)
 
     @pytest.mark.parametrize(
         "filename, expected_answers, expected_metadata",
@@ -103,3 +106,9 @@ class TestResponse:
                 assert feature.effective_time.isoformat(timespec="seconds") == metadata[2]
 
             self.assert_answers(expected_answers, get_features_response)
+
+    @pytest.mark.parametrize(
+        "effective_time", ["2023-05-03T00:00:00Z", "2023-05-03T00:00:00.000000Z", "2023-05-03T00:00:00.000Z"]
+    )
+    def test_time_parsing(self: Self, effective_time: str) -> None:
+        assert isinstance(parse_time(effective_time), datetime)

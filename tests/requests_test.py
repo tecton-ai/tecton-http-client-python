@@ -9,6 +9,7 @@ from tecton_client.exceptions import UnsupportedTypeError
 from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import MetadataOptions
+from tests.test_utils import dict_equals
 
 
 class TestRequests:
@@ -97,8 +98,8 @@ class TestRequests:
         assert len(get_feature_request_data.join_key_map) == 2
         assert len(get_feature_request_data.request_context_map) == 2
 
-        assert join_key_map == get_feature_request_data.join_key_map
-        assert request_context_map == get_feature_request_data.request_context_map
+        assert dict_equals(join_key_map, get_feature_request_data.join_key_map)
+        assert dict_equals(request_context_map, get_feature_request_data.request_context_map)
 
     @pytest.mark.parametrize("workspace", ["", None])
     def test_error_workspace_name(self: Self, workspace: str) -> None:
@@ -147,7 +148,7 @@ class TestRequests:
         expected_json_request = json.dumps({"params": expected_response})
         json_request = get_features_request.to_json_string()
 
-        assert json_request == expected_json_request
+        assert dict_equals(json_request, expected_json_request)
 
     def test_request_with_request_context_map(self: Self) -> None:
         local_get_feature_request_data = GetFeatureRequestData(
@@ -184,7 +185,7 @@ class TestRequests:
 
         expected_json_request = json.dumps({"params": expected_response})
 
-        assert json_request == expected_json_request
+        assert dict_equals(json_request, expected_json_request)
 
     def test_all_metadata_options(self: Self) -> None:
         get_features_request = GetFeaturesRequest(
@@ -209,7 +210,7 @@ class TestRequests:
             MetadataOptions.SLO_INFO,
         }
 
-        assert expected_metadata_options == metadata_options
+        assert dict_equals(expected_metadata_options, metadata_options)
 
         expected_response = {
             "feature_service_name": "test_feature_service_name",
@@ -227,7 +228,7 @@ class TestRequests:
         expected_json = json.dumps({"params": expected_response})
         actual_json = get_features_request.to_json_string()
 
-        assert actual_json == expected_json
+        assert dict_equals(actual_json, expected_json)
 
     def test_custom_metadata_options(self: Self) -> None:
         get_features_request = GetFeaturesRequest(
@@ -254,7 +255,7 @@ class TestRequests:
         expected_json = json.dumps({"params": expected_response})
         actual_json = get_features_request.to_json_string()
 
-        assert actual_json == expected_json
+        assert dict_equals(actual_json, expected_json)
 
     def test_default_metadata_options(self: Self) -> None:
         get_features_request = GetFeaturesRequest(
@@ -277,4 +278,4 @@ class TestRequests:
         expected_json = json.dumps({"params": expected_response})
         actual_json = get_features_request.to_json_string()
 
-        assert actual_json == expected_json
+        assert dict_equals(actual_json, expected_json)
