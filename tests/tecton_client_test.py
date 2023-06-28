@@ -1,6 +1,6 @@
 import json
-from typing import Final
 import os
+from typing import Final
 
 import httpx
 import pytest
@@ -26,6 +26,7 @@ from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
 from tests.test_utils import dict_equals
 from tecton_client.tecton_client import TectonClientOptions
+from tests.test_utils import dict_equals
 
 
 class TestTectonClient:
@@ -243,19 +244,21 @@ class TestTectonClient:
     def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
         if client is None:
             client_options = TectonClientOptions(connect_timeout=10, read_timeout=15, keepalive_expiry=500)
-            tecton_client = TectonClient(url, api_key, client_options=client_options)
+            tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client_options=client_options)
             assert client_options.connect_timeout == 10
             assert client_options.read_timeout == 15
             assert client_options.keepalive_expiry == 500
             assert client_options.max_connections == 10
         else:
-            tecton_client = TectonClient(url, api_key, client=client)
+            tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
 
-        with open("tests/test_data/sample_response_mixed.json") as json_file:
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH}sample_response_mixed.json") as json_file:
             httpx_mock.add_response(json=json.load(json_file))
             response = tecton_client.get_features(self.test_request_normal)
 
-        assert {k: v.feature_value for k, v in response.feature_values.items()} == self.expected_response_mixed
+        assert dict_equals(
+            {k: v.feature_value for k, v in response.feature_values.items()}, self.expected_response_mixed
+        )
         tecton_client.close()
 
     def test_no_api_key(self) -> None:
