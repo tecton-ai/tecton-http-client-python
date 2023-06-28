@@ -53,7 +53,7 @@ class TectonClient:
         url: str,
         api_key: Optional[str] = None,
         client: Optional[httpx.AsyncClient] = None,
-        client_options: TectonClientOptions = TectonClientOptions(),
+        client_options: Optional[TectonClientOptions] = None,
     ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
@@ -67,12 +67,15 @@ class TectonClient:
             client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
                 Users can initialize their own HTTP client and pass it in to the :class:`TectonClient` object.
                 If no client is passed in, the :class:`TectonClient` object will initialize its own HTTP client.
-            client_options (TectonClientOptions): (Optional) The HTTP client options.
-                Defaults to :class:`TectonClientOptions()` with set default values.
+            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options.
+                If no options are passed in, defaults defined in :class:`TectonClientOptions()` will be used.
 
         """
         if api_key is None:
             api_key = os.getenv("TECTON_API_KEY")
+
+        if client_options is None:
+            client_options = TectonClientOptions()
 
         self._tecton_http_client = TectonHttpClient(
             url,

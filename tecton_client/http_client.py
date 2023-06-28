@@ -34,8 +34,8 @@ class TectonHttpClient:
         api_key: str,
         connect_timeout: float,
         read_timeout: float,
-        keepalive_expiry: Optional[int],
-        max_connections: Optional[int],
+        keepalive_expiry: Optional[int] = None,
+        max_connections: Optional[int] = None,
         client: Optional[httpx.AsyncClient] = None,
     ) -> None:
         """Initialize the parameters required to make HTTP requests.
