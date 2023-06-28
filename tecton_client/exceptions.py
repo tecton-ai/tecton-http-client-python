@@ -13,6 +13,8 @@ class TectonClientError(TectonException):
 class TectonServerException(TectonException):
     """Base class for exceptions raised when the Tecton API returns an error response."""
 
+    STATUS_CODE: int
+
 
 def INVALID_SERVER_RESPONSE(status_code: int, reason_phrase: str, message: str) -> str:
     """Error message for invalid server response.
@@ -99,12 +101,16 @@ class BadRequestError(TectonServerException):
     Please refer to the message for more details on the error.
     """
 
+    STATUS_CODE = 400
+
 
 class UnauthorizedError(TectonServerException):
     """Raised when the Tecton API returns a 401 Unauthorized error.
 
     Please refer to the message for more details on the error.
     """
+
+    STATUS_CODE = 401
 
 
 class ForbiddenError(TectonServerException):
@@ -113,12 +119,16 @@ class ForbiddenError(TectonServerException):
     Please refer to the message for more details on the error.
     """
 
+    STATUS_CODE = 403
+
 
 class NotFoundError(TectonServerException):
     """Raised when the Tecton API returns a 404 Not Found error.
 
     Please refer to the message for more details on the error.
     """
+
+    STATUS_CODE = 404
 
 
 class ResourcesExhaustedError(TectonServerException):
@@ -127,12 +137,16 @@ class ResourcesExhaustedError(TectonServerException):
     Please refer to the message for more details on the error.
     """
 
+    STATUS_CODE = 429
+
 
 class ServiceUnavailableError(TectonServerException):
     """Raised when the Tecton API returns a 503 Service Unavailable error.
 
     Please refer to the message for more details on the error.
     """
+
+    STATUS_CODE = 503
 
 
 class GatewayTimeoutError(TectonServerException):
@@ -141,13 +155,7 @@ class GatewayTimeoutError(TectonServerException):
     Please refer to the message for more details on the error.
     """
 
+    STATUS_CODE = 504
 
-SERVER_ERRORS = {
-    400: BadRequestError,
-    401: UnauthorizedError,
-    403: ForbiddenError,
-    404: NotFoundError,
-    429: ResourcesExhaustedError,
-    503: ServiceUnavailableError,
-    504: GatewayTimeoutError,
-}
+
+SERVER_ERRORS: dict = {error.STATUS_CODE: error for error in TectonServerException.__subclasses__()}

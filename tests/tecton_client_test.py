@@ -222,3 +222,9 @@ class TestTectonClient:
             )
             tecton_client.get_features(self.test_request_normal)
         tecton_client.close()
+
+    def test_error_response_no_duplicate_codes(self) -> None:
+        response_codes = set()
+        for exception in TectonServerException.__subclasses__():
+            assert exception.STATUS_CODE not in response_codes
+            response_codes.add(exception.STATUS_CODE)
