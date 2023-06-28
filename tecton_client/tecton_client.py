@@ -20,11 +20,9 @@ class TectonClientOptions:
 
     Attributes:
         connect_timeout (float): (Optional) The maximum amount of time to wait until a socket connection to the
-            requested host is established. If the client is unable to connect within this time frame, a ConnectTimeout
-            exception is raised. Defaults to 2.0 seconds.
+            requested host is established. Defaults to 2.0 seconds.
         read_timeout (float): (Optional) The maximum duration to wait for a chunk of data to be received (for example,
-            a chunk of the response body). If the client is unable to receive data within this time frame, a ReadTimeout
-            exception is raised. Defaults to 2.0 seconds.
+            a chunk of the response body). Defaults to 2.0 seconds.
         keepalive_expiry (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
             or None for no limits. Defaults to 300 seconds (5 minutes).
         max_connections (Optional[int]): (Optional) The maximum number of allowable connections, or None for no limits.
