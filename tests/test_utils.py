@@ -9,4 +9,6 @@ def dict_equals(dict1: dict, dict2: dict) -> bool:
         bool: True if the dictionaries are equal, False otherwise.
 
     """
+    #     From Python version 3.6+, dictionary comparison happens irrespective of the order of the keys.
+    #     See [official documentation](https://docs.python.org/2/reference/expressions.html#not-in) for more details.
     return dict1 == dict2

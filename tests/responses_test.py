@@ -13,7 +13,7 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StructType
 from tecton_client.responses import FeatureStatus
 from tecton_client.responses import GetFeaturesResponse
-from tecton_client.utils import parse_time
+from tecton_client.utils import parse_string_to_isotime
 from tests.test_utils import dict_equals
 
 
@@ -114,4 +114,4 @@ class TestResponse:
         "effective_time", ["2023-05-03T00:00:00Z", "2023-05-03T00:00:00.000000Z", "2023-05-03T00:00:00.000Z"]
     )
     def test_time_parsing(self: Self, effective_time: str) -> None:
-        assert isinstance(parse_time(effective_time), datetime)
+        assert isinstance(parse_string_to_isotime(effective_time), datetime)

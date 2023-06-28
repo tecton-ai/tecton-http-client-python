@@ -14,7 +14,7 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
-from tecton_client.utils import parse_time
+from tecton_client.utils import parse_string_to_isotime
 
 
 class Value:
@@ -152,7 +152,13 @@ class FeatureValue:
             raise TectonClientError(message)
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
-        self.effective_time = parse_time(effective_time) if effective_time else None
+
+        try:
+            self.effective_time = parse_string_to_isotime(effective_time) if effective_time else None
+        except ValueError:
+            message = f"Invalid datetime string: {effective_time}. Please contact Tecton for assistance."
+            raise TectonClientError(message)
+
         self.data_type = get_data_type(data_type, element_type, fields)
         self.feature_value = Value(self.data_type, feature_value).value
 
