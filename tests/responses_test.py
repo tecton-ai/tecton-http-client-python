@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from typing import List
+from typing import List, Final
 
 import pytest
 from typing_extensions import Self
@@ -17,6 +17,9 @@ from tests.test_utils import dict_equals
 
 
 class TestResponse:
+
+    TEST_DATA_REL_PATH: Final[str] = "tests/test_data/"
+
     def assert_answers(self: Self, expected_answer: list, get_features_response: GetFeaturesResponse) -> None:
         assert len(get_features_response.feature_values) == len(expected_answer)
 
@@ -42,7 +45,7 @@ class TestResponse:
         ],
     )
     def test_json_responses(self: Self, file_name: str, expected_answer: list) -> None:
-        with open(f"tests/test_data/{file_name}") as json_file:
+        with open(f"{TestResponse.TEST_DATA_REL_PATH}{file_name}") as json_file:
             get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response.slo_info is None
@@ -59,7 +62,7 @@ class TestResponse:
             "store_response_size_bytes": 204,
         }
 
-        with open("tests/test_data/sample_response_slo.json") as json_file:
+        with open(f"{TestResponse.TEST_DATA_REL_PATH}sample_response_slo.json") as json_file:
             get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response.slo_info is not None
@@ -69,7 +72,7 @@ class TestResponse:
         "filename, expected_answers, expected_metadata",
         [
             (
-                "tests/test_data/sample_response_metadata.json",
+                "sample_response_metadata.json",
                 [
                     True,
                     None,
@@ -94,7 +97,7 @@ class TestResponse:
     def test_metadata_response(
         self: Self, filename: str, expected_answers: list, expected_metadata: List[tuple]
     ) -> None:
-        with open(filename) as json_file:
+        with open(f"{TestResponse.TEST_DATA_REL_PATH}{filename}") as json_file:
             get_features_response = GetFeaturesResponse(json.load(json_file))
 
             assert get_features_response is not None
