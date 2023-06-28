@@ -110,5 +110,5 @@ class TestResponse:
     @pytest.mark.parametrize(
         "effective_time", ["2023-05-03T00:00:00Z", "2023-05-03T00:00:00.000000Z", "2023-05-03T00:00:00.000Z"]
     )
-    def test_time_parsing(self: Self, effective_time: str) -> None:
+    def test_time_parsing(self, effective_time: str) -> None:
         assert isinstance(parse_string_to_isotime(effective_time), datetime)
