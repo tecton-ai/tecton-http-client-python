@@ -214,7 +214,7 @@ class TestTectonClient:
     def test_get_features_error_response(
         self, httpx_mock: HTTPXMock, exception: TectonServerException, status_code: int, error_json: dict
     ) -> None:
-        tecton_client = TectonClient(url, api_key)
+        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
         with pytest.raises(exception):
             httpx_mock.add_response(
                 status_code=status_code,
