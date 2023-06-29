@@ -7,11 +7,12 @@ from urllib.parse import urlparse
 import httpx
 from httpx_auth import HeaderApiKey
 
-from tecton_client.exceptions import INVALID_SERVER_RESPONSE, TectonServerException
+from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import SERVER_ERRORS
+from tecton_client.exceptions import TectonServerException
 
 
 API_PREFIX = "Tecton-key"
