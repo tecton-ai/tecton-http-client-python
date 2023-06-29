@@ -2,7 +2,6 @@ from enum import Enum
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Self
 from typing import Union
 
 from tecton_client.data_types import ArrayType
@@ -20,7 +19,7 @@ from tecton_client.utils import parse_string_to_isotime
 class Value:
     """Represents an object containing a feature value with a specific type."""
 
-    def __init__(self: Self, data_type: DataType, feature_value: Union[str, None, list]) -> None:
+    def __init__(self, data_type: DataType, feature_value: Union[str, None, list]) -> None:
         """Set the value of the feature in the specified type.
 
         Args:
@@ -66,7 +65,7 @@ class Value:
             raise TectonClientError(message)
 
     @property
-    def value(self: Self) -> Union[int, float, str, bool, list, dict, None]:
+    def value(self) -> Union[int, float, str, bool, list, dict, None]:
         """Return the feature value of the feature in the specified type.
 
         Returns:
@@ -117,7 +116,7 @@ class FeatureValue:
     """
 
     def __init__(
-        self: Self,
+        self,
         name: str,
         data_type: str,
         feature_value: Union[str, None, list],
@@ -200,7 +199,7 @@ class SloInformation:
             the feature was not SLO eligible. Only present if slo_eligible is False.
     """
 
-    def __init__(self: Self, slo_information: dict) -> None:
+    def __init__(self, slo_information: dict) -> None:
         """Initialize a SloInformation object.
 
         Args:
@@ -229,7 +228,7 @@ class GetFeaturesResponse:
             present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
     """
 
-    def __init__(self: Self, response: dict) -> None:
+    def __init__(self, response: dict) -> None:
         """Initializes the object with data from the response.
 
         Args:

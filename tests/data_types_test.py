@@ -1,5 +1,4 @@
 from typing import List
-from typing import Self
 from typing import Union
 
 import pytest
@@ -87,7 +86,7 @@ class TestDataTypes:
             (FloatType(), None),
         ],
     )
-    def test_value(self: Self, type_name: DataType, value: Union[str, float, int, bool]) -> None:
+    def test_value(self, type_name: DataType, value: Union[str, float, int, bool]) -> None:
         test_var = Value(type_name, value)
         assert test_var.value == value
 
@@ -98,7 +97,7 @@ class TestDataTypes:
         assert len(arraylist) == len(expected_list)
 
     @pytest.mark.parametrize("array_value", [(["test_string1", "test_string2"]), (["test_string", None])])
-    def test_array_value(self: Self, array_value: List[str]) -> None:
+    def test_array_value(self, array_value: List[str]) -> None:
         type_name = ArrayType(StringType())
         test_var = Value(type_name, array_value)
         self.assert_array(test_var, array_value)
@@ -109,14 +108,14 @@ class TestDataTypes:
         assert len(datadict) == len(expected_dict)
         assert dict_equals(datadict, expected_dict)
 
-    def test_struct_value(self: Self) -> None:
+    def test_struct_value(self) -> None:
         type_name = StructType([StructField("field1", StringType()), StructField("field2", IntType())])
         test_var = Value(type_name, ["test_string", 123])
         expected_dict = {"field1": "test_string", "field2": 123}
         self.assert_struct(test_var, expected_dict)
 
     @pytest.mark.parametrize("type_name,actual_data", [(struct_type1, struct_data1), (struct_type2, struct_data2)])
-    def test_nested_struct(self: Self, type_name: StructType, actual_data: list) -> None:
+    def test_nested_struct(self, type_name: StructType, actual_data: list) -> None:
         test_var = Value(type_name, actual_data)
         datadict = test_var.value
         for i, (field, data) in enumerate(zip(type_name.fields, actual_data)):
@@ -128,7 +127,7 @@ class TestDataTypes:
                 assert datadict[key] == data
 
     @pytest.mark.parametrize("type_name,actual_data", [(array_type1, array_data1), (array_type1, array_data2)])
-    def test_nested_array(self: Self, type_name: ArrayType, actual_data: list) -> None:
+    def test_nested_array(self, type_name: ArrayType, actual_data: list) -> None:
         test_var = Value(type_name, actual_data)
         arraylist = test_var.value
         assert len(arraylist) == len(actual_data)
@@ -146,17 +145,17 @@ class TestDataTypes:
             ("string", None),
         ],
     )
-    def test_basic_feature_values(self: Self, data_type: str, feature_value: str) -> None:
+    def test_basic_feature_values(self, data_type: str, feature_value: str) -> None:
         feature = FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
         assert feature.feature_value == feature_value
 
     @pytest.mark.parametrize("data_type,feature_value", [("int64", "123")])
-    def test_int_feature_value(self: Self, data_type: str, feature_value: str) -> None:
+    def test_int_feature_value(self, data_type: str, feature_value: str) -> None:
         feature = FeatureValue(name="test.test_feature", data_type=data_type, feature_value=feature_value)
         assert feature.feature_value == int(feature_value)
 
     @pytest.mark.parametrize("feature_value, fields", [(struct_data1, struct_fields1), (struct_data2, struct_fields2)])
-    def test_feature_value_with_structs(self: Self, feature_value: list, fields: list) -> None:
+    def test_feature_value_with_structs(self, feature_value: list, fields: list) -> None:
         feature = FeatureValue(name="test.test_feature", data_type="struct", feature_value=feature_value, fields=fields)
 
         feature_val = feature.feature_value
@@ -171,7 +170,7 @@ class TestDataTypes:
                 assert feature_val[key] == feature_value[i]
 
     @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields1)])
-    def test_feature_value_with_arrays(self: Self, feature_value: list, fields: list) -> None:
+    def test_feature_value_with_arrays(self, feature_value: list, fields: list) -> None:
         feature = FeatureValue(
             name="test.test_feature",
             data_type="array",
@@ -183,7 +182,7 @@ class TestDataTypes:
         assert feature_val == feature_value
 
     @pytest.mark.parametrize("feature_value, fields", [(array_data1, array_fields3)])
-    def test_none_feature_value_type_with_arrays(self: Self, feature_value: list, fields: list) -> None:
+    def test_none_feature_value_type_with_arrays(self, feature_value: list, fields: list) -> None:
         with pytest.raises(TectonClientError):
             FeatureValue(
                 name="test.test_feature",
