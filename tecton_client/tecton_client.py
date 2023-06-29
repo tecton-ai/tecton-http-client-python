@@ -65,10 +65,14 @@ class TectonClient:
 
     @property
     def is_closed(self) -> bool:
-        """Returns the open or closed status of the HTTP client."""
+        """Returns True if the client has been closed, False otherwise."""
         return self._tecton_http_client.is_closed
 
     def close(self) -> None:
-        """Close the HTTP client."""
+        """Closes the client, releasing allocated resources and allowing connection reuse.
+
+        Important for proper resource management and graceful termination of the client.
+
+        """
         self._loop.run_until_complete(self._tecton_http_client.close())
         self._loop.close()
