@@ -1,0 +1,70 @@
+{
+  "result": {
+    "features": [
+      true,
+      null,
+      "669",
+      842.8599999999999,
+      [
+        "892054b9598370dce846bb6e4b5805a1",
+        "cc9f13814a736160984bc9896222e4d9",
+        "43a9799c961de6ebb22c122d8c7eb340"
+      ]
+    ]
+  },
+  "metadata": {
+    "features": [
+      {
+        "name": "transaction_amount.is_present",
+        "effectiveTime": "2023-05-03T00:00:00Z",
+        "dataType": {
+          "type": "boolean"
+        },
+        "status": "PRESENT"
+      },
+      {
+        "name": "merchant_fraud_rate.is_fraud_mean_90d_1d",
+        "effectiveTime": "2023-05-03T00:00:00Z",
+        "dataType": {
+          "type": "float64"
+        },
+        "status": "MISSING_DATA"
+      },
+      {
+        "name": "user_transaction_counts.transaction_id_last_3_1d_1d",
+        "effectiveTime": "2023-05-03T00:00:00Z",
+        "dataType": {
+          "type": "int64"
+        },
+        "status": "PRESENT"
+      },
+      {
+        "name": "user_transaction_amount_metrics.amt_mean_1d_10m",
+        "effectiveTime": "2023-05-03T00:00:00Z",
+        "dataType": {
+          "type": "float64"
+        },
+        "status": "PRESENT"
+      },
+      {
+        "name": "user_transaction_counts.test",
+        "effectiveTime": "2023-05-03T00:00:00.563Z",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "string"
+          }
+        },
+        "status": "PRESENT"
+      }
+    ],
+    "sloInfo": {
+      "sloEligible": true,
+      "sloServerTimeSeconds": 0.015835683,
+      "dynamodbResponseSizeBytes": 23722,
+      "serverTimeSeconds": 0.016889888,
+      "storeMaxLatency": 0.02687345,
+      "storeResponseSizeBytes": 23722
+    }
+  }
+}

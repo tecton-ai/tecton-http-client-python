@@ -1,5 +1,6 @@
-from datetime import datetime
 from enum import Enum
+from typing import Dict
+from typing import List
 from typing import Optional
 from typing import Self
 from typing import Union
@@ -13,6 +14,7 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
+from tecton_client.utils import parse_string_to_isotime
 
 
 class Value:
@@ -150,6 +152,105 @@ class FeatureValue:
             raise TectonClientError(message)
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
-        self.effective_time = datetime.fromisoformat(effective_time) if effective_time else None
+
+        self.effective_time = parse_string_to_isotime(effective_time) if effective_time else None
+        if effective_time and not self.effective_time:
+            message = f"Invalid datetime string: {effective_time}. Please contact Tecton Support for assistance."
+            raise TectonClientError(message)
+
         self.data_type = get_data_type(data_type, element_type, fields)
         self.feature_value = Value(self.data_type, feature_value).value
+
+
+class SloIneligibilityReason(str, Enum):
+    """Reasons due to which the Feature Serving Response may be ineligible for SLO."""
+
+    UNKNOWN = "UNKNOWN"
+    """Reason is unknown."""
+
+    DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED = "DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED"
+    """The 2MiB limit for DynamoDB response size was exceeded."""
+
+    REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED = "REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED"
+    """The 2MiB limit for Redis response size was exceeded."""
+
+    REDIS_LATENCY_LIMIT_EXCEEDED = "REDIS_LATENCY_LIMIT_EXCEEDED"
+    """The 25ms limit for Redis retrieval latency was exceeded."""
+
+
+class SloInformation:
+    """Class that represents SLO Information provided by Tecton when serving feature values.
+
+    Refer to the official documentation
+    `here <https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata>`_ for more information.
+
+    Attributes:
+        slo_eligible (Optional[bool]): Whether the request was eligible for the latency SLO.
+        server_time_seconds (Optional[float]): This includes the total time spent in the feature server, including
+            online transforms and store latency.
+        slo_server_time_seconds (Optional[float]): The server time minus any time spent waiting for online transforms to
+            finish after all table transforms have finished. This is the indicator used for determining whether
+            we are meeting the SLO.
+        store_max_latency (Optional[float]): Max latency observed by the request from the store in seconds.
+            Tecton fetches multiple feature views in parallel.
+        store_response_size_bytes (Optional[int]): Total store response size in bytes.
+        dynamodb_response_size_bytes (Optional[int]): The total DynamoDB response size processed to serve this request,
+            in bytes. If this is greater than 2 MiB (i.e. 2097152), then the request is not SLO-Eligible.
+        slo_ineligibility_reasons (Optional[List[SloIneligibilityReason]]): List of one or more reasons indicating why
+            the feature was not SLO eligible. Only present if slo_eligible is False.
+    """
+
+    def __init__(self: Self, slo_information: dict) -> None:
+        """Initialize a SloInformation object.
+
+        Args:
+            slo_information (dict): The SLO information dictionary received from the server.
+        """
+        self.slo_eligible = slo_information.get("sloEligible")
+        self.server_time_seconds = slo_information.get("serverTimeSeconds")
+        self.slo_server_time_seconds = slo_information.get("sloServerTimeSeconds")
+        self.store_max_latency = slo_information.get("storeMaxLatency")
+        self.store_response_size_bytes = slo_information.get("storeResponseSizeBytes")
+        self.dynamodb_response_size_bytes = slo_information.get("dynamoDBResponseSizeBytes")
+        self.slo_ineligibility_reasons = (
+            [SloIneligibilityReason(reason) for reason in slo_information["sloIneligibilityReasons"]]
+            if "sloIneligibilityReasons" in slo_information
+            else None
+        )
+
+
+class GetFeaturesResponse:
+    """Response object for GetFeatures API call.
+
+    Attributes:
+        feature_values (Dict[str, FeatureValue]): Dictionary with feature names as keys and their corresponding feature
+            values, one for each feature in the feature vector.
+        slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector's SLO,
+            present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
+    """
+
+    def __init__(self: Self, response: dict) -> None:
+        """Initializes the object with data from the response.
+
+        Args:
+            response (dict): JSON response returned from the GetFeatures API call.
+        """
+        feature_vector: list = response["result"]["features"]
+        feature_metadata: List[dict] = response["metadata"]["features"]
+
+        self.feature_values: Dict[str, FeatureValue] = {
+            metadata["name"]: FeatureValue(
+                name=metadata["name"],
+                data_type=metadata["dataType"]["type"],
+                element_type=metadata["dataType"].get("elementType"),
+                effective_time=metadata.get("effectiveTime"),
+                feature_status=metadata.get("status"),
+                fields=metadata["dataType"].get("fields"),
+                feature_value=feature,
+            )
+            for feature, metadata in zip(feature_vector, feature_metadata)
+        }
+
+        self.slo_info: Optional[SloInformation] = (
+            SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
+        )
