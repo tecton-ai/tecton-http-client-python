@@ -1,0 +1,213 @@
+{
+  "result": {
+    "features": [null, ["2.46", 2.46], [1, 2, 3, null, 5], "test", 24, 691, "test2", [false, 123.123], null, [1.23, 2.34, 3.45], "test3", 78989, [1, 2, 3], [null], 456.78, 999, false, [1.23, 2.34, 3.45], "test4", [1.23, "2", "test_string"]]
+  },
+  "metadata": {
+    "features": [
+      {
+        "name": "test.output_struct1",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "string_field",
+              "dataType": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "int64_field",
+              "dataType": {
+                "type": "int64"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "test.output_struct2",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "string_field",
+              "dataType": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "float64_field",
+              "dataType": {
+                "type": "float64"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name":"test.output_array1",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
+          }
+        }
+      },
+      {
+        "name":"test.output_string1",
+        "dataType": {
+          "type": "string"
+        }
+      },
+      {
+        "name":"test.output_int1",
+        "dataType": {
+          "type": "int64"
+        }
+      },
+      {
+        "name":"test.output_int2",
+        "dataType": {
+          "type": "int64"
+        }
+      },
+      {
+        "name": "test.output_string2",
+        "dataType": {
+          "type": "string"
+        }
+      },
+      {
+        "name": "test.output_struct3",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "bool_field",
+              "dataType": {
+                "type": "boolean"
+              },
+              "status": "PRESENT"
+            },
+            {
+              "name": "float64_field",
+              "dataType": {
+                "type": "float64"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name":"test.output_int3",
+        "dataType": {
+          "type": "int64"
+        }
+      },
+      {
+        "name":"test.output_array2",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "float64"
+          }
+        }
+      },
+      {
+        "name":"test.output_string3",
+        "dataType": {
+          "type": "string"
+        }
+      },
+      {
+        "name":"test.output_int4",
+        "dataType": {
+          "type": "int64"
+        }
+      },
+      {
+        "name":"test.output_array3",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
+          }
+        }
+      },
+      {
+        "name": "test.output_struct5",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "boolean_field",
+              "dataType": {
+                "type": "boolean"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name":"test.output_float1",
+        "dataType": {
+          "type": "float64"
+        }
+      },
+      {
+        "name":"test.output_int5",
+        "dataType": {
+          "type": "int64"
+        }
+      },
+      {
+        "name":"test.output_bool1",
+        "dataType": {
+          "type": "boolean"
+        }
+      },
+      {
+        "name":"test.output_array4",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "float64"
+          }
+        }
+      },
+      {
+        "name":"test.output_string4",
+        "dataType": {
+          "type": "string"
+        }
+      },
+      {
+        "name":"test.output_struct6",
+        "dataType": {
+          "type": "struct",
+          "fields": [
+            {
+              "name": "float64_field",
+              "dataType": {
+                "type": "float64"
+              }
+            },
+            {
+              "name": "int64_field",
+              "dataType": {
+                "type": "int64"
+              }
+            },
+            {
+              "name": "string_field",
+              "dataType": {
+                "type": "string"
+              }
+            }
+          ]
+        }
+      }
+
+    ]
+  }
+}
