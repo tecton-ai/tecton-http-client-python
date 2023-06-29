@@ -1,4 +1,3 @@
-import json
 from abc import ABC
 from dataclasses import dataclass
 from enum import Enum
@@ -215,7 +214,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     Examples:
         >>> request_data = GetFeaturesRequestData(join_key_map={"user_id": 1234})
         >>> get_features_request = GetFeaturesRequest("my_workspace", "my_feature_service", request_data=request_data)
-        >>> get_features_request.to_json_string()
+        >>> get_features_request.to_json()
             {"params":{"feature_service_name": "my_feature_service","workspace_name": "my_workspace",
             "metadata_options": {"include_data_types": True, "include_names": True},"join_key_map": {"user_id": 1234}}}
     """
@@ -241,11 +240,11 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         super().__init__(workspace_name, feature_service_name, metadata_options)
         self.request_data = request_data
 
-    def to_json_string(self: Self) -> str:
+    def to_json(self: Self) -> dict:
         """Returns a JSON representation of the :class:`GetFeaturesRequest` object.
 
         Returns:
-            JSON formatted string.
+            Dictionary of the response in the expected format.
         """
         fields_to_remove = ["ENDPOINT", "request_data"]
         self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
@@ -261,4 +260,4 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             else {}
         )
 
-        return json.dumps({"params": self_dict})
+        return {"params": self_dict}

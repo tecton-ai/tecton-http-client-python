@@ -1,4 +1,3 @@
-import json
 from typing import Self
 from typing import Union
 
@@ -145,8 +144,8 @@ class TestRequests:
             "join_key_map": {"test_key": "test_value", "test_none_key": None},
         }
 
-        expected_json_request = json.dumps({"params": expected_response})
-        json_request = get_features_request.to_json_string()
+        expected_json_request = {"params": expected_response}
+        json_request = get_features_request.to_json()
 
         assert dict_equals(json_request, expected_json_request)
 
@@ -173,7 +172,7 @@ class TestRequests:
         assert request_context_map.get("test_key_1") == 123.45
         assert request_context_map.get("test_key_2") == "test_val"
 
-        json_request = get_features_request.to_json_string()
+        json_request = get_features_request.to_json()
 
         expected_response = {
             "feature_service_name": "test_feature_service_name",
@@ -183,7 +182,7 @@ class TestRequests:
             "request_context_map": {"test_key_1": 123.45, "test_key_2": "test_val"},
         }
 
-        expected_json_request = json.dumps({"params": expected_response})
+        expected_json_request = {"params": expected_response}
 
         assert dict_equals(json_request, expected_json_request)
 
@@ -225,8 +224,8 @@ class TestRequests:
             "join_key_map": {"test_key": "test_value"},
         }
 
-        expected_json = json.dumps({"params": expected_response})
-        actual_json = get_features_request.to_json_string()
+        expected_json = {"params": expected_response}
+        actual_json = get_features_request.to_json()
 
         assert dict_equals(actual_json, expected_json)
 
@@ -252,8 +251,8 @@ class TestRequests:
             "join_key_map": {"test_key": "test_value"},
         }
 
-        expected_json = json.dumps({"params": expected_response})
-        actual_json = get_features_request.to_json_string()
+        expected_json = {"params": expected_response}
+        actual_json = get_features_request.to_json()
 
         assert dict_equals(actual_json, expected_json)
 
@@ -275,7 +274,7 @@ class TestRequests:
             "join_key_map": {"test_key": "test_value"},
         }
 
-        expected_json = json.dumps({"params": expected_response})
-        actual_json = get_features_request.to_json_string()
+        expected_json = {"params": expected_response}
+        actual_json = get_features_request.to_json()
 
         assert dict_equals(actual_json, expected_json)
