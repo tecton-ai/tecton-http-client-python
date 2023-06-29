@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 import httpx
 from httpx_auth import HeaderApiKey
 
-from tecton_client.exceptions import INVALID_SERVER_RESPONSE
+from tecton_client.exceptions import INVALID_SERVER_RESPONSE, TectonServerException
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import InvalidURLError
@@ -86,9 +86,12 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            raise SERVER_ERRORS[response.status_code](
-                INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
-            )
+            message = INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
+
+            try:
+                raise SERVER_ERRORS.get(response.status_code)(message)
+            except TypeError:
+                raise TectonServerException(message)
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:

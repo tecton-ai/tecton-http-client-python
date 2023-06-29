@@ -70,4 +70,4 @@ repos:
       - id: pydoclint
         args:
           - "--config=pyproject.toml"
-          - "-scr=true"
+          - "--skip-checking-raises=true"
