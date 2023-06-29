@@ -15,13 +15,10 @@ def parse_string_to_isotime(datetime_string: str) -> datetime:
     Returns:
         datetime: The parsed datetime object.
 
-    Raises:
-        ValueError: If the datetime string is invalid.
-
     """
     for format in DATETIME_FORMATS:
         try:
             return datetime.strptime(datetime_string, format)
         except ValueError:
             pass
-    raise ValueError
+    return None

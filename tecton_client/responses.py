@@ -153,10 +153,9 @@ class FeatureValue:
 
         self.feature_status = FeatureStatus(feature_status) if feature_status else None
 
-        try:
-            self.effective_time = parse_string_to_isotime(effective_time) if effective_time else None
-        except ValueError:
-            message = f"Invalid datetime string: {effective_time}. Please contact Tecton for assistance."
+        self.effective_time = parse_string_to_isotime(effective_time) if effective_time else None
+        if effective_time and not self.effective_time:
+            message = f"Invalid datetime string: {effective_time}. Please contact Tecton Support for assistance."
             raise TectonClientError(message)
 
         self.data_type = get_data_type(data_type, element_type, fields)
@@ -176,7 +175,7 @@ class SloIneligibilityReason(str, Enum):
     """The 2MiB limit for Redis response size was exceeded."""
 
     REDIS_LATENCY_LIMIT_EXCEEDED = "REDIS_LATENCY_LIMIT_EXCEEDED"
-    """The 25ms limit for Redis latency was exceeded."""
+    """The 25ms limit for Redis retrieval latency was exceeded."""
 
 
 class SloInformation:
