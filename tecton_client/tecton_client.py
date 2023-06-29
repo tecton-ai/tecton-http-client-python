@@ -63,7 +63,7 @@ class TectonClient:
                 API key <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
-                It can be passed in as a parameter or provided through an environment variable called `TECTON_API_KEY`.
+                This parameter is optional and can be provided through an environment variable called `TECTON_API_KEY`.
             client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
                 Users can initialize their own HTTP client and pass it in to the :class:`TectonClient` object.
                 If no client is passed in, the :class:`TectonClient` object will initialize its own HTTP client.
