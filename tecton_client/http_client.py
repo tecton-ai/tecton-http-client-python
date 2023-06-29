@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from typing import Optional
 from urllib.parse import urljoin
@@ -76,7 +77,7 @@ class TectonHttpClient:
         """
         url = urljoin(self.url, endpoint)
 
-        response = await self.client.post(url, data=request_body, auth=self.auth)
+        response = await self.client.post(url, data=json.dumps(request_body), auth=self.auth)
 
         if response.status_code == 200:
             return response.json()
