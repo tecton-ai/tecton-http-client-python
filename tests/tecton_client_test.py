@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import timedelta
 from typing import Final
 
 import httpx
@@ -243,12 +244,14 @@ class TestTectonClient:
     def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
         if client is None:
             client_options = TectonClientOptions(
-                connect_timeout_seconds=10, read_timeout_seconds=15, keepalive_expiry_seconds=500
+                connect_timeout=timedelta(seconds=10),
+                read_timeout=timedelta(seconds=15),
+                keepalive_expiry=timedelta(seconds=500),
             )
             tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client_options=client_options)
-            assert client_options.connect_timeout_seconds == 10
-            assert client_options.read_timeout_seconds == 15
-            assert client_options.keepalive_expiry_seconds == 500
+            assert client_options.connect_timeout.seconds == 10
+            assert client_options.read_timeout.seconds == 15
+            assert client_options.keepalive_expiry.seconds == 500
             assert client_options.max_connections == 10
         else:
             tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
@@ -272,3 +275,11 @@ class TestTectonClient:
         client = TectonClient(url="https://thisisaurl.ai")
         assert not client.is_closed
         client.close()
+
+    def test_client_and_client_options(self) -> None:
+        with pytest.raises(InvalidParameterError):
+            TectonClient(
+                url="https://thisisaurl.ai",
+                client_options=TectonClientOptions(max_connections=1),
+                client=httpx.AsyncClient(limits=httpx.Limits(max_connections=2)),
+            )

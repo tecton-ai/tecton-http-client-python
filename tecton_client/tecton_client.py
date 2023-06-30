@@ -1,39 +1,15 @@
 import asyncio
 import os
-from dataclasses import dataclass
 from typing import Optional
 
 import httpx
 
+from tecton_client.client_options import TectonClientOptions
+from tecton_client.exceptions import InvalidParameterError
+from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
-
-
-@dataclass
-class TectonClientOptions:
-    """Class to represent the Tecton Client options.
-
-    Examples:
-        >>> options = TectonClientOptions(connect_timeout_seconds=10, keepalive_expiry_seconds=600)
-        >>> tecton_client = TectonClient(url, api_key, client_options=options)
-
-    Attributes:
-        connect_timeout_seconds (float): (Optional) The maximum amount of time to wait until a socket connection to the
-            requested host is established. Defaults to 2.0 seconds.
-        read_timeout_seconds (float): (Optional) The maximum duration to wait for a chunk of data to be received (for
-            example, a chunk of the response body). Defaults to 2.0 seconds.
-        keepalive_expiry_seconds (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
-            or None for no limits. Defaults to 300 seconds (5 minutes).
-        max_connections (Optional[int]): (Optional) The maximum number of allowable connections, or None for no limits.
-            Defaults to 10.
-
-    """
-
-    connect_timeout_seconds: float = 2.0
-    read_timeout_seconds: float = 2.0
-    keepalive_expiry_seconds: Optional[int] = 300
-    max_connections: Optional[int] = 10
 
 
 class TectonClient:
@@ -67,12 +43,17 @@ class TectonClient:
             client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
                 Users can initialize their own HTTP client and pass it in to the :class:`TectonClient` object.
                 If no client is passed in, the :class:`TectonClient` object will initialize its own HTTP client.
-            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options.
+            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options to be passed in when the
+                :class:`TectonClient` object initializes its own HTTP client.
                 If no options are passed in, defaults defined in :class:`TectonClientOptions()` will be used.
 
         """
+        api_key = os.getenv("TECTON_API_KEY") if api_key is None else api_key
         if api_key is None:
-            api_key = os.getenv("TECTON_API_KEY")
+            raise InvalidParameterError(InvalidParameterMessage.KEY.value)
+
+        if client and client_options:
+            raise InvalidParameterError(InvalidParameterMessage.CLIENT_OPTIONS_OR_CLIENT.value)
 
         if client_options is None:
             client_options = TectonClientOptions()
@@ -80,11 +61,8 @@ class TectonClient:
         self._tecton_http_client = TectonHttpClient(
             url,
             api_key,
-            connect_timeout_seconds=client_options.connect_timeout_seconds,
-            read_timeout_seconds=client_options.read_timeout_seconds,
-            keepalive_expiry_seconds=client_options.keepalive_expiry_seconds,
-            max_connections=client_options.max_connections,
             client=client,
+            client_options=client_options,
         )
         self._loop = asyncio.new_event_loop()
 

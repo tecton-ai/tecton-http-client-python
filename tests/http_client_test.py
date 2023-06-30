@@ -18,10 +18,7 @@ class TestHttpClient:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
-            self.client_options.connect_timeout_seconds,
-            self.client_options.read_timeout_seconds,
-            self.client_options.keepalive_expiry_seconds,
-            self.client_options.max_connections,
+            client_options=self.client_options,
         )
         assert not http_client.is_closed
         await http_client.close()
@@ -35,10 +32,7 @@ class TestHttpClient:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
-            self.client_options.connect_timeout_seconds,
-            self.client_options.read_timeout_seconds,
-            self.client_options.keepalive_expiry_seconds,
-            self.client_options.max_connections,
+            client_options=self.client_options,
         )
 
         endpoint = "api/v1/feature-service/get-features"
@@ -72,10 +66,7 @@ class TestHttpClient:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
-            self.client_options.connect_timeout_seconds,
-            self.client_options.read_timeout_seconds,
-            self.client_options.keepalive_expiry_seconds,
-            self.client_options.max_connections,
+            client_options=self.client_options,
         )
 
         endpoint = "api/v1/feature-service/get-features"
@@ -103,10 +94,7 @@ class TestHttpClient:
             TectonHttpClient(
                 url,
                 "1234",
-                self.client_options.connect_timeout_seconds,
-                self.client_options.read_timeout_seconds,
-                self.client_options.keepalive_expiry_seconds,
-                self.client_options.max_connections,
+                client_options=self.client_options,
             )
 
     @pytest.mark.parametrize("key", ["", None])
@@ -115,10 +103,7 @@ class TestHttpClient:
             TectonHttpClient(
                 self.URL,
                 key,
-                self.client_options.connect_timeout_seconds,
-                self.client_options.read_timeout_seconds,
-                self.client_options.keepalive_expiry_seconds,
-                self.client_options.max_connections,
+                client_options=self.client_options,
             )
 
     def test_invalid_api_key(self, httpx_mock: HTTPXMock) -> None:
@@ -131,10 +116,7 @@ class TestHttpClient:
             TectonHttpClient(
                 self.URL,
                 self.API_KEY,
-                self.client_options.connect_timeout_seconds,
-                self.client_options.read_timeout_seconds,
-                self.client_options.keepalive_expiry_seconds,
-                self.client_options.max_connections,
+                client_options=self.client_options,
             )
         except TectonServerException as e:
             assert e == expected_message
