@@ -65,15 +65,15 @@ class TectonClient:
                 3. Unexpected type for a key in the joinKeyMap passed in the :class:`GetFeaturesRequestData` object
                 4. Unknown join key passed in the :class:`GetFeaturesRequestData` object in the request
             UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized, it could be because
-                Tecton does not recognize the API Key in your request. Please refer to the [API Key Documentation]
-                (https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\
+                Tecton does not recognize the API Key in your request. Please refer to the `API Key Documentation
+                <https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\
-                to-the-http-api) for more information on how to create a Service Account with an API Key
+                to-the-http-api>`_ for more information on how to create a Service Account with an API Key
             ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden, it could be because the
                 Service Account associated with your API Key does not have the necessary permissions to query
-                the feature service. Please refer to the [Tecton Documentation](https://docs.tecton.ai/docs/beta/\
+                the feature service. Please refer to the `Tecton Documentation <https://docs.tecton.ai/docs/beta/\
                 reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\
-                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api) for more information.
+                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api>`_ for more information.
             NotFoundError: If the response returned from the Tecton Server is 404 Not Found, it could be because of the
                 following reasons:
                 1. The service is unable to query the FeatureService or workspace passed in the
@@ -90,8 +90,8 @@ class TectonClient:
             GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
                 that processing the request exceeded the 2 seconds timeout limit set by Tecton.
 
-                For more detailed information on the errors, please refer to the error responses [here]
-                (https://docs.tecton.ai/http-api#operation/GetFeatures).
+                For more detailed information on the errors, please refer to the error responses `here
+                <https://docs.tecton.ai/http-api#operation/GetFeatures>`_.
 
         """
         response = self._loop.run_until_complete(
