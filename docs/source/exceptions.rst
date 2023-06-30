@@ -5,7 +5,9 @@ tecton\_client.exceptions module
 -----------------------------------
 
 .. automodule:: tecton_client.exceptions
-   :members: TectonClientError, TectonServerException, InvalidParameterError, InvalidURLError, UnsupportedTypeError
+   :members: TectonClientError, TectonServerException, InvalidParameterError, InvalidURLError, UnsupportedTypeError,
+    BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError, ResourcesExhaustedError, ServiceUnavailableError,
+    GatewayTimeoutError
    :undoc-members:
    :show-inheritance:
    :noindex:
@@ -18,3 +20,10 @@ tecton\_client.exceptions module
     InvalidParameterError
     InvalidURLError
     UnsupportedTypeError
+    BadRequestError
+    UnauthorizedError
+    ForbiddenError
+    NotFoundError
+    ResourcesExhaustedError
+    ServiceUnavailableError
+    GatewayTimeoutError

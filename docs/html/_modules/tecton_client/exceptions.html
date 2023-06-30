@@ -9,7 +9,7 @@
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
+  
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -17,17 +17,17 @@
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../index.html" class="icon icon-home">
             Tecton HTTP API Client Python
           </a>
@@ -71,7 +71,7 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for tecton_client.exceptions</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
@@ -175,67 +175,67 @@
         <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">BadRequestError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
+<div class="viewcode-block" id="BadRequestError"><a class="viewcode-back" href="../../generated/tecton_client.exceptions.BadRequestError.html#tecton_client.exceptions.BadRequestError">[docs]</a><span class="k">class</span> <span class="nc">BadRequestError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Tecton API returns a 400 Bad Request error.</span>
 
 <span class="sd">    Please refer to the message for more details on the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">400</span>
+    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">400</span></div>
 
 
-<span class="k">class</span> <span class="nc">UnauthorizedError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
+<div class="viewcode-block" id="UnauthorizedError"><a class="viewcode-back" href="../../generated/tecton_client.exceptions.UnauthorizedError.html#tecton_client.exceptions.UnauthorizedError">[docs]</a><span class="k">class</span> <span class="nc">UnauthorizedError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Tecton API returns a 401 Unauthorized error.</span>
 
 <span class="sd">    Please refer to the message for more details on the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">401</span>
+    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">401</span></div>
 
 
-<span class="k">class</span> <span class="nc">ForbiddenError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
+<div class="viewcode-block" id="ForbiddenError"><a class="viewcode-back" href="../../generated/tecton_client.exceptions.ForbiddenError.html#tecton_client.exceptions.ForbiddenError">[docs]</a><span class="k">class</span> <span class="nc">ForbiddenError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Tecton API returns a 403 Forbidden error.</span>
 
 <span class="sd">    Please refer to the message for more details on the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">403</span>
+    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">403</span></div>
 
 
-<span class="k">class</span> <span class="nc">NotFoundError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
+<div class="viewcode-block" id="NotFoundError"><a class="viewcode-back" href="../../generated/tecton_client.exceptions.NotFoundError.html#tecton_client.exceptions.NotFoundError">[docs]</a><span class="k">class</span> <span class="nc">NotFoundError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Tecton API returns a 404 Not Found error.</span>
 
 <span class="sd">    Please refer to the message for more details on the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">404</span>
+    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">404</span></div>
 
 
-<span class="k">class</span> <span class="nc">ResourcesExhaustedError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
+<div class="viewcode-block" id="ResourcesExhaustedError"><a class="viewcode-back" href="../../generated/tecton_client.exceptions.ResourcesExhaustedError.html#tecton_client.exceptions.ResourcesExhaustedError">[docs]</a><span class="k">class</span> <span class="nc">ResourcesExhaustedError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Tecton API returns a 429 Resources Exhausted error.</span>
 
 <span class="sd">    Please refer to the message for more details on the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">429</span>
+    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">429</span></div>
 
 
-<span class="k">class</span> <span class="nc">ServiceUnavailableError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
+<div class="viewcode-block" id="ServiceUnavailableError"><a class="viewcode-back" href="../../generated/tecton_client.exceptions.ServiceUnavailableError.html#tecton_client.exceptions.ServiceUnavailableError">[docs]</a><span class="k">class</span> <span class="nc">ServiceUnavailableError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Tecton API returns a 503 Service Unavailable error.</span>
 
 <span class="sd">    Please refer to the message for more details on the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">503</span>
+    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">503</span></div>
 
 
-<span class="k">class</span> <span class="nc">GatewayTimeoutError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
+<div class="viewcode-block" id="GatewayTimeoutError"><a class="viewcode-back" href="../../generated/tecton_client.exceptions.GatewayTimeoutError.html#tecton_client.exceptions.GatewayTimeoutError">[docs]</a><span class="k">class</span> <span class="nc">GatewayTimeoutError</span><span class="p">(</span><span class="n">TectonServerException</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the Tecton API returns a 504 Gateway Timeout error.</span>
 
 <span class="sd">    Please refer to the message for more details on the error.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">504</span>
+    <span class="n">STATUS_CODE</span> <span class="o">=</span> <span class="mi">504</span></div>
 
 
 <span class="n">SERVER_ERRORS</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">error</span><span class="o">.</span><span class="n">STATUS_CODE</span><span class="p">:</span> <span class="n">error</span> <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">TectonServerException</span><span class="o">.</span><span class="n">__subclasses__</span><span class="p">()}</span>
@@ -254,7 +254,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -265,7 +265,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

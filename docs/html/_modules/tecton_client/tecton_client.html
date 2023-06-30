@@ -9,7 +9,7 @@
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
+  
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -17,17 +17,17 @@
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../index.html" class="icon icon-home">
             Tecton HTTP API Client Python
           </a>
@@ -71,7 +71,7 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for tecton_client.tecton_client</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -198,15 +198,15 @@
 <span class="sd">                3. Unexpected type for a key in the joinKeyMap passed in the :class:`GetFeaturesRequestData` object</span>
 <span class="sd">                4. Unknown join key passed in the :class:`GetFeaturesRequestData` object in the request</span>
 <span class="sd">            UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized, it could be because</span>
-<span class="sd">                Tecton does not recognize the API Key in your request. Please refer to the [API Key Documentation]</span>
-<span class="sd">                (https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\</span>
+<span class="sd">                Tecton does not recognize the API Key in your request. Please refer to the `API Key Documentation</span>
+<span class="sd">                &lt;https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\</span>
 <span class="sd">                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\</span>
-<span class="sd">                to-the-http-api) for more information on how to create a Service Account with an API Key</span>
+<span class="sd">                to-the-http-api&gt;`_ for more information on how to create a Service Account with an API Key</span>
 <span class="sd">            ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden, it could be because the</span>
 <span class="sd">                Service Account associated with your API Key does not have the necessary permissions to query</span>
-<span class="sd">                the feature service. Please refer to the [Tecton Documentation](https://docs.tecton.ai/docs/beta/\</span>
+<span class="sd">                the feature service. Please refer to the `Tecton Documentation &lt;https://docs.tecton.ai/docs/beta/\</span>
 <span class="sd">                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\</span>
-<span class="sd">                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api) for more information.</span>
+<span class="sd">                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api&gt;`_ for more information.</span>
 <span class="sd">            NotFoundError: If the response returned from the Tecton Server is 404 Not Found, it could be because of the</span>
 <span class="sd">                following reasons:</span>
 <span class="sd">                1. The service is unable to query the FeatureService or workspace passed in the</span>
@@ -223,8 +223,8 @@
 <span class="sd">            GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates</span>
 <span class="sd">                that processing the request exceeded the 2 seconds timeout limit set by Tecton.</span>
 
-<span class="sd">                For more detailed information on the errors, please refer to the error responses [here]</span>
-<span class="sd">                (https://docs.tecton.ai/http-api#operation/GetFeatures).</span>
+<span class="sd">                For more detailed information on the errors, please refer to the error responses `here</span>
+<span class="sd">                &lt;https://docs.tecton.ai/http-api#operation/GetFeatures&gt;`_.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
@@ -260,7 +260,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -271,7 +271,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

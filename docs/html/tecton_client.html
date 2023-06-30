@@ -10,7 +10,7 @@
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
+  
         <script src="_static/jquery.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -20,17 +20,17 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="tecton_client.tecton_client.TectonClient" href="generated/tecton_client.tecton_client.TectonClient.html" />
-    <link rel="prev" title="tecton_client.responses.GetFeaturesResponse" href="generated/tecton_client.responses.GetFeaturesResponse.html" />
+    <link rel="prev" title="tecton_client.responses.GetFeaturesResponse" href="generated/tecton_client.responses.GetFeaturesResponse.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="index.html" class="icon icon-home">
             Tecton HTTP API Client Python
           </a>
@@ -80,7 +80,7 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <section id="tecton-client">
 <h1>Tecton Client<a class="headerlink" href="#tecton-client" title="Permalink to this heading"></a></h1>
 <section id="tecton-client-tecton-client-module">
@@ -141,19 +141,18 @@ as a Python object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>BadRequestError</strong> – If the response returned from the Tecton Server is 400 Bad Request. The error could be
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.BadRequestError.html#tecton_client.exceptions.BadRequestError" title="tecton_client.exceptions.BadRequestError"><strong>BadRequestError</strong></a> – If the response returned from the Tecton Server is 400 Bad Request. The error could be
     caused by one of the following:
     1. Missing required join key in the <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object passed in the request
     2. An expected key is not found in the requestContextMap of the <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object
     3. Unexpected type for a key in the joinKeyMap passed in the <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object
     4. Unknown join key passed in the <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object in the request</p></li>
-<li><p><strong>UnauthorizedError</strong> – If the response returned from the Tecton Server is 401 Unauthorized, it could be because
-    Tecton does not recognize the API Key in your request. Please refer to the [API Key Documentation]
-    (<a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/">https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/</a>                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-                to-the-http-api) for more information on how to create a Service Account with an API Key</p></li>
-<li><p><strong>ForbiddenError</strong> – If the response returned from the Tecton Server is 403 Forbidden, it could be because the
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.UnauthorizedError.html#tecton_client.exceptions.UnauthorizedError" title="tecton_client.exceptions.UnauthorizedError"><strong>UnauthorizedError</strong></a> – If the response returned from the Tecton Server is 401 Unauthorized, it could be because
+    Tecton does not recognize the API Key in your request. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">API Key Documentation</a> for more information on how to create a Service Account with an API Key</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.ForbiddenError.html#tecton_client.exceptions.ForbiddenError" title="tecton_client.exceptions.ForbiddenError"><strong>ForbiddenError</strong></a> – If the response returned from the Tecton Server is 403 Forbidden, it could be because the
     Service Account associated with your API Key does not have the necessary permissions to query
-    the feature service. Please refer to the [Tecton Documentation](<a class="reference external" href="https://docs.tecton.ai/docs/beta/">https://docs.tecton.ai/docs/beta/</a>                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api) for more information.</p></li>
-<li><p><strong>NotFoundError</strong> – If the response returned from the Tecton Server is 404 Not Found, it could be because of the
+    the feature service. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">Tecton Documentation</a> for more information.</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.NotFoundError.html#tecton_client.exceptions.NotFoundError" title="tecton_client.exceptions.NotFoundError"><strong>NotFoundError</strong></a> – If the response returned from the Tecton Server is 404 Not Found, it could be because of the
     following reasons:
     1. The service is unable to query the FeatureService or workspace passed in the
         <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequest</span></code> object
@@ -164,13 +163,12 @@ as a Python object.</p>
     1. GetFeatures exceeded the concurrent request limit, please retry later
     2. DynamoDB throttled the request. The request rate exceeds the AWS account’s throughput limit, or
         you may be requesting a hot key</p></li>
-<li><p><strong>ServiceUnavailableError</strong> – If the response returned from the Tecton Server is 503 Service Unavailable, it
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.ServiceUnavailableError.html#tecton_client.exceptions.ServiceUnavailableError" title="tecton_client.exceptions.ServiceUnavailableError"><strong>ServiceUnavailableError</strong></a> – If the response returned from the Tecton Server is 503 Service Unavailable, it
     could be because Tecton is currently unable to process your request. Please retry later.</p></li>
-<li><p><strong>GatewayTimeoutError</strong> – If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.GatewayTimeoutError.html#tecton_client.exceptions.GatewayTimeoutError" title="tecton_client.exceptions.GatewayTimeoutError"><strong>GatewayTimeoutError</strong></a> – If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
     that processing the request exceeded the 2 seconds timeout limit set by Tecton.
-
-    For more detailed information on the errors, please refer to the error responses [here]
-    (<a class="reference external" href="https://docs.tecton.ai/http-api#operation/GetFeatures">https://docs.tecton.ai/http-api#operation/GetFeatures</a>).</p></li>
+    
+    For more detailed information on the errors, please refer to the error responses <a class="reference external" href="https://docs.tecton.ai/http-api#operation/GetFeatures">here</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -211,7 +209,7 @@ as a Python object.</p>
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -222,7 +220,7 @@ as a Python object.</p>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

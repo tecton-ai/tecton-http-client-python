@@ -5,24 +5,26 @@
 
 .. autoclass:: TectonClient
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~TectonClient.__init__
       ~TectonClient.close
       ~TectonClient.get_features
+   
+   
 
-
-
-
-
+   
+   
    .. rubric:: Attributes
 
    .. autosummary::
-
+   
       ~TectonClient.is_closed
+   
+   

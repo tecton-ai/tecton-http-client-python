@@ -5,12 +5,18 @@
 
 .. autoclass:: BoolType
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~BoolType.__init__
+   
+   
+
+   
+   
+   

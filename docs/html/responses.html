@@ -10,7 +10,7 @@
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
+  
         <script src="_static/jquery.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -20,17 +20,17 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="tecton_client.responses.FeatureStatus" href="generated/tecton_client.responses.FeatureStatus.html" />
-    <link rel="prev" title="tecton_client.requests.GetFeaturesRequest" href="generated/tecton_client.requests.GetFeaturesRequest.html" />
+    <link rel="prev" title="tecton_client.requests.GetFeaturesRequest" href="generated/tecton_client.requests.GetFeaturesRequest.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="index.html" class="icon icon-home">
             Tecton HTTP API Client Python
           </a>
@@ -49,9 +49,47 @@
 <li class="toctree-l1"><a class="reference internal" href="requests.html">Requests</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Responses</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tecton-client-responses-module">tecton_client.responses module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tecton_client.responses.FeatureStatus"><code class="docutils literal notranslate"><span class="pre">FeatureStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureStatus.MISSING_DATA"><code class="docutils literal notranslate"><span class="pre">FeatureStatus.MISSING_DATA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureStatus.PRESENT"><code class="docutils literal notranslate"><span class="pre">FeatureStatus.PRESENT</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureStatus.UNKNOWN"><code class="docutils literal notranslate"><span class="pre">FeatureStatus.UNKNOWN</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tecton_client.responses.FeatureValue"><code class="docutils literal notranslate"><span class="pre">FeatureValue</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureValue.data_type"><code class="docutils literal notranslate"><span class="pre">FeatureValue.data_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureValue.feature_value"><code class="docutils literal notranslate"><span class="pre">FeatureValue.feature_value</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureValue.feature_namespace"><code class="docutils literal notranslate"><span class="pre">FeatureValue.feature_namespace</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureValue.feature_name"><code class="docutils literal notranslate"><span class="pre">FeatureValue.feature_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureValue.feature_status"><code class="docutils literal notranslate"><span class="pre">FeatureValue.feature_status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureValue.effective_time"><code class="docutils literal notranslate"><span class="pre">FeatureValue.effective_time</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tecton_client.responses.GetFeaturesResponse"><code class="docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.GetFeaturesResponse.feature_values"><code class="docutils literal notranslate"><span class="pre">GetFeaturesResponse.feature_values</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.GetFeaturesResponse.slo_info"><code class="docutils literal notranslate"><span class="pre">GetFeaturesResponse.slo_info</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tecton_client.responses.SloIneligibilityReason"><code class="docutils literal notranslate"><span class="pre">SloIneligibilityReason</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloIneligibilityReason.DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED"><code class="docutils literal notranslate"><span class="pre">SloIneligibilityReason.DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloIneligibilityReason.REDIS_LATENCY_LIMIT_EXCEEDED"><code class="docutils literal notranslate"><span class="pre">SloIneligibilityReason.REDIS_LATENCY_LIMIT_EXCEEDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloIneligibilityReason.REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED"><code class="docutils literal notranslate"><span class="pre">SloIneligibilityReason.REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloIneligibilityReason.UNKNOWN"><code class="docutils literal notranslate"><span class="pre">SloIneligibilityReason.UNKNOWN</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tecton_client.responses.SloInformation"><code class="docutils literal notranslate"><span class="pre">SloInformation</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloInformation.slo_eligible"><code class="docutils literal notranslate"><span class="pre">SloInformation.slo_eligible</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloInformation.server_time_seconds"><code class="docutils literal notranslate"><span class="pre">SloInformation.server_time_seconds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloInformation.slo_server_time_seconds"><code class="docutils literal notranslate"><span class="pre">SloInformation.slo_server_time_seconds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloInformation.store_max_latency"><code class="docutils literal notranslate"><span class="pre">SloInformation.store_max_latency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloInformation.store_response_size_bytes"><code class="docutils literal notranslate"><span class="pre">SloInformation.store_response_size_bytes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloInformation.dynamodb_response_size_bytes"><code class="docutils literal notranslate"><span class="pre">SloInformation.dynamodb_response_size_bytes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloInformation.slo_ineligibility_reasons"><code class="docutils literal notranslate"><span class="pre">SloInformation.slo_ineligibility_reasons</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.FeatureStatus.html">tecton_client.responses.FeatureStatus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.FeatureValue.html">tecton_client.responses.FeatureValue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.SloInformation.html">tecton_client.responses.SloInformation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.SloIneligibilityReason.html">tecton_client.responses.SloIneligibilityReason</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesResponse.html">tecton_client.responses.GetFeaturesResponse</a></li>
 </ul>
 </li>
@@ -83,46 +121,52 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <section id="responses">
 <h1>Responses<a class="headerlink" href="#responses" title="Permalink to this heading"></a></h1>
 <section id="tecton-client-responses-module">
 <h2>tecton_client.responses module<a class="headerlink" href="#tecton-client-responses-module" title="Permalink to this heading"></a></h2>
 <p>This is module consists of classes that help represent the responses from the Tecton API.</p>
+<span class="target" id="module-tecton_client.responses"></span><dl class="field-list simple">
+<dt class="field-odd">undoc-members<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">show-inheritance<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+<dt class="field-odd">noindex<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
 <dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">FeatureStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#FeatureStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>Enum to represent the serving status of a feature.</p>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureStatus">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">FeatureStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#FeatureStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.responses.FeatureStatus" title="Permalink to this definition"></a></dt>
+<dd><p>Enum to represent the serving status of a feature.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">MISSING_DATA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MISSING_DATA'</span></em></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureStatus.MISSING_DATA">
+<span class="sig-name descname"><span class="pre">MISSING_DATA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MISSING_DATA'</span></em><a class="headerlink" href="#tecton_client.responses.FeatureStatus.MISSING_DATA" title="Permalink to this definition"></a></dt>
 <dd><p>The feature values were not found in the online store either because the join keys do not exist
 or the feature values are outside ttl.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">PRESENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PRESENT'</span></em></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureStatus.PRESENT">
+<span class="sig-name descname"><span class="pre">PRESENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'PRESENT'</span></em><a class="headerlink" href="#tecton_client.responses.FeatureStatus.PRESENT" title="Permalink to this definition"></a></dt>
 <dd><p>The feature values were found in the online store for the join keys requested.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'UNKNOWN'</span></em></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureStatus.UNKNOWN">
+<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'UNKNOWN'</span></em><a class="headerlink" href="#tecton_client.responses.FeatureStatus.UNKNOWN" title="Permalink to this definition"></a></dt>
 <dd><p>An unknown status code occurred, most likely because an error occurred during feature retrieval.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">FeatureValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effective_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#FeatureValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class encapsulating all the data for a Feature value returned from a GetFeatures API call.</p>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureValue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">FeatureValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effective_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fields</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#FeatureValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.responses.FeatureValue" title="Permalink to this definition"></a></dt>
+<dd><p>Class encapsulating all the data for a Feature value returned from a GetFeatures API call.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">data_type</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureValue.data_type">
+<span class="sig-name descname"><span class="pre">data_type</span></span><a class="headerlink" href="#tecton_client.responses.FeatureValue.data_type" title="Permalink to this definition"></a></dt>
 <dd><p>The type of the feature value. Tecton supports the following data types:
 Int, Float, String, Bool, Array, and Struct.</p>
 <dl class="field-list simple">
@@ -133,8 +177,8 @@ Int, Float, String, Bool, Array, and Struct.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">feature_value</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureValue.feature_value">
+<span class="sig-name descname"><span class="pre">feature_value</span></span><a class="headerlink" href="#tecton_client.responses.FeatureValue.feature_value" title="Permalink to this definition"></a></dt>
 <dd><p>The value of the feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -144,8 +188,8 @@ Int, Float, String, Bool, Array, and Struct.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">feature_namespace</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureValue.feature_namespace">
+<span class="sig-name descname"><span class="pre">feature_namespace</span></span><a class="headerlink" href="#tecton_client.responses.FeatureValue.feature_namespace" title="Permalink to this definition"></a></dt>
 <dd><p>The namespace that the feature belongs to.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -155,8 +199,8 @@ Int, Float, String, Bool, Array, and Struct.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">feature_name</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureValue.feature_name">
+<span class="sig-name descname"><span class="pre">feature_name</span></span><a class="headerlink" href="#tecton_client.responses.FeatureValue.feature_name" title="Permalink to this definition"></a></dt>
 <dd><p>The name of the feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -166,8 +210,8 @@ Int, Float, String, Bool, Array, and Struct.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">feature_status</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureValue.feature_status">
+<span class="sig-name descname"><span class="pre">feature_status</span></span><a class="headerlink" href="#tecton_client.responses.FeatureValue.feature_status" title="Permalink to this definition"></a></dt>
 <dd><p>The status of the feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -177,8 +221,8 @@ Int, Float, String, Bool, Array, and Struct.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">effective_time</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureValue.effective_time">
+<span class="sig-name descname"><span class="pre">effective_time</span></span><a class="headerlink" href="#tecton_client.responses.FeatureValue.effective_time" title="Permalink to this definition"></a></dt>
 <dd><p>The effective serving time for this feature.
 This is the most recent time that’s aligned to the interval for which a full aggregation is available for
 this feature. Passing this in the spine of an offline feature request should guarantee retrieving the same
@@ -193,13 +237,12 @@ value as is in this response.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#GetFeaturesResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Response object for GetFeatures API call.</p>
+<dt class="sig sig-object py" id="tecton_client.responses.GetFeaturesResponse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#GetFeaturesResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.responses.GetFeaturesResponse" title="Permalink to this definition"></a></dt>
+<dd><p>Response object for GetFeatures API call.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">feature_values</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.GetFeaturesResponse.feature_values">
+<span class="sig-name descname"><span class="pre">feature_values</span></span><a class="headerlink" href="#tecton_client.responses.GetFeaturesResponse.feature_values" title="Permalink to this definition"></a></dt>
 <dd><p>Dictionary with feature names as keys and their corresponding feature
 values, one for each feature in the feature vector.</p>
 <dl class="field-list simple">
@@ -210,8 +253,8 @@ values, one for each feature in the feature vector.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">slo_info</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.GetFeaturesResponse.slo_info">
+<span class="sig-name descname"><span class="pre">slo_info</span></span><a class="headerlink" href="#tecton_client.responses.GetFeaturesResponse.slo_info" title="Permalink to this definition"></a></dt>
 <dd><p>SloInformation object containing information on the feature vector’s SLO,
 present only if the <code class="xref py py-class docutils literal notranslate"><span class="pre">MetadataOption</span></code> <cite>SLO_INFO</cite> is requested in the request.</p>
 <dl class="field-list simple">
@@ -224,15 +267,44 @@ present only if the <code class="xref py py-class docutils literal notranslate">
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">SloInformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slo_information</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#SloInformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class that represents SLO Information provided by Tecton when serving feature values.</p>
+<dt class="sig sig-object py" id="tecton_client.responses.SloIneligibilityReason">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">SloIneligibilityReason</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#SloIneligibilityReason"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.responses.SloIneligibilityReason" title="Permalink to this definition"></a></dt>
+<dd><p>Reasons due to which the Feature Serving Response may be ineligible for SLO.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tecton_client.responses.SloIneligibilityReason.DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED">
+<span class="sig-name descname"><span class="pre">DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED'</span></em><a class="headerlink" href="#tecton_client.responses.SloIneligibilityReason.DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED" title="Permalink to this definition"></a></dt>
+<dd><p>The 2MiB limit for DynamoDB response size was exceeded.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tecton_client.responses.SloIneligibilityReason.REDIS_LATENCY_LIMIT_EXCEEDED">
+<span class="sig-name descname"><span class="pre">REDIS_LATENCY_LIMIT_EXCEEDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'REDIS_LATENCY_LIMIT_EXCEEDED'</span></em><a class="headerlink" href="#tecton_client.responses.SloIneligibilityReason.REDIS_LATENCY_LIMIT_EXCEEDED" title="Permalink to this definition"></a></dt>
+<dd><p>The 25ms limit for Redis retrieval latency was exceeded.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tecton_client.responses.SloIneligibilityReason.REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED">
+<span class="sig-name descname"><span class="pre">REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED'</span></em><a class="headerlink" href="#tecton_client.responses.SloIneligibilityReason.REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED" title="Permalink to this definition"></a></dt>
+<dd><p>The 2MiB limit for Redis response size was exceeded.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tecton_client.responses.SloIneligibilityReason.UNKNOWN">
+<span class="sig-name descname"><span class="pre">UNKNOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'UNKNOWN'</span></em><a class="headerlink" href="#tecton_client.responses.SloIneligibilityReason.UNKNOWN" title="Permalink to this definition"></a></dt>
+<dd><p>Reason is unknown.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">SloInformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slo_information</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#SloInformation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.responses.SloInformation" title="Permalink to this definition"></a></dt>
+<dd><p>Class that represents SLO Information provided by Tecton when serving feature values.</p>
 <p>Refer to the official documentation
 <a class="reference external" href="https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata">here</a> for more information.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">slo_eligible</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation.slo_eligible">
+<span class="sig-name descname"><span class="pre">slo_eligible</span></span><a class="headerlink" href="#tecton_client.responses.SloInformation.slo_eligible" title="Permalink to this definition"></a></dt>
 <dd><p>Whether the request was eligible for the latency SLO.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -242,8 +314,8 @@ present only if the <code class="xref py py-class docutils literal notranslate">
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">server_time_seconds</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation.server_time_seconds">
+<span class="sig-name descname"><span class="pre">server_time_seconds</span></span><a class="headerlink" href="#tecton_client.responses.SloInformation.server_time_seconds" title="Permalink to this definition"></a></dt>
 <dd><p>This includes the total time spent in the feature server, including
 online transforms and store latency.</p>
 <dl class="field-list simple">
@@ -254,8 +326,8 @@ online transforms and store latency.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">slo_server_time_seconds</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation.slo_server_time_seconds">
+<span class="sig-name descname"><span class="pre">slo_server_time_seconds</span></span><a class="headerlink" href="#tecton_client.responses.SloInformation.slo_server_time_seconds" title="Permalink to this definition"></a></dt>
 <dd><p>The server time minus any time spent waiting for online transforms to
 finish after all table transforms have finished. This is the indicator used for determining whether
 we are meeting the SLO.</p>
@@ -267,8 +339,8 @@ we are meeting the SLO.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">store_max_latency</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation.store_max_latency">
+<span class="sig-name descname"><span class="pre">store_max_latency</span></span><a class="headerlink" href="#tecton_client.responses.SloInformation.store_max_latency" title="Permalink to this definition"></a></dt>
 <dd><p>Max latency observed by the request from the store in seconds.
 Tecton fetches multiple feature views in parallel.</p>
 <dl class="field-list simple">
@@ -279,8 +351,8 @@ Tecton fetches multiple feature views in parallel.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">store_response_size_bytes</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation.store_response_size_bytes">
+<span class="sig-name descname"><span class="pre">store_response_size_bytes</span></span><a class="headerlink" href="#tecton_client.responses.SloInformation.store_response_size_bytes" title="Permalink to this definition"></a></dt>
 <dd><p>Total store response size in bytes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -290,8 +362,8 @@ Tecton fetches multiple feature views in parallel.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">dynamodb_response_size_bytes</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation.dynamodb_response_size_bytes">
+<span class="sig-name descname"><span class="pre">dynamodb_response_size_bytes</span></span><a class="headerlink" href="#tecton_client.responses.SloInformation.dynamodb_response_size_bytes" title="Permalink to this definition"></a></dt>
 <dd><p>The total DynamoDB response size processed to serve this request,
 in bytes. If this is greater than 2 MiB (i.e. 2097152), then the request is not SLO-Eligible.</p>
 <dl class="field-list simple">
@@ -302,13 +374,13 @@ in bytes. If this is greater than 2 MiB (i.e. 2097152), then the request is not 
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">slo_ineligibility_reasons</span></span></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.SloInformation.slo_ineligibility_reasons">
+<span class="sig-name descname"><span class="pre">slo_ineligibility_reasons</span></span><a class="headerlink" href="#tecton_client.responses.SloInformation.slo_ineligibility_reasons" title="Permalink to this definition"></a></dt>
 <dd><p>List of one or more reasons indicating why
 the feature was not SLO eligible. Only present if slo_eligible is False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[List[SloIneligibilityReason]]</p>
+<dd class="field-odd"><p>Optional[List[<a class="reference internal" href="generated/tecton_client.responses.SloIneligibilityReason.html#tecton_client.responses.SloIneligibilityReason" title="tecton_client.responses.SloIneligibilityReason">SloIneligibilityReason</a>]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -326,7 +398,10 @@ the feature was not SLO eligible. Only present if slo_eligible is False.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.SloInformation.html#tecton_client.responses.SloInformation" title="tecton_client.responses.SloInformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SloInformation</span></code></a>(slo_information)</p></td>
 <td><p>Class that represents SLO Information provided by Tecton when serving feature values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse" title="tecton_client.responses.GetFeaturesResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code></a>(response)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.SloIneligibilityReason.html#tecton_client.responses.SloIneligibilityReason" title="tecton_client.responses.SloIneligibilityReason"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SloIneligibilityReason</span></code></a>(value)</p></td>
+<td><p>Reasons due to which the Feature Serving Response may be ineligible for SLO.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse" title="tecton_client.responses.GetFeaturesResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code></a>(response)</p></td>
 <td><p>Response object for GetFeatures API call.</p></td>
 </tr>
 </tbody>
@@ -351,7 +426,7 @@ the feature was not SLO eligible. Only present if slo_eligible is False.</p>
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -362,7 +437,7 @@ the feature was not SLO eligible. Only present if slo_eligible is False.</p>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

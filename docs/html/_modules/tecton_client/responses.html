@@ -9,7 +9,7 @@
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
+  
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -17,17 +17,17 @@
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../index.html" class="icon icon-home">
             Tecton HTTP API Client Python
           </a>
@@ -71,7 +71,7 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for tecton_client.responses</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
@@ -160,7 +160,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()]</span>
 
 
-<div class="viewcode-block" id="FeatureStatus"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.FeatureStatus">[docs]</a><span class="k">class</span> <span class="nc">FeatureStatus</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="FeatureStatus"><a class="viewcode-back" href="../../generated/tecton_client.responses.FeatureStatus.html#tecton_client.responses.FeatureStatus">[docs]</a><span class="k">class</span> <span class="nc">FeatureStatus</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Enum to represent the serving status of a feature.&quot;&quot;&quot;</span>
 
     <span class="n">PRESENT</span> <span class="o">=</span> <span class="s2">&quot;PRESENT&quot;</span>
@@ -174,7 +174,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An unknown status code occurred, most likely because an error occurred during feature retrieval.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="FeatureValue"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.FeatureValue">[docs]</a><span class="k">class</span> <span class="nc">FeatureValue</span><span class="p">:</span>
+<div class="viewcode-block" id="FeatureValue"><a class="viewcode-back" href="../../generated/tecton_client.responses.FeatureValue.html#tecton_client.responses.FeatureValue">[docs]</a><span class="k">class</span> <span class="nc">FeatureValue</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class encapsulating all the data for a Feature value returned from a GetFeatures API call.</span>
 
 <span class="sd">    Attributes:</span>
@@ -236,7 +236,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">feature_value</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">feature_value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">SloIneligibilityReason</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<div class="viewcode-block" id="SloIneligibilityReason"><a class="viewcode-back" href="../../generated/tecton_client.responses.SloIneligibilityReason.html#tecton_client.responses.SloIneligibilityReason">[docs]</a><span class="k">class</span> <span class="nc">SloIneligibilityReason</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reasons due to which the Feature Serving Response may be ineligible for SLO.&quot;&quot;&quot;</span>
 
     <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;UNKNOWN&quot;</span>
@@ -249,10 +249,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The 2MiB limit for Redis response size was exceeded.&quot;&quot;&quot;</span>
 
     <span class="n">REDIS_LATENCY_LIMIT_EXCEEDED</span> <span class="o">=</span> <span class="s2">&quot;REDIS_LATENCY_LIMIT_EXCEEDED&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;The 25ms limit for Redis retrieval latency was exceeded.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The 25ms limit for Redis retrieval latency was exceeded.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="SloInformation"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.SloInformation">[docs]</a><span class="k">class</span> <span class="nc">SloInformation</span><span class="p">:</span>
+<div class="viewcode-block" id="SloInformation"><a class="viewcode-back" href="../../generated/tecton_client.responses.SloInformation.html#tecton_client.responses.SloInformation">[docs]</a><span class="k">class</span> <span class="nc">SloInformation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that represents SLO Information provided by Tecton when serving feature values.</span>
 
 <span class="sd">    Refer to the official documentation</span>
@@ -293,7 +293,7 @@
         <span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="GetFeaturesResponse"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.GetFeaturesResponse">[docs]</a><span class="k">class</span> <span class="nc">GetFeaturesResponse</span><span class="p">:</span>
+<div class="viewcode-block" id="GetFeaturesResponse"><a class="viewcode-back" href="../../generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse">[docs]</a><span class="k">class</span> <span class="nc">GetFeaturesResponse</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Response object for GetFeatures API call.</span>
 
 <span class="sd">    Attributes:</span>
@@ -343,7 +343,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -354,7 +354,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>
