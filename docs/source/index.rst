@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Tecton HTTP API Client Python's documentation!
+Welcome to Tecton HTTP API Python Client's documentation!
 =========================================================
 
 Tecton provides a low-latency feature server that exposes HTTP endpoints to retrieve feature values and metadata from the online store.
