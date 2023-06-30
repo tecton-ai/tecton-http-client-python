@@ -80,7 +80,7 @@ class TectonClient:
                     :class:`GetFeaturesRequest` object
                 2. The FeatureView has no materialized data in the online store
                 4. The DynamoDB table was not found
-            ResourceExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted, the
+            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted, the
                 reason could be one of the following:
                 1. GetFeatures exceeded the concurrent request limit, please retry later
                 2. DynamoDB throttled the request. The request rate exceeds the AWS account's throughput limit, or
