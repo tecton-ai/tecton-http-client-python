@@ -8,8 +8,5 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
-# Sphinx generated documentation files
-docs/build/
-
 # Hatch generated files
 dist/

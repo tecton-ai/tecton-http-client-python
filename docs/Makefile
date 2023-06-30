@@ -6,7 +6,7 @@
 SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = source
-BUILDDIR      = build
+BUILDDIR      = .
 DOCDIR        = docs
 SPHINXPROJ    = tecton-http-client-python
 

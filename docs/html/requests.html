@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Requests &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="tecton_client.requests.MetadataOptions" href="generated/tecton_client.requests.MetadataOptions.html" />
+    <link rel="prev" title="tecton_client.exceptions.UnsupportedTypeError" href="generated/tecton_client.exceptions.UnsupportedTypeError.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tecton HTTP API Client Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Requests</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#tecton-client-requests-module">tecton_client.requests module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html">tecton_client.requests.MetadataOptions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.GetFeatureRequestData.html">tecton_client.requests.GetFeatureRequestData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html">tecton_client.requests.GetFeaturesRequest</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="responses.html">Responses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tecton_client.html">Tecton Client</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Tecton HTTP API Client Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Requests</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/requests.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="requests">
+<h1>Requests<a class="headerlink" href="#requests" title="Permalink to this heading"></a></h1>
+<section id="tecton-client-requests-module">
+<h2>tecton_client.requests module<a class="headerlink" href="#tecton-client-requests-module" title="Permalink to this heading"></a></h2>
+<p>This module contains classes used to build the request sent to Tecton’s API.</p>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeatureRequestData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">join_key_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_context_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeatureRequestData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for request data needed for get-features queries.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">join_key_map</span></span></dt>
+<dd><p>Join keys used for Batch and Stream FeatureViews
+The values can be of type (int, str, type(None)) and are encoded as follows:</p>
+<ol class="arabic simple">
+<li><p>For string keys, the value should be a string.</p></li>
+<li><p>For int keys, the value should be a string of the decimal representation of the integer.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict[str, Union[int, str, type(None)]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">request_context_map</span></span></dt>
+<dd><p>Request context used for OnDemand FeatureViews.
+The Request Context values can be of type (int, str, float) and are encoded as follows:</p>
+<ol class="arabic simple">
+<li><p>For string values, the value should be a string.</p></li>
+<li><p>For int values, the value should be a string of the decimal representation of the integer.</p></li>
+<li><p>For float values, the value should be a number.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Dict[str, Union[int, str, float]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workspace_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_service_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="generated/tecton_client.requests.GetFeatureRequestData.html#tecton_client.requests.GetFeatureRequestData" title="tecton_client.requests.GetFeatureRequestData"><span class="pre">GetFeatureRequestData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html#tecton_client.requests.MetadataOptions" title="tecton_client.requests.MetadataOptions"><span class="pre">MetadataOptions</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{MetadataOptions.DATA_TYPE,</span> <span class="pre">MetadataOptions.NAME}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractGetFeaturesRequest</span></code></p>
+<p>Class representing a request to the /get-features endpoint.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">request_data</span></span></dt>
+<dd><p>Request parameters for the query, consisting of a Join Key Map and/or a Request Context Map
+sent as a <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ENDPOINT</span></span></dt>
+<dd><p>Endpoint string for the get-features API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Final[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">request_data</span> <span class="o">=</span> <span class="n">GetFeatureRequestData</span><span class="p">(</span><span class="n">join_key_map</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_features_request</span> <span class="o">=</span> <span class="n">GetFeaturesRequest</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">,</span> <span class="s2">&quot;my_feature_service&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="n">request_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_features_request</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="go">    {&quot;params&quot;:{&quot;feature_service_name&quot;: &quot;my_feature_service&quot;,&quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
+<span class="go">    &quot;metadata_options&quot;: {&quot;include_data_types&quot;: True, &quot;include_names&quot;: True},&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}}</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ENDPOINT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/api/v1/feature-service/get-features'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesRequest.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Returns a JSON representation of the <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequest</span></code></a> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary of the request in the expected format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">MetadataOptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#MetadataOptions"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Options for retrieving metadata for get-features request.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DATA_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'include_data_types'</span></em></dt>
+<dd><p>Include the data types of each feature in the vector</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">EFFECTIVE_TIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'include_effective_times'</span></em></dt>
+<dd><p>Include the timestamp of the most recent feature value that was written to the online store</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">FEATURE_STATUS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'include_serving_status'</span></em></dt>
+<dd><p>Include feature serving status information of the feature</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'include_names'</span></em></dt>
+<dd><p>Include the name of each feature in the vector</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SLO_INFO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'include_slo_info'</span></em></dt>
+<dd><p>Include information about the server response time</p>
+</dd></dl>
+
+</dd></dl>
+
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html#tecton_client.requests.MetadataOptions" title="tecton_client.requests.MetadataOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetadataOptions</span></code></a>(value)</p></td>
+<td><p>Options for retrieving metadata for get-features request.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.requests.GetFeatureRequestData.html#tecton_client.requests.GetFeatureRequestData" title="tecton_client.requests.GetFeatureRequestData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeatureRequestData</span></code></a>([join_key_map, ...])</p></td>
+<td><p>Class for request data needed for get-features queries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesRequest</span></code></a>(workspace_name, ...[, ...])</p></td>
+<td><p>Class representing a request to the /get-features endpoint.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="generated/tecton_client.exceptions.UnsupportedTypeError.html" class="btn btn-neutral float-left" title="tecton_client.exceptions.UnsupportedTypeError" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/tecton_client.requests.MetadataOptions.html" class="btn btn-neutral float-right" title="tecton_client.requests.MetadataOptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tecton Inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

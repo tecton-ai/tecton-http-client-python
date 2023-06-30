@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tecton_client.data_types &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Tecton HTTP API Client Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requests.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../responses.html">Responses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tecton_client.html">Tecton Client</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Tecton HTTP API Client Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tecton_client.data_types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tecton_client.data_types</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">TectonClientError</span>
+
+
+<div class="viewcode-block" id="DataType"><a class="viewcode-back" href="../../generated/tecton_client.data_types.DataType.html#tecton_client.data_types.DataType">[docs]</a><span class="k">class</span> <span class="nc">DataType</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base DataType class. All data types inherit from this class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="c1"># Require __str__ implementation. Used in error messages.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="IntType"><a class="viewcode-back" href="../../generated/tecton_client.data_types.IntType.html#tecton_client.data_types.IntType">[docs]</a><span class="k">class</span> <span class="nc">IntType</span><span class="p">(</span><span class="n">DataType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent datatype Integer.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Int&quot;</span></div>
+
+
+<div class="viewcode-block" id="FloatType"><a class="viewcode-back" href="../../generated/tecton_client.data_types.FloatType.html#tecton_client.data_types.FloatType">[docs]</a><span class="k">class</span> <span class="nc">FloatType</span><span class="p">(</span><span class="n">DataType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent datatype Float.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Float&quot;</span></div>
+
+
+<div class="viewcode-block" id="StringType"><a class="viewcode-back" href="../../generated/tecton_client.data_types.StringType.html#tecton_client.data_types.StringType">[docs]</a><span class="k">class</span> <span class="nc">StringType</span><span class="p">(</span><span class="n">DataType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent datatype String.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;String&quot;</span></div>
+
+
+<div class="viewcode-block" id="BoolType"><a class="viewcode-back" href="../../generated/tecton_client.data_types.BoolType.html#tecton_client.data_types.BoolType">[docs]</a><span class="k">class</span> <span class="nc">BoolType</span><span class="p">(</span><span class="n">DataType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent datatype Boolean.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;Bool&quot;</span></div>
+
+
+<div class="viewcode-block" id="ArrayType"><a class="viewcode-back" href="../../generated/tecton_client.data_types.ArrayType.html#tecton_client.data_types.ArrayType">[docs]</a><span class="k">class</span> <span class="nc">ArrayType</span><span class="p">(</span><span class="n">DataType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent datatype Array.</span>
+
+<span class="sd">    An :class:`ArrayType` object represents an array datatype that can contain elements of another :class:`DataType`.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; element_type = FloatType()</span>
+<span class="sd">        &gt;&gt;&gt; array_type = ArrayType(element_type)</span>
+<span class="sd">        &gt;&gt;&gt; print(array_type)</span>
+<span class="sd">        Array(Float)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ArrayType.__init__"><a class="viewcode-back" href="../../generated/tecton_client.data_types.ArrayType.html#tecton_client.data_types.ArrayType.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span> <span class="n">DataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an :class:`ArrayType` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element_type (DataType): The :class:`DataType` of the elements in the array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_element_type</span> <span class="o">=</span> <span class="n">element_type</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">element_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the :class:`DataType` of the elements in the array.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_element_type</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Array(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_element_type</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="StructField"><a class="viewcode-back" href="../../generated/tecton_client.data_types.StructField.html#tecton_client.data_types.StructField">[docs]</a><span class="k">class</span> <span class="nc">StructField</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent a field in a :class:`StructType`.</span>
+
+<span class="sd">    A :class:`StructField` object represents a field within a :class:`StructType` object, containing a name and a</span>
+<span class="sd">    corresponding :class:`DataType`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StructField.__init__"><a class="viewcode-back" href="../../generated/tecton_client.data_types.StructField.html#tecton_client.data_types.StructField.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="n">DataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a :class:`StructField` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Name of the field</span>
+<span class="sd">            data_type (DataType): :class:`DataType` of the field</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span> <span class="o">=</span> <span class="n">data_type</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of the field.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataType</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the :class:`DataType` of the field.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Field(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="StructType"><a class="viewcode-back" href="../../generated/tecton_client.data_types.StructType.html#tecton_client.data_types.StructType">[docs]</a><span class="k">class</span> <span class="nc">StructType</span><span class="p">(</span><span class="n">DataType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent datatype Struct.</span>
+
+<span class="sd">    A :class:`StructType` object represents a struct datatype, consisting of multiple fields.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; field1 = StructField(&quot;name&quot;, StringType())</span>
+<span class="sd">        &gt;&gt;&gt; field2 = StructField(&quot;age&quot;, IntType())</span>
+<span class="sd">        &gt;&gt;&gt; struct_type = StructType([field1, field2])</span>
+<span class="sd">        &gt;&gt;&gt; print(struct_type)</span>
+<span class="sd">        Struct(Field(name, String), Field(age, Int))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StructType.__init__"><a class="viewcode-back" href="../../generated/tecton_client.data_types.StructType.html#tecton_client.data_types.StructType.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">StructField</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a :class:`StructType` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            fields (List[StructField]): The list of :class:`StructField` objects representing the fields in the</span>
+<span class="sd">                struct.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="n">fields</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">StructField</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of :class:`StructField` objects representing the fields in the struct.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">fields_string</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Struct(</span><span class="si">{</span><span class="n">fields_string</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+
+
+<div class="viewcode-block" id="get_data_type"><a class="viewcode-back" href="../../data_types.html#tecton_client.data_types.get_data_type">[docs]</a><span class="k">def</span> <span class="nf">get_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">element_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the :class:`DataType` of the feature value given a string representing the type in the response.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data_type (str): A string representing the type of the feature value, as returned in the response.</span>
+<span class="sd">        element_type (Optional[dict]): A dict representing the type of the elements in the array,</span>
+<span class="sd">            present when the data_type is :class:`ArrayType`.</span>
+<span class="sd">        fields (Optional[list]): A list representing the fields of the struct, present when the data_type is</span>
+<span class="sd">            :class:`StructType`</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataType: The parsed :class:`DataType` of the feature value.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        TectonClientError: If an unexpected error occurred while processing the data types in the response.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="n">type_mapping</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;int64&quot;</span><span class="p">:</span> <span class="n">IntType</span><span class="p">,</span>
+        <span class="s2">&quot;float64&quot;</span><span class="p">:</span> <span class="n">FloatType</span><span class="p">,</span>
+        <span class="s2">&quot;float32&quot;</span><span class="p">:</span> <span class="n">FloatType</span><span class="p">,</span>
+        <span class="s2">&quot;string&quot;</span><span class="p">:</span> <span class="n">StringType</span><span class="p">,</span>
+        <span class="s2">&quot;boolean&quot;</span><span class="p">:</span> <span class="n">BoolType</span><span class="p">,</span>
+        <span class="s2">&quot;array&quot;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span>
+            <span class="n">get_data_type</span><span class="p">(</span>
+                <span class="n">data_type</span><span class="o">=</span><span class="n">element_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">),</span>
+                <span class="n">element_type</span><span class="o">=</span><span class="n">element_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elementType&quot;</span><span class="p">),</span>
+                <span class="n">fields</span><span class="o">=</span><span class="n">element_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fields&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;struct&quot;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">StructType</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">StructField</span><span class="p">(</span>
+                    <span class="n">field</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                    <span class="n">get_data_type</span><span class="p">(</span>
+                        <span class="n">data_type</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s2">&quot;dataType&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">),</span>
+                        <span class="n">element_type</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s2">&quot;dataType&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elementType&quot;</span><span class="p">),</span>
+                        <span class="n">fields</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s2">&quot;dataType&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fields&quot;</span><span class="p">),</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span>
+            <span class="p">]</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">data_type</span> <span class="ow">in</span> <span class="n">type_mapping</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">type_mapping</span><span class="p">[</span><span class="n">data_type</span><span class="p">]()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Required metadata for the given data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> is missing from the response.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;If problem persists, please contact Tecton Support for assistance.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TectonClientError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Received unknown data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> in the response.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;If problem persists, please contact Tecton Support for assistance.&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">TectonClientError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tecton Inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

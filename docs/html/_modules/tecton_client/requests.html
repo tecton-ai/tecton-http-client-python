@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tecton_client.requests &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Tecton HTTP API Client Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requests.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../responses.html">Responses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tecton_client.html">Tecton Client</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Tecton HTTP API Client Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tecton_client.requests</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tecton_client.requests</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Final</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">EMPTY_KEY_VALUE</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">INVALID_TYPE_KEY_VALUE</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">InvalidParameterError</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">InvalidParameterMessage</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">UnsupportedTypeError</span>
+
+<span class="n">SUPPORTED_JOIN_KEY_VALUE_TYPES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)}</span>
+<span class="n">SUPPORTED_REQUEST_CONTEXT_MAP_TYPES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">}</span>
+
+<span class="n">MAX_MICRO_BATCH_SIZE</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">DEFAULT_MICRO_BATCH_SIZE</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="MetadataOptions"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.MetadataOptions">[docs]</a><span class="k">class</span> <span class="nc">MetadataOptions</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Options for retrieving metadata for get-features request.&quot;&quot;&quot;</span>
+
+    <span class="n">NAME</span> <span class="o">=</span> <span class="s2">&quot;include_names&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Include the name of each feature in the vector&quot;&quot;&quot;</span>
+
+    <span class="n">EFFECTIVE_TIME</span> <span class="o">=</span> <span class="s2">&quot;include_effective_times&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Include the timestamp of the most recent feature value that was written to the online store&quot;&quot;&quot;</span>
+
+    <span class="n">DATA_TYPE</span> <span class="o">=</span> <span class="s2">&quot;include_data_types&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Include the data types of each feature in the vector&quot;&quot;&quot;</span>
+
+    <span class="n">SLO_INFO</span> <span class="o">=</span> <span class="s2">&quot;include_slo_info&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Include information about the server response time&quot;&quot;&quot;</span>
+
+    <span class="n">FEATURE_STATUS</span> <span class="o">=</span> <span class="s2">&quot;include_serving_status&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Include feature serving status information of the feature&quot;&quot;&quot;</span></div>
+
+
+<span class="k">def</span> <span class="nf">_defaults</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the default options to include names and data types.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Set[MetadataOptions]: The set of default :class:`MetadataOptions`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="n">MetadataOptions</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="n">MetadataOptions</span><span class="o">.</span><span class="n">DATA_TYPE</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="GetFeatureRequestData"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeatureRequestData">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GetFeatureRequestData</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for request data needed for get-features queries.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        join_key_map (Optional[Dict[str, Union[int, str, type(None)]]]):</span>
+<span class="sd">            Join keys used for Batch and Stream FeatureViews</span>
+<span class="sd">            The values can be of type (int, str, type(None)) and are encoded as follows:</span>
+
+<span class="sd">            1) For string keys, the value should be a string.</span>
+<span class="sd">            2) For int keys, the value should be a string of the decimal representation of the integer.</span>
+<span class="sd">        request_context_map (Optional[Dict[str, Union[int, str, float]]]):</span>
+<span class="sd">            Request context used for OnDemand FeatureViews.</span>
+<span class="sd">            The Request Context values can be of type (int, str, float) and are encoded as follows:</span>
+
+<span class="sd">            1) For string values, the value should be a string.</span>
+<span class="sd">            2) For int values, the value should be a string of the decimal representation of the integer.</span>
+<span class="sd">            3) For float values, the value should be a number.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GetFeatureRequestData.__init__"><a class="viewcode-back" href="../../generated/tecton_client.requests.GetFeatureRequestData.html#tecton_client.requests.GetFeatureRequestData.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">join_key_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">request_context_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes a :class:`GetFeaturesRequestData` instance with the given parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            join_key_map (Optional[Dict[str, Union[int, str, type(None)]]]):</span>
+<span class="sd">                Join keys used for table-based FeatureViews.</span>
+<span class="sd">                The key of this map is the join key name and the value is the join key value for this request.</span>
+<span class="sd">            request_context_map (Optional[Dict[str, Union[int, str, float]]]):</span>
+<span class="sd">                Request context used for OnDemand FeatureViews.</span>
+<span class="sd">                The key of this map is the request context name,</span>
+<span class="sd">                and the value is the request context value for this request.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParameterError: Raised if</span>
+<span class="sd">                (1) both join_key_map and request_context_map are None</span>
+<span class="sd">                (2) key or value in either map is empty, or value in request_context_map is None</span>
+<span class="sd">            UnsupportedTypeError: If the key is not a string or the value is not one of the allowed types.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">join_key_map</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">request_context_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">EMPTY_MAPS</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">join_key_map</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_processed_map</span><span class="p">(</span><span class="n">join_key_map</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">SUPPORTED_JOIN_KEY_VALUE_TYPES</span><span class="p">,</span> <span class="n">map_type</span><span class="o">=</span><span class="s2">&quot;Join Key-Map&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">join_key_map</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_context_map</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_processed_map</span><span class="p">(</span>
+                <span class="n">request_context_map</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">SUPPORTED_REQUEST_CONTEXT_MAP_TYPES</span><span class="p">,</span> <span class="n">map_type</span><span class="o">=</span><span class="s2">&quot;Request Context Map&quot;</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">request_context_map</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_processed_map</span><span class="p">(</span><span class="n">request_map</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">allow_none</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">allowed_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span> <span class="n">map_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the parameters of the request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request_map (dict): The map to validate.</span>
+<span class="sd">            allow_none (bool): Whether the map allows None values or not.</span>
+<span class="sd">            allowed_types (set): The allowed types for the values in the map.</span>
+<span class="sd">            map_type (str): The type of the map to validate (Join Key-Map or Request Context Map).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The validated map with appropriate types for values.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParameterError: Raised if the key or value in either map is empty,</span>
+<span class="sd">                or value in request_context_map is None</span>
+<span class="sd">            UnsupportedTypeError: If the key is not a string or the value is not one of the allowed types.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">request_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">EMPTY_KEY_VALUE</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="n">INVALID_TYPE_KEY_VALUE</span><span class="p">(</span><span class="n">map_type</span><span class="o">=</span><span class="n">map_type</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">UnsupportedTypeError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">allowed_types</span><span class="p">):</span>
+                    <span class="n">message</span> <span class="o">=</span> <span class="n">INVALID_TYPE_KEY_VALUE</span><span class="p">(</span><span class="n">map_type</span><span class="o">=</span><span class="n">map_type</span><span class="p">,</span> <span class="n">allowed_types</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">allowed_types</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">UnsupportedTypeError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_none</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">EMPTY_KEY_VALUE</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">allow_none</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">EMPTY_KEY_VALUE</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+            <span class="n">request_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span> <span class="k">else</span> <span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">request_map</span></div>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TectonRequest</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all requests to the Tecton API.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
+<span class="sd">        feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing parameters required to make a request to the Tecton API.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
+<span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParameterError: If the workspace_name or feature_service_name is empty.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">workspace_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">WORKSPACE_NAME</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">feature_service_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">FEATURE_SERVICE_NAME</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_service_name</span> <span class="o">=</span> <span class="n">feature_service_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span> <span class="o">=</span> <span class="n">workspace_name</span>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">AbstractGetFeaturesRequest</span><span class="p">(</span><span class="n">TectonRequest</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all requests to fetch feature values from the Tecton API.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        metadata_options (Set[&quot;:class:`MetadataOptions`&quot;]): Set of options for retrieving additional metadata about</span>
+<span class="sd">            features.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">metadata_options</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]</span> <span class="o">=</span> <span class="n">_defaults</span><span class="p">(),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing an object with the given parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
+<span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
+<span class="sd">            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature</span>
+<span class="sd">                values. Defaults to the default set of metadata options.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">workspace_name</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span> <span class="o">=</span> <span class="n">metadata_options</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">_defaults</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="GetFeaturesRequest"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesRequest">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GetFeaturesRequest</span><span class="p">(</span><span class="n">AbstractGetFeaturesRequest</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a request to the /get-features endpoint.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        request_data: Request parameters for the query, consisting of a Join Key Map and/or a Request Context Map</span>
+<span class="sd">            sent as a :class:`GetFeaturesRequestData` object.</span>
+<span class="sd">        ENDPOINT: Endpoint string for the get-features API.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; request_data = GetFeatureRequestData(join_key_map={&quot;user_id&quot;: 1234})</span>
+<span class="sd">        &gt;&gt;&gt; get_features_request = GetFeaturesRequest(&quot;my_workspace&quot;, &quot;my_feature_service&quot;, request_data=request_data)</span>
+<span class="sd">        &gt;&gt;&gt; get_features_request.to_json()</span>
+<span class="sd">            {&quot;params&quot;:{&quot;feature_service_name&quot;: &quot;my_feature_service&quot;,&quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
+<span class="sd">            &quot;metadata_options&quot;: {&quot;include_data_types&quot;: True, &quot;include_names&quot;: True},&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ENDPOINT</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/api/v1/feature-service/get-features&quot;</span>
+
+<div class="viewcode-block" id="GetFeaturesRequest.__init__"><a class="viewcode-back" href="../../generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">request_data</span><span class="p">:</span> <span class="n">GetFeatureRequestData</span><span class="p">,</span>
+        <span class="n">metadata_options</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]</span> <span class="o">=</span> <span class="n">_defaults</span><span class="p">(),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the :class:`GetFeaturesRequest` object with the given parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
+<span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
+<span class="sd">            request_data (GetFeatureRequestData): Request parameters for the query.</span>
+<span class="sd">            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature</span>
+<span class="sd">                values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">workspace_name</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="p">,</span> <span class="n">metadata_options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span> <span class="o">=</span> <span class="n">request_data</span></div>
+
+<div class="viewcode-block" id="GetFeaturesRequest.to_json"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesRequest.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeaturesRequest` object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary of the request in the expected format.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">,</span> <span class="s2">&quot;request_data&quot;</span><span class="p">]</span>
+        <span class="n">self_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span><span class="p">:</span>
+            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;join_key_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span><span class="p">:</span>
+            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_context_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span>
+
+        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;metadata_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span>
+            <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">self_dict</span><span class="p">}</span></div></div>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GetFeaturesMicroBatchRequest</span><span class="p">(</span><span class="n">AbstractGetFeaturesRequest</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a micro-batch request sent to the /get-features-batch endpoint.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        ENDPOINT: Endpoint string for the get-features-batch API.</span>
+<span class="sd">        request_data: Request parameters for the query, consisting of a list of :class:`GetFeatureRequestData` objects.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ENDPOINT</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/api/v1/feature-service/get-features-batch&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeatureRequestData</span><span class="p">],</span>
+        <span class="n">metadata_options</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]</span> <span class="o">=</span> <span class="n">_defaults</span><span class="p">(),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the :class:`GetFeaturesMicroBatchRequest` object with the given parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
+<span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
+<span class="sd">            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.</span>
+<span class="sd">            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature</span>
+<span class="sd">                values.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">workspace_name</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="p">,</span> <span class="n">metadata_options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span> <span class="o">=</span> <span class="n">request_data_list</span>
+
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary of the request in the expected format.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">]</span>
+        <span class="n">self_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">}</span>
+        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;metadata_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)}</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span>
+            <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">request_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">self_dict</span><span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">GetFeaturesBatchRequest</span><span class="p">(</span><span class="n">AbstractGetFeaturesRequest</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class that represents a batch request to retrieve a list of feature vectors from the feature server.</span>
+
+<span class="sd">    The class can be used to make parallel requests to retrieve multiple feature vectors from the feature server API.</span>
+<span class="sd">    The actual number of concurrent calls depends on the `max_connections` configuration in</span>
+<span class="sd">    :class:`TectonClientOptions` and the size of the connection pool.</span>
+
+<span class="sd">    :class:`GetFeaturesBatchRequest` uses either the /get-features or the /get-features-batch endpoint depending on the</span>
+<span class="sd">    configuration `micro_batch_size`. By default, the `micro_batch_size` is set to {DEFAULT_MICRO_BATCH_SIZE}.</span>
+<span class="sd">    It can be configured to any value in the range [1, {MAX_MICRO_BATCH_SIZE}].</span>
+
+<span class="sd">    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`</span>
+<span class="sd">    of 1, the client enqueues `n` HTTP calls to be sent parallelly to the /get-features endpoint. The client waits</span>
+<span class="sd">    until all calls are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`</span>
+<span class="sd">    objects of size `n`.</span>
+
+<span class="sd">    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`</span>
+<span class="sd">    of `k` where `k` is in the range [1, {MAX_MICRO_BATCH_SIZE}], the client enqueues math.ceil(n/k) microbatch</span>
+<span class="sd">    requests to be sent parallelly to the /get-features-batch endpoint, waits until all microbatch requests are</span>
+<span class="sd">    complete or a specific configured timeout has elapsed, and returns a List of :class:`GetFeaturesResponse`</span>
+<span class="sd">    objects of size `n`.</span>
+
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        ENDPOINT: Endpoint string for the get-features-batch API.</span>
+<span class="sd">        request_list: List of :class:`GetFeaturesRequest` objects or :class:`GetFeaturesMicroBatchRequest` objects,</span>
+<span class="sd">            based on the `micro_batch_size` configuration.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; request_data = GetFeatureRequestData(join_key_map={&quot;user_id&quot;: 1234})</span>
+<span class="sd">        &gt;&gt;&gt; request = GetFeaturesBatchRequest(</span>
+<span class="sd">        ...      workspace_name=&quot;my_workspace&quot;,</span>
+<span class="sd">        ...      feature_service_name=&quot;my_feature_service&quot;,</span>
+<span class="sd">        ...      request_data_list=[request_data, request_data],</span>
+<span class="sd">        ...      metadata_options={MetadataOptions.NAME, MetadataOptions.DATA_TYPE},</span>
+<span class="sd">        ...      micro_batch_size=2</span>
+<span class="sd">        ...     )</span>
+<span class="sd">        &gt;&gt;&gt; request.to_json_list()</span>
+<span class="sd">            {&quot;params&quot;:{&quot;feature_service_name&quot;: &quot;my_feature_service&quot;,&quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
+<span class="sd">            &quot;metadata_options&quot;: {&quot;include_data_types&quot;: True, &quot;include_names&quot;: True},</span>
+<span class="sd">            &quot;request_data&quot;: [ {&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}, {&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}]}}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ENDPOINT</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/api/v1/feature-service/get-features-batch&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeatureRequestData</span><span class="p">],</span>
+        <span class="n">metadata_options</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]</span> <span class="o">=</span> <span class="n">_defaults</span><span class="p">(),</span>
+        <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the :class:`GetFeaturesBatchRequest` object with the given parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
+<span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
+<span class="sd">            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.</span>
+<span class="sd">            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature</span>
+<span class="sd">                values.</span>
+<span class="sd">            micro_batch_size (int): Number of requests to be sent in a single batch request. Defaults to 5.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_batch_parameters</span><span class="p">(</span><span class="n">request_data_list</span><span class="p">,</span> <span class="n">micro_batch_size</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">workspace_name</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="p">,</span> <span class="n">metadata_options</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">micro_batch_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">GetFeaturesRequest</span><span class="p">(</span>
+                    <span class="n">workspace_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span>
+                    <span class="n">feature_service_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_service_name</span><span class="p">,</span>
+                    <span class="n">request_data</span><span class="o">=</span><span class="n">request_data</span><span class="p">,</span>
+                    <span class="n">metadata_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">request_data</span> <span class="ow">in</span> <span class="n">request_data_list</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">GetFeaturesMicroBatchRequest</span><span class="p">(</span>
+                    <span class="n">workspace_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span>
+                    <span class="n">feature_service_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_service_name</span><span class="p">,</span>
+                    <span class="n">metadata_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span>
+                    <span class="n">request_data_list</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">sublist</span><span class="p">)),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">zip_longest</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">request_data_list</span><span class="p">)]</span> <span class="o">*</span> <span class="n">micro_batch_size</span><span class="p">)</span>
+            <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_validate_batch_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeatureRequestData</span><span class="p">],</span> <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the parameters for the batch request.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.</span>
+<span class="sd">            micro_batch_size (int): Number of requests to be sent in a single batch.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParameterError: If the request_list is empty or contains None values,</span>
+<span class="sd">                or if the micro_batch_size is not in the expected range of values (1, {MAX_MICRO_BATCH_SIZE}).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">request_data_list</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">request_data_list</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">REQUEST_DATA_LIST</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">micro_batch_size</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">micro_batch_size</span> <span class="o">&gt;</span> <span class="n">MAX_MICRO_BATCH_SIZE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">INVALID_BATCH_SIZE</span><span class="o">.</span><span class="n">value</span> <span class="o">%</span> <span class="n">MAX_MICRO_BATCH_SIZE</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">to_json_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of JSON representations for requests in the :class:`GetFeaturesRequest` object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of dictionaries of the requests in the expected format.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span> <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tecton Inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
