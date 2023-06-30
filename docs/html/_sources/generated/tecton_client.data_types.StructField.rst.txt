@@ -5,23 +5,25 @@
 
 .. autoclass:: StructField
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~StructField.__init__
+   
+   
 
-
-
-
-
+   
+   
    .. rubric:: Attributes
 
    .. autosummary::
-
+   
       ~StructField.data_type
       ~StructField.name
+   
+   

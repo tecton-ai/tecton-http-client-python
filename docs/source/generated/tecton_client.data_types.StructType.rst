@@ -5,22 +5,24 @@
 
 .. autoclass:: StructType
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~StructType.__init__
+   
+   
 
-
-
-
-
+   
+   
    .. rubric:: Attributes
 
    .. autosummary::
-
+   
       ~StructType.fields
+   
+   

@@ -5,12 +5,18 @@
 
 .. autoclass:: StringType
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~StringType.__init__
+   
+   
+
+   
+   
+   
