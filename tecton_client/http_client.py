@@ -44,7 +44,8 @@ class TectonHttpClient:
             client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
                 Users can initialize their own HTTP client and pass it in, otherwise the TectonHttpClient object
                 will initialize its own HTTP client.
-            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options.
+            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options to be passed in when the
+                :class:`TectonHttpClient` object initializes its own HTTP client.
                 If no options are passed in, defaults defined in :class:`TectonClientOptions()` will be used.
 
         """
