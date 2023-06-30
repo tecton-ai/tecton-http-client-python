@@ -360,9 +360,9 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
         ...      micro_batch_size=2
         ...     )
         >>> request.to_json_list()
-            {"params":{"feature_service_name": "my_feature_service","workspace_name": "my_workspace",
-            "metadata_options": {"include_data_types": True, "include_names": True},
-            "request_data": [ {"join_key_map": {"user_id": 1234}}, {"join_key_map": {"user_id": 1234}}]}}
+            {"params": {"feature_service_name": "my_feature_service", "workspace_name": "my_workspace",
+            "metadata_options": {"include_data_types": true, "include_names": true},
+            "request_data": [{"join_key_map": {"user_id": 1234}}, {"join_key_map": {"user_id": 1234}}]}}
     """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features-batch"
