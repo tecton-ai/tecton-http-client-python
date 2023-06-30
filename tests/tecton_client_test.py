@@ -242,11 +242,13 @@ class TestTectonClient:
     )
     def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
         if client is None:
-            client_options = TectonClientOptions(connect_timeout=10, read_timeout=15, keepalive_expiry=500)
+            client_options = TectonClientOptions(
+                connect_timeout_seconds=10, read_timeout_seconds=15, keepalive_expiry_seconds=500
+            )
             tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client_options=client_options)
-            assert client_options.connect_timeout == 10
-            assert client_options.read_timeout == 15
-            assert client_options.keepalive_expiry == 500
+            assert client_options.connect_timeout_seconds == 10
+            assert client_options.read_timeout_seconds == 15
+            assert client_options.keepalive_expiry_seconds == 500
             assert client_options.max_connections == 10
         else:
             tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)

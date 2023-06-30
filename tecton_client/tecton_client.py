@@ -15,24 +15,24 @@ class TectonClientOptions:
     """Class to represent the Tecton Client options.
 
     Examples:
-        >>> options = TectonClientOptions(connect_timeout=10, read_timeout=10, keepalive_expiry=600)
+        >>> options = TectonClientOptions(connect_timeout_seconds=10, keepalive_expiry_seconds=600)
         >>> tecton_client = TectonClient(url, api_key, client_options=options)
 
     Attributes:
-        connect_timeout (float): (Optional) The maximum amount of time to wait until a socket connection to the
+        connect_timeout_seconds (float): (Optional) The maximum amount of time to wait until a socket connection to the
             requested host is established. Defaults to 2.0 seconds.
-        read_timeout (float): (Optional) The maximum duration to wait for a chunk of data to be received (for example,
-            a chunk of the response body). Defaults to 2.0 seconds.
-        keepalive_expiry (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
+        read_timeout_seconds (float): (Optional) The maximum duration to wait for a chunk of data to be received (for
+            example, a chunk of the response body). Defaults to 2.0 seconds.
+        keepalive_expiry_seconds (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,
             or None for no limits. Defaults to 300 seconds (5 minutes).
         max_connections (Optional[int]): (Optional) The maximum number of allowable connections, or None for no limits.
             Defaults to 10.
 
     """
 
-    connect_timeout: float = 2.0
-    read_timeout: float = 2.0
-    keepalive_expiry: Optional[int] = 300
+    connect_timeout_seconds: float = 2.0
+    read_timeout_seconds: float = 2.0
+    keepalive_expiry_seconds: Optional[int] = 300
     max_connections: Optional[int] = 10
 
 
@@ -80,9 +80,9 @@ class TectonClient:
         self._tecton_http_client = TectonHttpClient(
             url,
             api_key,
-            read_timeout=client_options.read_timeout,
-            connect_timeout=client_options.connect_timeout,
-            keepalive_expiry=client_options.keepalive_expiry,
+            connect_timeout_seconds=client_options.connect_timeout_seconds,
+            read_timeout_seconds=client_options.read_timeout_seconds,
+            keepalive_expiry_seconds=client_options.keepalive_expiry_seconds,
             max_connections=client_options.max_connections,
             client=client,
         )

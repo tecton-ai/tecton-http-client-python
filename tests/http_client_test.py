@@ -18,9 +18,9 @@ class TestHttpClient:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
-            self.client_options.connect_timeout,
-            self.client_options.read_timeout,
-            self.client_options.keepalive_expiry,
+            self.client_options.connect_timeout_seconds,
+            self.client_options.read_timeout_seconds,
+            self.client_options.keepalive_expiry_seconds,
             self.client_options.max_connections,
         )
         assert not http_client.is_closed
@@ -35,9 +35,9 @@ class TestHttpClient:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
-            self.client_options.connect_timeout,
-            self.client_options.read_timeout,
-            self.client_options.keepalive_expiry,
+            self.client_options.connect_timeout_seconds,
+            self.client_options.read_timeout_seconds,
+            self.client_options.keepalive_expiry_seconds,
             self.client_options.max_connections,
         )
 
@@ -72,9 +72,9 @@ class TestHttpClient:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
-            self.client_options.connect_timeout,
-            self.client_options.read_timeout,
-            self.client_options.keepalive_expiry,
+            self.client_options.connect_timeout_seconds,
+            self.client_options.read_timeout_seconds,
+            self.client_options.keepalive_expiry_seconds,
             self.client_options.max_connections,
         )
 
@@ -103,9 +103,9 @@ class TestHttpClient:
             TectonHttpClient(
                 url,
                 "1234",
-                self.client_options.connect_timeout,
-                self.client_options.read_timeout,
-                self.client_options.keepalive_expiry,
+                self.client_options.connect_timeout_seconds,
+                self.client_options.read_timeout_seconds,
+                self.client_options.keepalive_expiry_seconds,
                 self.client_options.max_connections,
             )
 
@@ -115,9 +115,9 @@ class TestHttpClient:
             TectonHttpClient(
                 self.URL,
                 key,
-                self.client_options.connect_timeout,
-                self.client_options.read_timeout,
-                self.client_options.keepalive_expiry,
+                self.client_options.connect_timeout_seconds,
+                self.client_options.read_timeout_seconds,
+                self.client_options.keepalive_expiry_seconds,
                 self.client_options.max_connections,
             )
 
@@ -131,9 +131,9 @@ class TestHttpClient:
             TectonHttpClient(
                 self.URL,
                 self.API_KEY,
-                self.client_options.connect_timeout,
-                self.client_options.read_timeout,
-                self.client_options.keepalive_expiry,
+                self.client_options.connect_timeout_seconds,
+                self.client_options.read_timeout_seconds,
+                self.client_options.keepalive_expiry_seconds,
                 self.client_options.max_connections,
             )
         except TectonServerException as e:
