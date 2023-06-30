@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tecton_client.responses &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Tecton HTTP API Client Python
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requests.html">Requests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../responses.html">Responses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tecton_client.html">Tecton Client</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Tecton HTTP API Client Python</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tecton_client.responses</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tecton_client.responses</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">ArrayType</span>
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">BoolType</span>
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">FloatType</span>
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">get_data_type</span>
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">IntType</span>
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">StringType</span>
+<span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">StructType</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">TectonClientError</span>
+<span class="kn">from</span> <span class="nn">tecton_client.utils</span> <span class="kn">import</span> <span class="n">parse_string_to_isotime</span>
+
+
+<span class="k">class</span> <span class="nc">Value</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents an object containing a feature value with a specific type.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_type</span><span class="p">:</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">feature_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the feature in the specified type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_type (DataType): The type of the feature value.</span>
+<span class="sd">            feature_value (Union[str, None, list]): The value of the feature that needs to be converted to the specified</span>
+<span class="sd">                type.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TectonClientError: If the feature value cannot be converted to the specified type or</span>
+<span class="sd">                if the specified type is not supported.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span> <span class="o">=</span> <span class="n">data_type</span>
+
+        <span class="n">type_conversion_map</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">IntType</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">FloatType</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="n">StringType</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+            <span class="n">BoolType</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="n">ArrayType</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">Value</span><span class="p">(</span><span class="n">data_type</span><span class="o">.</span><span class="n">element_type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="p">],</span>
+            <span class="n">StructType</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">Value</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data_type</span><span class="o">.</span><span class="n">fields</span><span class="p">)</span>
+            <span class="p">},</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">data_type</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">in</span> <span class="n">type_conversion_map</span><span class="p">:</span>
+            <span class="n">convert</span> <span class="o">=</span> <span class="n">type_conversion_map</span><span class="p">[</span><span class="n">data_type</span><span class="o">.</span><span class="vm">__class__</span><span class="p">]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">[</span><span class="n">data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">feature_value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">convert</span><span class="p">(</span><span class="n">feature_value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unexpected Error occurred while parsing the feature value </span><span class="si">{</span><span class="n">feature_value</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;to data type </span><span class="si">{</span><span class="n">data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;If problem persists, please contact Tecton Support for assistance.&quot;</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">TectonClientError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Received unknown data type </span><span class="si">{</span><span class="n">data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span><span class="si">}</span><span class="s2"> in the response.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;If problem persists, please contact Tecton Support for assistance.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TectonClientError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the feature value of the feature in the specified type.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Union[int, float, str, bool, list, dict, None]: The value of the feature in the specified type.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="p">,</span> <span class="n">StructType</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">field</span><span class="p">:</span> <span class="n">value</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="p">,</span> <span class="n">ArrayType</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">value</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()]]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()]</span>
+
+
+<div class="viewcode-block" id="FeatureStatus"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.FeatureStatus">[docs]</a><span class="k">class</span> <span class="nc">FeatureStatus</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enum to represent the serving status of a feature.&quot;&quot;&quot;</span>
+
+    <span class="n">PRESENT</span> <span class="o">=</span> <span class="s2">&quot;PRESENT&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The feature values were found in the online store for the join keys requested.&quot;&quot;&quot;</span>
+
+    <span class="n">MISSING_DATA</span> <span class="o">=</span> <span class="s2">&quot;MISSING_DATA&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The feature values were not found in the online store either because the join keys do not exist</span>
+<span class="sd">    or the feature values are outside ttl.&quot;&quot;&quot;</span>
+
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;UNKNOWN&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An unknown status code occurred, most likely because an error occurred during feature retrieval.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="FeatureValue"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.FeatureValue">[docs]</a><span class="k">class</span> <span class="nc">FeatureValue</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class encapsulating all the data for a Feature value returned from a GetFeatures API call.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        data_type (:class:`DataType`): The type of the feature value. Tecton supports the following data types:</span>
+<span class="sd">            Int, Float, String, Bool, Array, and Struct.</span>
+<span class="sd">        feature_value (Union[str, int, float, bool, list, dict, None]): The value of the feature.</span>
+<span class="sd">        feature_namespace (str): The namespace that the feature belongs to.</span>
+<span class="sd">        feature_name (str): The name of the feature.</span>
+<span class="sd">        feature_status (:class:`FeatureStatus`): The status of the feature.</span>
+<span class="sd">        effective_time (datetime): The effective serving time for this feature.</span>
+<span class="sd">            This is the most recent time that&#39;s aligned to the interval for which a full aggregation is available for</span>
+<span class="sd">            this feature. Passing this in the spine of an offline feature request should guarantee retrieving the same</span>
+<span class="sd">            value as is in this response.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FeatureValue.__init__"><a class="viewcode-back" href="../../generated/tecton_client.responses.FeatureValue.html#tecton_client.responses.FeatureValue.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">feature_value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">list</span><span class="p">],</span>
+        <span class="n">effective_time</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">element_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">feature_status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a :class:`FeatureValue` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): The name of the feature.</span>
+<span class="sd">            data_type (str): String that indicates the type of the feature value.</span>
+<span class="sd">            feature_value (Union[str, None, list]): The value of the feature.</span>
+<span class="sd">            effective_time (Optional[str]): The effective serving time of the feature, sent as ISO-8601 format string.</span>
+<span class="sd">            element_type (Optional[dict]): A dict representing the type of the elements in the array,</span>
+<span class="sd">                present when the data_type is :class:`ArrayType`.</span>
+<span class="sd">            fields (Optional[list]):  A list representing the fields of the struct, present when the data_type is</span>
+<span class="sd">                :class:`StructType`.</span>
+<span class="sd">            feature_status (Optional[str]): The status string of the feature value.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TectonClientError: If the name of the feature is not in the format of &lt;namespace&gt;.&lt;feature_name&gt;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">feature_namespace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Feature name provided </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> is not in the expected format of &#39;namespace.name&#39;.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;If problem persists, please contact Tecton Support for assistance.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">TectonClientError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_status</span> <span class="o">=</span> <span class="n">FeatureStatus</span><span class="p">(</span><span class="n">feature_status</span><span class="p">)</span> <span class="k">if</span> <span class="n">feature_status</span> <span class="k">else</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">effective_time</span> <span class="o">=</span> <span class="n">parse_string_to_isotime</span><span class="p">(</span><span class="n">effective_time</span><span class="p">)</span> <span class="k">if</span> <span class="n">effective_time</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">effective_time</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_time</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Invalid datetime string: </span><span class="si">{</span><span class="n">effective_time</span><span class="si">}</span><span class="s2">. Please contact Tecton Support for assistance.&quot;</span>
+            <span class="k">raise</span> <span class="n">TectonClientError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">get_data_type</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span> <span class="n">element_type</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_value</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">feature_value</span><span class="p">)</span><span class="o">.</span><span class="n">value</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">SloIneligibilityReason</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reasons due to which the Feature Serving Response may be ineligible for SLO.&quot;&quot;&quot;</span>
+
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;UNKNOWN&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reason is unknown.&quot;&quot;&quot;</span>
+
+    <span class="n">DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED</span> <span class="o">=</span> <span class="s2">&quot;DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The 2MiB limit for DynamoDB response size was exceeded.&quot;&quot;&quot;</span>
+
+    <span class="n">REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED</span> <span class="o">=</span> <span class="s2">&quot;REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The 2MiB limit for Redis response size was exceeded.&quot;&quot;&quot;</span>
+
+    <span class="n">REDIS_LATENCY_LIMIT_EXCEEDED</span> <span class="o">=</span> <span class="s2">&quot;REDIS_LATENCY_LIMIT_EXCEEDED&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The 25ms limit for Redis retrieval latency was exceeded.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="SloInformation"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.SloInformation">[docs]</a><span class="k">class</span> <span class="nc">SloInformation</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that represents SLO Information provided by Tecton when serving feature values.</span>
+
+<span class="sd">    Refer to the official documentation</span>
+<span class="sd">    `here &lt;https://docs.tecton.ai/docs/beta/monitoring/production-slos#feature-service-metadata&gt;`_ for more information.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        slo_eligible (Optional[bool]): Whether the request was eligible for the latency SLO.</span>
+<span class="sd">        server_time_seconds (Optional[float]): This includes the total time spent in the feature server, including</span>
+<span class="sd">            online transforms and store latency.</span>
+<span class="sd">        slo_server_time_seconds (Optional[float]): The server time minus any time spent waiting for online transforms to</span>
+<span class="sd">            finish after all table transforms have finished. This is the indicator used for determining whether</span>
+<span class="sd">            we are meeting the SLO.</span>
+<span class="sd">        store_max_latency (Optional[float]): Max latency observed by the request from the store in seconds.</span>
+<span class="sd">            Tecton fetches multiple feature views in parallel.</span>
+<span class="sd">        store_response_size_bytes (Optional[int]): Total store response size in bytes.</span>
+<span class="sd">        dynamodb_response_size_bytes (Optional[int]): The total DynamoDB response size processed to serve this request,</span>
+<span class="sd">            in bytes. If this is greater than 2 MiB (i.e. 2097152), then the request is not SLO-Eligible.</span>
+<span class="sd">        slo_ineligibility_reasons (Optional[List[SloIneligibilityReason]]): List of one or more reasons indicating why</span>
+<span class="sd">            the feature was not SLO eligible. Only present if slo_eligible is False.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SloInformation.__init__"><a class="viewcode-back" href="../../generated/tecton_client.responses.SloInformation.html#tecton_client.responses.SloInformation.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slo_information</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a SloInformation object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            slo_information (dict): The SLO information dictionary received from the server.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slo_eligible</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sloEligible&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_time_seconds</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;serverTimeSeconds&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slo_server_time_seconds</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sloServerTimeSeconds&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_max_latency</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storeMaxLatency&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store_response_size_bytes</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;storeResponseSizeBytes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dynamodb_response_size_bytes</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dynamoDBResponseSizeBytes&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slo_ineligibility_reasons</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">SloIneligibilityReason</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span> <span class="k">for</span> <span class="n">reason</span> <span class="ow">in</span> <span class="n">slo_information</span><span class="p">[</span><span class="s2">&quot;sloIneligibilityReasons&quot;</span><span class="p">]]</span>
+            <span class="k">if</span> <span class="s2">&quot;sloIneligibilityReasons&quot;</span> <span class="ow">in</span> <span class="n">slo_information</span>
+            <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GetFeaturesResponse"><a class="viewcode-back" href="../../responses.html#tecton_client.responses.GetFeaturesResponse">[docs]</a><span class="k">class</span> <span class="nc">GetFeaturesResponse</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Response object for GetFeatures API call.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        feature_values (Dict[str, FeatureValue]): Dictionary with feature names as keys and their corresponding feature</span>
+<span class="sd">            values, one for each feature in the feature vector.</span>
+<span class="sd">        slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector&#39;s SLO,</span>
+<span class="sd">            present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GetFeaturesResponse.__init__"><a class="viewcode-back" href="../../generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the object with data from the response.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            response (dict): JSON response returned from the GetFeatures API call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">feature_vector</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;features&quot;</span><span class="p">]</span>
+        <span class="n">feature_metadata</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;features&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">feature_values</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">FeatureValue</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">FeatureValue</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="n">data_type</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;dataType&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+                <span class="n">element_type</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;dataType&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elementType&quot;</span><span class="p">),</span>
+                <span class="n">effective_time</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;effectiveTime&quot;</span><span class="p">),</span>
+                <span class="n">feature_status</span><span class="o">=</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;status&quot;</span><span class="p">),</span>
+                <span class="n">fields</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;dataType&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fields&quot;</span><span class="p">),</span>
+                <span class="n">feature_value</span><span class="o">=</span><span class="n">feature</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">feature</span><span class="p">,</span> <span class="n">metadata</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">feature_vector</span><span class="p">,</span> <span class="n">feature_metadata</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">slo_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SloInformation</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">SloInformation</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;sloInfo&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;sloInfo&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Tecton Inc..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
