@@ -5,12 +5,18 @@
 
 .. autoclass:: FeatureValue
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~FeatureValue.__init__
+   
+   
+
+   
+   
+   

@@ -9,7 +9,7 @@
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
+  
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -17,17 +17,17 @@
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../index.html" class="icon icon-home">
             Tecton HTTP API Client Python
           </a>
@@ -71,7 +71,7 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for tecton_client.tecton_client</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -213,7 +213,7 @@
 <span class="sd">                    :class:`GetFeaturesRequest` object</span>
 <span class="sd">                2. The FeatureView has no materialized data in the online store</span>
 <span class="sd">                4. The DynamoDB table was not found</span>
-<span class="sd">            ResourceExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted, the</span>
+<span class="sd">            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted, the</span>
 <span class="sd">                reason could be one of the following:</span>
 <span class="sd">                1. GetFeatures exceeded the concurrent request limit, please retry later</span>
 <span class="sd">                2. DynamoDB throttled the request. The request rate exceeds the AWS account&#39;s throughput limit, or</span>
@@ -260,7 +260,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -271,7 +271,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

@@ -5,12 +5,18 @@
 
 .. autoclass:: SloInformation
 
-
+   
    .. automethod:: __init__
 
-
+   
    .. rubric:: Methods
 
    .. autosummary::
-
+   
       ~SloInformation.__init__
+   
+   
+
+   
+   
+   
