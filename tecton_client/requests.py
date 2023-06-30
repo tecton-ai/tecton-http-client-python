@@ -60,14 +60,16 @@ class GetFeaturesRequestData:
         join_key_map (Optional[Dict[str, Union[int, str, type(None)]]]):
             Join keys used for Batch and Stream FeatureViews
             The values can be of type (int, str, type(None)) and are encoded as follows:
-                    For string keys, the value should be a string.
-                    For int keys, the value should be a string of the decimal representation of the integer.
+
+            1) For string keys, the value should be a string.
+            2) For int keys, the value should be a string of the decimal representation of the integer.
         request_context_map (Optional[Dict[str, Union[int, str, float]]]):
             Request context used for OnDemand FeatureViews.
             The Request Context values can be of type (int, str, float) and are encoded as follows:
-                    For string values, the value should be a string.
-                    For int values, the value should be a string of the decimal representation of the integer.
-                    For float values, the value should be a number.
+
+            1) For string values, the value should be a string.
+            2) For int values, the value should be a string of the decimal representation of the integer.
+            3) For float values, the value should be a number.
     """
 
     def __init__(

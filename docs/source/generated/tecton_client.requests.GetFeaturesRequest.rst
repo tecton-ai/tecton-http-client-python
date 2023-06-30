@@ -5,25 +5,23 @@
 
 .. autoclass:: GetFeaturesRequest
 
-   
+
    .. automethod:: __init__
 
-   
+
    .. rubric:: Methods
 
    .. autosummary::
-   
+
       ~GetFeaturesRequest.__init__
       ~GetFeaturesRequest.to_json
-   
-   
 
-   
-   
+
+
+
+
    .. rubric:: Attributes
 
    .. autosummary::
-   
+
       ~GetFeaturesRequest.ENDPOINT
-   
-   
