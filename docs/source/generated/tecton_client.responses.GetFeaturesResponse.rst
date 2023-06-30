@@ -5,18 +5,12 @@
 
 .. autoclass:: GetFeaturesResponse
 
-   
+
    .. automethod:: __init__
 
-   
+
    .. rubric:: Methods
 
    .. autosummary::
-   
-      ~GetFeaturesResponse.__init__
-   
-   
 
-   
-   
-   
+      ~GetFeaturesResponse.__init__
