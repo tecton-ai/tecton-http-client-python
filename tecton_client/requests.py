@@ -333,12 +333,12 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
     configuration `micro_batch_size`. By default, the `micro_batch_size` is set to {DEFAULT_MICRO_BATCH_SIZE}.
     It can be configured to any value in the range [1, {MAX_MICRO_BATCH_SIZE}].
 
-    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`
+    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeatureRequestData` of size `n` and a `micro_batch_size`
     of 1, the client enqueues `n` HTTP calls to be sent parallelly to the /get-features endpoint. The client waits
     until all calls are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`
     objects of size `n`.
 
-    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`
+    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeatureRequestData` of size `n` and a `micro_batch_size`
     of `k` where `k` is in the range [1, {MAX_MICRO_BATCH_SIZE}], the client enqueues math.ceil(n/k) microbatch
     requests to be sent parallelly to the /get-features-batch endpoint, waits until all microbatch requests are
     complete or a specific configured timeout has elapsed, and returns a List of :class:`GetFeaturesResponse`
@@ -383,7 +383,7 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
             request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
-            micro_batch_size (int): Number of requests to be sent in a single batch request. Defaults to 5.
+            micro_batch_size (int): (Optional) Number of requests to be sent in a single batch request. Defaults to 5.
 
         """
         self._validate_batch_parameters(request_data_list, micro_batch_size)
