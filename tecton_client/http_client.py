@@ -77,6 +77,7 @@ class TectonHttpClient:
         """
         url = urljoin(self.url, endpoint)
 
+        # The data is passed in JSON format as a string of the request dictionary
         response = await self.client.post(url, data=json.dumps(request_body), auth=self.auth)
 
         if response.status_code == 200:
