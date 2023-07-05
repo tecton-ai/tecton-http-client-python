@@ -44,8 +44,8 @@ class InvalidParameterMessage(str, Enum):
     """Error Messages for Invalid Parameters passed."""
 
     KEY = (
-        "API Key cannot be empty. Please check to make sure you have set the TECTON_API_KEY environment variable, "
-        "or are passing in a valid API key."
+        "API Key cannot be empty. Please ensure that you have set the TECTON_API_KEY environment variable, "
+        "or provided a valid API key."
     )
     URL = "Cannot connect to Tecton because the URL is invalid"
 
@@ -53,7 +53,7 @@ class InvalidParameterMessage(str, Enum):
     FEATURE_SERVICE_NAME = "FeatureService Name cannot be None or empty"
     EMPTY_MAPS = "Both Join Key map and Request Context Map cannot be empty"
     CLIENT_OPTIONS_OR_CLIENT = (
-        "Cannot pass in both `client` and `client_options` parameters. Please only pass in one or the other."
+        "Cannot provide both `client` and `client_options` parameters. Please only provide one or the other."
     )
 
 
