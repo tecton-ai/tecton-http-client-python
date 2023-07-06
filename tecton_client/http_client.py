@@ -77,7 +77,9 @@ class TectonHttpClient:
         """
         url = urljoin(self.url, endpoint)
 
-        # The data is passed in JSON format as a string of the request dictionary
+        # HTTPX requires the data provided to the request to be a string and not a dictionary.
+        # The request dictionary is therefore converted to a JSON formatted string and passed in.
+        # For more information, please check the HTTPX documentation `here <https://www.python-httpx.org/quickstart/>`_.
         response = await self.client.post(url, data=json.dumps(request_body), auth=self.auth)
 
         if response.status_code == 200:
