@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from typing import Optional
 from urllib.parse import urljoin
@@ -76,7 +77,10 @@ class TectonHttpClient:
         """
         url = urljoin(self.url, endpoint)
 
-        response = await self.client.post(url, data=request_body, auth=self.auth)
+        # HTTPX requires the data provided to the request to be a string and not a dictionary.
+        # The request dictionary is therefore converted to a JSON formatted string and passed in.
+        # For more information, please check the HTTPX documentation `here <https://www.python-httpx.org/quickstart/>`_.
+        response = await self.client.post(url, data=json.dumps(request_body), auth=self.auth)
 
         if response.status_code == 200:
             return response.json()
