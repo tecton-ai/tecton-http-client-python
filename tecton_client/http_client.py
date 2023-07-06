@@ -33,20 +33,20 @@ class TectonHttpClient:
         self,
         url: str,
         api_key: str,
+        client_options: TectonClientOptions,
         client: Optional[httpx.AsyncClient] = None,
-        client_options: Optional[TectonClientOptions] = None,
     ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
             url (str): The URL to ping.
             api_key (str): The API Key required as part of header authorization.
-            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
-                Users can initialize their own HTTP client and pass it in, otherwise the TectonHttpClient object
-                will initialize its own HTTP client.
-            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options to be passed in when the
+            client_options (TectonClientOptions): The HTTP client options to be passed in when the
                 :class:`TectonHttpClient` object initializes its own HTTP client.
-                If no options are passed in, defaults defined in :class:`TectonClientOptions()` will be used.
+                These will only be used when users do not pass in their own client.
+            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
+                Users can initialize their own HTTP client and pass it in, otherwise the :class:`TectonHttpClient`
+                object will initialize its own HTTP client.
 
         """
         self._url = self._validate_url(url)

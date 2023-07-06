@@ -1,3 +1,4 @@
+import httpx
 import pytest
 from pytest_httpx import HTTPXMock
 
@@ -120,3 +121,11 @@ class TestHttpClient:
             )
         except TectonServerException as e:
             assert e == expected_message
+
+    def test_default_client_options(self, httpx_mock: HTTPXMock) -> None:
+        client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            client_options=self.client_options,
+        )
+        assert client._client.timeout == httpx.Timeout(5, connect=2, read=2)

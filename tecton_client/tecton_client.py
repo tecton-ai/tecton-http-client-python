@@ -53,9 +53,12 @@ class TectonClient:
             raise InvalidParameterError(InvalidParameterMessage.KEY.value)
 
         if client and client_options:
-            raise InvalidParameterError(InvalidParameterMessage.CLIENT_OPTIONS_OR_CLIENT.value)
+            message = (
+                "Cannot provide both `client` and `client_options` parameters. " "Please only provide one or the other."
+            )
+            raise InvalidParameterError(message)
 
-        if client_options is None:
+        if not client_options:
             client_options = TectonClientOptions()
 
         self._tecton_http_client = TectonHttpClient(

@@ -13,14 +13,14 @@ class TectonClientOptions:
         >>> tecton_client = TectonClient(url, api_key, client_options=options)
 
     Attributes:
-        connect_timeout (timedelta): (Optional) The maximum amount of time to wait until a socket connection to the
+        connect_timeout (timedelta): (Optional) The maximum duration to wait until a socket connection to the
             requested host is established. Defaults to 2.0 seconds.
         read_timeout (timedelta): (Optional) The maximum duration to wait for a chunk of data to be received (for
             example, a chunk of the response body). Defaults to 2.0 seconds.
         keepalive_expiry (Optional[timedelta]): (Optional) The time limit on idle keep-alive connections in seconds,
-            or None for no limits. Defaults to 300 seconds (5 minutes).
-        max_connections (Optional[int]): (Optional) The maximum number of allowable connections, or None for no limits.
-            Defaults to 10.
+            with a default of 300 seconds (5 minutes). For no limits, this can be set to None.
+        max_connections (Optional[int]): (Optional) The maximum number of allowable connections, with a default of 10.
+            For no limits, this can be set to None.
 
     """
 

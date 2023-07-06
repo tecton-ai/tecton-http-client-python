@@ -52,9 +52,6 @@ class InvalidParameterMessage(str, Enum):
     WORKSPACE_NAME = "Workspace Name cannot be None or empty"
     FEATURE_SERVICE_NAME = "FeatureService Name cannot be None or empty"
     EMPTY_MAPS = "Both Join Key map and Request Context Map cannot be empty"
-    CLIENT_OPTIONS_OR_CLIENT = (
-        "Cannot provide both `client` and `client_options` parameters. Please only provide one or the other."
-    )
 
 
 class UnsupportedTypeError(TectonClientError):
