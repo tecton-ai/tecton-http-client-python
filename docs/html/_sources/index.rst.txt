@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Tecton HTTP API Python Client's documentation!
-=========================================================
+Welcome to Tecton Online Inference Python Client's documentation!
+==================================================================
 
 Tecton provides a low-latency feature server that exposes HTTP endpoints to retrieve feature values and metadata from the online store.
 These endpoints are typically used during model predictions. The feature servers retrieve data from the online store and perform any additional aggregations and filtering as necessary.
