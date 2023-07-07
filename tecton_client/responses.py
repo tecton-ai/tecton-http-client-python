@@ -241,22 +241,181 @@ class GetFeaturesResponse:
         response = http_response.result
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
+    def __init__(
+        self,
+        request_latency: timedelta = timedelta(seconds=0),
+        response: Optional[dict] = None,
+        feature_values: Optional[Dict] = None,
+        slo_info: Optional[SloInformation] = None,
+    ) -> None:
+        """Initializes the object with data from the response.
 
-        self.feature_values: Dict[str, FeatureValue] = {
-            metadata["name"]: FeatureValue(
-                name=metadata["name"],
-                data_type=metadata["dataType"]["type"],
-                element_type=metadata["dataType"].get("elementType"),
-                effective_time=metadata.get("effectiveTime"),
-                feature_status=metadata.get("status"),
-                fields=metadata["dataType"].get("fields"),
-                feature_value=feature,
+        Args:
+            response (dict): JSON response returned from the GetFeatures API call.
+            request_latency (timedelta): The response time for GetFeatures API call (network latency + online store
+                latency).
+            response (Optional[dict]): JSON response returned from the GetFeatures API call. Should be provided if the
+                `feature_values` and `slo_info` parameters are not provided.
+            feature_values (Optional[Dict]): Dictionary with feature names as keys and their corresponding feature
+                values, one for each feature in the feature vector. Should be provided if the `response` parameter is
+                not provided.
+            slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the feature
+                vector's SLO. Should be provided if the `response` parameter is not provided.
+
+        """
+        if response:
+            feature_vector: list = response["result"]["features"]
+            feature_metadata: List[dict] = response["metadata"]["features"]
+
+            self.feature_values: Dict[str, FeatureValue] = {
+                metadata["name"]: FeatureValue(
+                    name=metadata["name"],
+                    data_type=metadata["dataType"]["type"],
+                    element_type=metadata["dataType"].get("elementType"),
+                    effective_time=metadata.get("effectiveTime"),
+                    feature_status=metadata.get("status"),
+                    fields=metadata["dataType"].get("fields"),
+                    feature_value=feature,
+                )
+                for feature, metadata in zip(feature_vector, feature_metadata)
+            }
+
+            self.slo_info: Optional[SloInformation] = (
+                SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
             )
-            for feature, metadata in zip(feature_vector, feature_metadata)
-        }
+        else:
+            self.feature_values = feature_values
+            self.slo_info = slo_info
 
-        self.slo_info: Optional[SloInformation] = (
-            SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
+
+class GetFeaturesMicroBatchResponse:
+    """Class representing a response from the GetFeaturesBatch API call.
+
+    Attributes:
+        feature_vectors (List[GetFeaturesResponse]): List of :class:`GetFeaturesResponse` objects, one for each feature
+            vector in the batch.
+        batch_slo_information (Optional[SloInformation]): :class:`SloInformation` object containing information on the
+            batch's SLO, present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
+    """
+
+    def __init__(self, response: dict, micro_batch_size: int) -> None:
+        """
+        Initialize a GetFeaturesMicroBatchResponse object.
+
+        Args:
+            response (dict): JSON response returned from the GetFeaturesBatch API call.
+            micro_batch_size (int): Number of requests sent in a single batch request, determining how may feature
+                vectors are present in the response returned from the server.
+
+        """
+        if micro_batch_size == 1:
+            self.feature_vectors = [GetFeaturesResponse(0, response)]
+            self.batch_slo_information = None
+        else:
+            features_list = [result["features"] for result in response["result"]]
+            feature_metadata = response["metadata"]["features"]
+            slo_info_list = response["metadata"].get("sloInfo")
+
+            self.feature_vectors = [
+                GetFeaturesResponse(0, feature_values={
+                    metadata["name"]: FeatureValue(
+                        name=metadata["name"],
+                        data_type=metadata["dataType"]["type"],
+                        element_type=metadata["dataType"].get("elementType"),
+                        effective_time=metadata.get("effectiveTime"),
+                        feature_status=metadata.get("status")[i],
+                        fields=metadata["dataType"].get("fields"),
+                        feature_value=feature,
+                    )
+                    for feature, metadata in zip(feature_vector, feature_metadata)
+                }, slo_info=SloInformation(slo_info_list[i]) if slo_info_list[i] else None)
+                for i, feature_vector in enumerate(features_list)
+            ]
+            self.batch_slo_information = (
+                SloInformation(response["metadata"]["batchSloInfo"]) if "batchSloInfo" in response["metadata"] else None
+            )
+
+
+class GetFeaturesBatchResponse:
+    """
+    A class that represents the response from the HTTP API when fetching batch features. The
+    class provides methods to access the list of feature vectors returned, along with their metadata, if
+    present.
+
+    The list of :class:`GetFeaturesResponse` objects represents the list of responses, each
+    of which encapsulates a feature vector and its metadata.
+
+    The `batch_slo_information` is only present for batch requests to the /get-features-batch endpoint
+    (i.e., micro_batch_ize > 1)
+
+    Attributes:
+        feature_vectors (List[GetFeaturesResponse]): List of :class:`GetFeaturesResponse` objects,
+            one for each feature vector requested.
+        batch_slo_information (Optional[SloInformation]): :class:`SloInformation` object containing information on the
+            batch request's SLO, present only for batch requests to the /get-features-batch endpoint and if the
+            :class:`MetadataOption` `SLO_INFO` is requested in the request.
+    """
+
+    def __init__(self, responses_list: List[dict], micro_batch_size: int) -> None:
+        """Initializes the object with data from the response.
+
+        Args:
+            responses_list (List[dict]): List of JSON responses returned from the GetFeaturesBatch API call.
+            micro_batch_size (int): The number of requests sent in a single batch request.
+
+        """
+        micro_batch_responses = [
+            GetFeaturesMicroBatchResponse(response=response, micro_batch_size=micro_batch_size) if response else None
+            for response in responses_list
+        ]
+
+        self.feature_vectors = [
+            feature_vector for response in micro_batch_responses for feature_vector in response.feature_vectors
+        ]
+        self.batch_slo_information = self._get_batch_slo_information(
+            [response.batch_slo_information for response in micro_batch_responses if response.batch_slo_information]
+        )
+
+    def _get_batch_slo_information(self, batch_slo_information_list: List[SloInformation]) -> Optional[SloInformation]:
+        """Returns a SloInformation object containing information on the batch request's SLO.
+
+        Args:
+            batch_slo_information_list (List[SloInformation]): List of SloInformation objects, one for each micro-batch
+                response.
+
+        Returns:
+            Optional[SloInformation]: SloInformation object containing information on the batch request's SLO, or None
+
+        """
+        if not batch_slo_information_list:
+            return None
+
+        is_slo_eligible_batch = all(slo_info.slo_eligible is not False for slo_info in batch_slo_information_list)
+
+        batch_slo_ineligibility_reasons = list(
+            {reason for slo_info in batch_slo_information_list for reason in slo_info.slo_ineligibility_reasons}
+        )
+
+        max_slo_server_time_seconds = max(
+            (slo_info.slo_server_time_seconds for slo_info in batch_slo_information_list), default=None
+        )
+
+        max_store_max_latency = max(
+            (slo_info.store_max_latency for slo_info in batch_slo_information_list), default=None
+        )
+
+        max_server_time_seconds = max(
+            (slo_info.server_time_seconds for slo_info in batch_slo_information_list), default=None
+        )
+
+        return SloInformation(
+            {
+                "sloEligible": is_slo_eligible_batch,
+                "sloServerTimeSeconds": max_slo_server_time_seconds,
+                "storeMaxLatency": max_store_max_latency,
+                "serverTimeSeconds": max_server_time_seconds,
+                "sloIneligibilityReasons": batch_slo_ineligibility_reasons,
+            }
         )
 
         self.request_latency = http_response.latency
