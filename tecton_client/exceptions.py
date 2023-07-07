@@ -52,8 +52,6 @@ class InvalidParameterMessage(str, Enum):
     WORKSPACE_NAME = "Workspace Name cannot be None or empty"
     FEATURE_SERVICE_NAME = "FeatureService Name cannot be None or empty"
     EMPTY_MAPS = "Both Join Key map and Request Context Map cannot be empty"
-    REQUEST_DATA_LIST = "List of GetFeaturesRequestData for get-features-batch/ cannot be empty"
-    INVALID_BATCH_SIZE = "Micro batch size for get-features-batch/ must be between 1 and %s"
 
 
 class UnsupportedTypeError(TectonClientError):
