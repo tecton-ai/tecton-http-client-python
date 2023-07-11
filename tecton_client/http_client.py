@@ -41,9 +41,8 @@ class TectonHttpClient:
         Args:
             url (str): The URL to ping.
             api_key (str): The API Key required as part of header authorization.
-            client_options (TectonClientOptions): The HTTP client options to be passed in when the
-                :class:`TectonHttpClient` object initializes its own HTTP client.
-                These will only be used when users do not pass in their own client.
+            client_options (TectonClientOptions): The configurations for the HTTP Client initialized by
+                :class:`TectonHttpClient`.
             client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
                 Users can initialize their own HTTP client and pass it in, otherwise the :class:`TectonHttpClient`
                 object will initialize its own HTTP client.
@@ -55,7 +54,7 @@ class TectonHttpClient:
         self._auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self._api_key}")
         self._client: httpx.AsyncClient = client or httpx.AsyncClient(
             timeout=httpx.Timeout(
-                5, connect=client_options.connect_timeout.seconds, read=client_options.read_timeout.seconds
+                timeout=5, connect=client_options.connect_timeout.seconds, read=client_options.read_timeout.seconds
             ),
             limits=httpx.Limits(
                 keepalive_expiry=client_options.keepalive_expiry.seconds, max_connections=client_options.max_connections

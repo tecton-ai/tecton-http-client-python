@@ -53,9 +53,7 @@ class TectonClient:
             raise InvalidParameterError(InvalidParameterMessage.KEY.value)
 
         if client and client_options:
-            message = (
-                "Cannot provide both `client` and `client_options` parameters. " "Please only provide one or the other."
-            )
+            message = "Cannot provide both `client` and `client_options` parameters."
             raise InvalidParameterError(message)
 
         if not client_options:

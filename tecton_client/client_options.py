@@ -5,7 +5,7 @@ from typing import Optional
 
 @dataclass
 class TectonClientOptions:
-    """Class to represent the Tecton Client options.
+    """Class to represent the configurations for the underlying HTTP Client.
 
     Examples:
         >>> options = TectonClientOptions(connect_timeout=timedelta(seconds=10),
