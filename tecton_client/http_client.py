@@ -73,7 +73,7 @@ class TectonHttpClient:
             dict: The response in JSON format.
 
         Raises:
-            TectonServerException: If the server returns an error response, different child errors based on the
+            TectonServerException: If the server returns an error response, different errors based on the
                 error response are raised.
 
         """

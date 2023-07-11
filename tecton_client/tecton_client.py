@@ -58,8 +58,8 @@ class TectonClient:
             [1, 2, 3, "test_feature", ["test", "array"]]
 
         Raises:
-            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. The error could be
-                caused by one of the following:
+            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. Some of the possible
+                reasons for this are:
                 1. Missing required join key in the :class:`GetFeaturesRequestData` object passed in the request
                 2. An expected key is not found in the requestContextMap of the :class:`GetFeaturesRequestData` object
                 3. Unexpected type for a key in the joinKeyMap passed in the :class:`GetFeaturesRequestData` object
@@ -74,14 +74,10 @@ class TectonClient:
                 the feature service. Please refer to the `Tecton Documentation <https://docs.tecton.ai/docs/beta/\
                 reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\
                 the-http-api#creating-an-api-key-to-authenticate-to-the-http-api>`_ for more information.
-            NotFoundError: If the response returned from the Tecton Server is 404 Not Found, it could be because of the
-                following reasons:
-                1. The service is unable to query the FeatureService or workspace passed in the
-                    :class:`GetFeaturesRequest` object
-                2. The FeatureView has no materialized data in the online store
-                4. The DynamoDB table was not found
-            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted, the
-                reason could be one of the following:
+            NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception
+                message for detailed information.
+            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Some
+                of the possible reasons for the error are:
                 1. GetFeatures exceeded the concurrent request limit, please retry later
                 2. DynamoDB throttled the request. The request rate exceeds the AWS account's throughput limit, or
                     you may be requesting a hot key
