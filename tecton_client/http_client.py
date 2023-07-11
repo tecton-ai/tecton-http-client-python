@@ -170,7 +170,7 @@ class TectonHttpClient:
 
         Returns:
             List[Optional[dict]]: The list of responses in JSON format, or None if the task does not complete
-                 successfully.
+                successfully.
 
         """
         tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
