@@ -11,6 +11,7 @@ from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import InvalidURLError
+from tecton_client.exceptions import SERVER_ERRORS
 from tecton_client.exceptions import TectonServerException
 
 
@@ -72,7 +73,8 @@ class TectonHttpClient:
             dict: The response in JSON format.
 
         Raises:
-            TectonServerException: If the server response is invalid.
+            TectonServerException: If the server returns an error response, different errors based on the
+                error response are raised.
 
         """
         url = urljoin(self.url, endpoint)
@@ -85,9 +87,12 @@ class TectonHttpClient:
         if response.status_code == 200:
             return response.json()
         else:
-            raise TectonServerException(
-                INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
-            )
+            message = INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
+
+            try:
+                raise SERVER_ERRORS.get(response.status_code)(message)
+            except TypeError:
+                raise TectonServerException(message)
 
     @staticmethod
     def validate_url(url: Optional[str]) -> str:

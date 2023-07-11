@@ -57,6 +57,38 @@ class TectonClient:
             >>> print([feature.feature_value for feature in response.feature_values.values()])
             [1, 2, 3, "test_feature", ["test", "array"]]
 
+        Raises:
+            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. Some of the possible
+                reasons for this are:
+                1. Missing required join key in the :class:`GetFeaturesRequestData` object passed in the request
+                2. An expected key is not found in the requestContextMap of the :class:`GetFeaturesRequestData` object
+                3. Unexpected type for a key in the joinKeyMap passed in the :class:`GetFeaturesRequestData` object
+                4. Unknown join key passed in the :class:`GetFeaturesRequestData` object in the request
+            UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized, it could be because
+                Tecton does not recognize the API Key in your request. Please refer to the `API Key Documentation
+                <https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\
+                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\
+                to-the-http-api>`_ for more information on how to create a Service Account with an API Key
+            ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden, it could be because the
+                Service Account associated with your API Key does not have the necessary permissions to query
+                the feature service. Please refer to the `Tecton Documentation <https://docs.tecton.ai/docs/beta/\
+                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\
+                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api>`_ for more information.
+            NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception
+                message for detailed information.
+            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Some
+                of the possible reasons for the error are:
+                1. GetFeatures exceeded the concurrent request limit, please retry later
+                2. DynamoDB throttled the request. The request rate exceeds the AWS account's throughput limit, or
+                    you may be requesting a hot key
+            ServiceUnavailableError: If the response returned from the Tecton Server is 503 Service Unavailable, it
+                could be because Tecton is currently unable to process your request. Please retry later.
+            GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
+                that processing the request exceeded the 2 seconds timeout limit set by Tecton.
+
+                For more detailed information on the errors, please refer to the error responses `here
+                <https://docs.tecton.ai/http-api#operation/GetFeatures>`_.
+
         """
         response = self._loop.run_until_complete(
             self._tecton_http_client.execute_request(request.ENDPOINT, request.to_json())
