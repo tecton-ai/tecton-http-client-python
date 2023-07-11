@@ -26,6 +26,7 @@ class TestHttpClient:
 
     endpoint: Final[str] = "api/v1/feature-service/get-features"
     full_url: Final[str] = urljoin(URL, endpoint)
+    
     params = {
         "feature_service_name": "fraud_detection_feature_service",
         "join_key_map": {"user_id": "user_205125746682"},
@@ -160,19 +161,9 @@ class TestHttpClient:
         httpx_mock.add_response(
             json={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
         )
+        requests_list = [self.request] * number_of_requests
 
-        endpoint = "api/v1/feature-service/get-features"
-        params = {
-            "feature_service_name": "fraud_detection_feature_service",
-            "join_key_map": {"user_id": "user_205125746682"},
-            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
-            "workspace_name": "tecton-fundamentals-tutorial-live",
-            "metadata_options": None,
-        }
-        request = {"params": params}
-        requests_list = [request] * number_of_requests
-
-        responses_list = await http_client.execute_parallel_requests(endpoint, requests_list, timedelta(seconds=1))
+        responses_list = await http_client.execute_parallel_requests(self.endpoint, requests_list, timedelta(seconds=1))
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == 0
 
@@ -191,18 +182,11 @@ class TestHttpClient:
             client_options=self.client_options,
         )
 
-        endpoint = "api/v1/feature-service/get-features"
-        params = {
-            "feature_service_name": "fraud_detection_feature_service",
-            "join_key_map": {"user_id": "user_205125746682"},
-            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
-            "workspace_name": "tecton-fundamentals-tutorial-live",
-            "metadata_options": None,
-        }
-        request = {"params": params}
-        requests_list = [request] * number_of_requests
+        requests_list = [self.request] * number_of_requests
 
-        responses_list = await http_client.execute_parallel_requests(endpoint, requests_list, timedelta(milliseconds=1))
+        responses_list = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(milliseconds=1)
+        )
 
         assert len(responses_list) == len(requests_list)
         # No request should complete in this timeout, resulting in all returned responses being None
@@ -232,16 +216,6 @@ class TestHttpClient:
             json={"result": {"features": ["4", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
         )
 
-        endpoint = "api/v1/feature-service/get-features"
-        params1 = {
-            "feature_service_name": "fraud_detection_feature_service",
-            "join_key_map": {"user_id": "user_205125746682"},
-            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
-            "workspace_name": "tecton-fundamentals-tutorial-live",
-            "metadata_options": None,
-        }
-        request1 = {"params": params1}
-
         params2 = {
             "feature_service_name": "fraud_detection_feature_service",
             "join_key_map": {"user_id": "user_205125746682"},
@@ -250,9 +224,9 @@ class TestHttpClient:
             "metadata_options": {"include_names": True, "include_data_types": True},
         }
         request2 = {"params": params2}
-        requests_list = [request1, request2] * number_of_requests
+        requests_list = [self.request, request2] * number_of_requests
 
-        responses_list = await http_client.execute_parallel_requests(endpoint, requests_list, timedelta(seconds=1))
+        responses_list = await http_client.execute_parallel_requests(self.endpoint, requests_list, timedelta(seconds=1))
 
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == 0
