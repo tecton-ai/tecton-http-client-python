@@ -166,10 +166,11 @@ class TectonHttpClient:
             request_bodies (List[dict]): The list of request data to be passed for the parallel requests,
                 in JSON format.
             timeout (timedelta): The duration of time to wait for the parallel requests to complete before returning.
-                 Defaults to {DEFAULT_PARALLEL_REQUEST_TIMEOUT} seconds.
+                Defaults to {DEFAULT_PARALLEL_REQUEST_TIMEOUT} seconds.
 
         Returns:
-            List[Optional[dict]]: The list of responses in JSON format.
+            List[Optional[dict]]: The list of responses in JSON format, or None if the task does not complete
+                 successfully.
 
         """
         tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
