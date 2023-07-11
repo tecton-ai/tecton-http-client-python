@@ -1,6 +1,8 @@
+import asyncio
 import time
 from datetime import timedelta
 from enum import Enum
+from typing import List
 from typing import Optional
 from typing import Tuple
 from urllib.parse import urljoin
@@ -118,6 +120,47 @@ class TectonHttpClient:
                 raise error_class(message)
         except aiohttp.ClientError as e:
             raise TectonClientError from e
+
+    async def execute_parallel_requests(
+        self, endpoint: str, requests_bodies: List[dict], timeout: timedelta = timedelta(seconds=2)
+    ) -> List[Optional[dict]]:
+        """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
+
+        This method sends multiple HTTP requests to the specified endpoint in parallel, attaching the provided
+        request body data.
+
+        Args:
+            endpoint (str): The HTTP endpoint to attach to the URL and query.
+            requests_bodies (List[dict]): The list of request data to be passed for the parallel requests,
+                in JSON format.
+            timeout (timedelta): The duration of time to wait for the parallel requests to complete before returning.
+
+        Returns:
+            List[Optional[dict]]: The list of responses in JSON format.
+
+        """
+        tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in requests_bodies]
+        done, pending = await asyncio.wait(tasks, timeout=timeout.total_seconds())
+
+        results = [task.result() if task in done and task.exception() is None else None for task in tasks]
+        await self._close_tasks(tasks=pending)
+
+        return results
+
+    @staticmethod
+    async def _close_tasks(tasks: set[asyncio.Task]) -> None:
+        """Closes a set of tasks.
+
+        Args:
+            tasks (set[asyncio.Task]): The set of tasks to be closed.
+
+        """
+        for task in tasks:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
 
     @staticmethod
     def _validate_url(url: Optional[str]) -> str:

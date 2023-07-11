@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Final
 from urllib.parse import urljoin
 
@@ -136,7 +137,6 @@ class TestHttpClient:
         finally:
             await client.close()
 
-    @pytest.mark.asyncio
     async def test_default_client_options(self) -> None:
         client = TectonHttpClient(
             self.URL,
@@ -147,3 +147,120 @@ class TestHttpClient:
         assert client._client.timeout.total == 2
 
         await client.close()
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [10, 100, 500])
+    async def test_parallel_requests(self, httpx_mock: HTTPXMock, number_of_requests: int) -> None:
+        http_client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            client_options=self.client_options,
+        )
+
+        httpx_mock.add_response(
+            json={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        )
+
+        endpoint = "api/v1/feature-service/get-features"
+        params = {
+            "feature_service_name": "fraud_detection_feature_service",
+            "join_key_map": {"user_id": "user_205125746682"},
+            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
+            "workspace_name": "tecton-fundamentals-tutorial-live",
+            "metadata_options": None,
+        }
+        request = {"params": params}
+        requests_list = [request] * number_of_requests
+
+        responses_list = await http_client.execute_parallel_requests(endpoint, requests_list, timedelta(seconds=1))
+        assert len(responses_list) == len(requests_list)
+        assert responses_list.count(None) == 0
+
+        for response in responses_list:
+            if response:
+                assert type({}) == type(response)
+
+        await http_client.close()
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [10, 100])
+    async def test_parallel_requests_smaller_timeout(self, httpx_mock: HTTPXMock, number_of_requests: int) -> None:
+        http_client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            client_options=self.client_options,
+        )
+
+        endpoint = "api/v1/feature-service/get-features"
+        params = {
+            "feature_service_name": "fraud_detection_feature_service",
+            "join_key_map": {"user_id": "user_205125746682"},
+            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
+            "workspace_name": "tecton-fundamentals-tutorial-live",
+            "metadata_options": None,
+        }
+        request = {"params": params}
+        requests_list = [request] * number_of_requests
+
+        responses_list = await http_client.execute_parallel_requests(endpoint, requests_list, timedelta(milliseconds=1))
+
+        assert len(responses_list) == len(requests_list)
+        # No request should complete in this timeout, resulting in all returned responses being None
+        assert responses_list.count(None) == len(requests_list)
+
+        await http_client.close()
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [2])
+    async def test_order_of_parallel_requests(self, httpx_mock: HTTPXMock, number_of_requests: int) -> None:
+        http_client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            client_options=self.client_options,
+        )
+
+        httpx_mock.add_response(
+            json={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        )
+        httpx_mock.add_response(
+            json={"result": {"features": ["2", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        )
+        httpx_mock.add_response(
+            json={"result": {"features": ["3", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        )
+        httpx_mock.add_response(
+            json={"result": {"features": ["4", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        )
+
+        endpoint = "api/v1/feature-service/get-features"
+        params1 = {
+            "feature_service_name": "fraud_detection_feature_service",
+            "join_key_map": {"user_id": "user_205125746682"},
+            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
+            "workspace_name": "tecton-fundamentals-tutorial-live",
+            "metadata_options": None,
+        }
+        request1 = {"params": params1}
+
+        params2 = {
+            "feature_service_name": "fraud_detection_feature_service",
+            "join_key_map": {"user_id": "user_205125746682"},
+            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
+            "workspace_name": "tecton-fundamentals-tutorial-live",
+            "metadata_options": {"include_names": True, "include_data_types": True},
+        }
+        request2 = {"params": params2}
+        requests_list = [request1, request2] * number_of_requests
+
+        responses_list = await http_client.execute_parallel_requests(endpoint, requests_list, timedelta(seconds=1))
+
+        assert len(responses_list) == len(requests_list)
+        assert responses_list.count(None) == 0
+
+        for response in responses_list:
+            if response:
+                assert type({}) == type(response)
+                # Testing out order of responses by checking the value stored in the first feature of the features list
+                assert response["result"]["features"][0] == str(responses_list.index(response) % 4 + 1)
+
+        await http_client.close()
