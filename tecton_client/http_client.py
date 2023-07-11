@@ -5,12 +5,15 @@ from datetime import timedelta
 from enum import Enum
 from typing import List
 from typing import Optional
+from typing import Tuple
+from typing import Set
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 import aiohttp
 
 from tecton_client.client_options import TectonClientOptions
+from tecton_client.constants import DEFAULT_PARALLEL_REQUEST_TIMEOUT
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
@@ -148,7 +151,10 @@ class TectonHttpClient:
             raise TectonClientError from e
 
     async def execute_parallel_requests(
-        self, endpoint: str, requests_bodies: List[dict], timeout: timedelta = timedelta(seconds=2)
+        self,
+        endpoint: str,
+        request_bodies: List[dict],
+        timeout: timedelta = timedelta(seconds=DEFAULT_PARALLEL_REQUEST_TIMEOUT),
     ) -> List[Optional[dict]]:
         """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
 
@@ -157,28 +163,27 @@ class TectonHttpClient:
 
         Args:
             endpoint (str): The HTTP endpoint to attach to the URL and query.
-            requests_bodies (List[dict]): The list of request data to be passed for the parallel requests,
+            request_bodies (List[dict]): The list of request data to be passed for the parallel requests,
                 in JSON format.
             timeout (timedelta): The duration of time to wait for the parallel requests to complete before returning.
+                 Defaults to {DEFAULT_PARALLEL_REQUEST_TIMEOUT} seconds.
 
         Returns:
             List[Optional[dict]]: The list of responses in JSON format.
 
         """
-        tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in requests_bodies]
+        tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
         done, pending = await asyncio.wait(tasks, timeout=timeout.total_seconds())
-
-        results = [task.result() if task in done and task.exception() is None else None for task in tasks]
         await self._close_tasks(tasks=pending)
 
-        return results
+        return [task.result() if task in done and task.exception() is None else None for task in tasks]
 
     @staticmethod
-    async def _close_tasks(tasks: set[asyncio.Task]) -> None:
+    async def _close_tasks(tasks: Set[asyncio.Task]) -> None:
         """Closes a set of tasks.
 
         Args:
-            tasks (set[asyncio.Task]): The set of tasks to be closed.
+            tasks (Set[asyncio.Task]): The set of tasks to be closed.
 
         """
         for task in tasks:
