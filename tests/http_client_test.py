@@ -161,7 +161,7 @@ class TestHttpClient:
         httpx_mock.add_response(
             json={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
         )
-        
+
         requests_list = [self.request] * number_of_requests
 
         responses_list = await http_client.execute_parallel_requests(self.endpoint, requests_list, timedelta(seconds=1))
