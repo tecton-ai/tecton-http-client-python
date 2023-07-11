@@ -1,6 +1,9 @@
 import json
+import os
+from datetime import timedelta
 from typing import Final
 
+import httpx
 import pytest
 from pytest_httpx import HTTPXMock
 
@@ -11,6 +14,7 @@ from tecton_client.data_types import IntType
 from tecton_client.exceptions import BadRequestError
 from tecton_client.exceptions import ForbiddenError
 from tecton_client.exceptions import GatewayTimeoutError
+from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import NotFoundError
 from tecton_client.exceptions import ResourcesExhaustedError
 from tecton_client.exceptions import ServiceUnavailableError
@@ -21,6 +25,7 @@ from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import MetadataOptions
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
+from tecton_client.tecton_client import TectonClientOptions
 from tests.test_utils import dict_equals
 
 
@@ -228,3 +233,53 @@ class TestTectonClient:
         for exception in TectonServerException.__subclasses__():
             assert exception.STATUS_CODE not in response_codes
             response_codes.add(exception.STATUS_CODE)
+
+    client1 = httpx.AsyncClient(timeout=10, limits=httpx.Limits(max_connections=10))
+    client2 = httpx.AsyncClient()
+
+    @pytest.mark.parametrize(
+        "client",
+        [client1, client2, None],
+    )
+    def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
+        if client is None:
+            client_options = TectonClientOptions(
+                connect_timeout=timedelta(seconds=10),
+                read_timeout=timedelta(seconds=15),
+                keepalive_expiry=timedelta(seconds=500),
+            )
+            tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client_options=client_options)
+            assert client_options.connect_timeout.seconds == 10
+            assert client_options.read_timeout.seconds == 15
+            assert client_options.keepalive_expiry.seconds == 500
+            assert client_options.max_connections == 10
+        else:
+            tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
+
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH}sample_response_mixed.json") as json_file:
+            httpx_mock.add_response(json=json.load(json_file))
+            response = tecton_client.get_features(self.test_request_normal)
+
+        assert dict_equals(
+            {k: v.feature_value for k, v in response.feature_values.items()}, self.expected_response_mixed
+        )
+        tecton_client.close()
+
+    def test_no_api_key(self) -> None:
+        # Testing that no API key is provided as a parameter and the environment variable `TECTON_API_KEY` is not set
+        with pytest.raises(InvalidParameterError):
+            TectonClient(url="https://thisisaurl.ai")
+
+    def test_api_key_env_var(self) -> None:
+        os.environ["TECTON_API_KEY"] = "SOME_API_KEY"
+        client = TectonClient(url="https://thisisaurl.ai")
+        assert not client.is_closed
+        client.close()
+
+    def test_client_and_client_options(self) -> None:
+        with pytest.raises(InvalidParameterError):
+            TectonClient(
+                url="https://thisisaurl.ai",
+                client_options=TectonClientOptions(max_connections=1),
+                client=httpx.AsyncClient(limits=httpx.Limits(max_connections=2)),
+            )

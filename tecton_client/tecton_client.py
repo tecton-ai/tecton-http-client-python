@@ -1,5 +1,12 @@
 import asyncio
+import os
+from typing import Optional
 
+import httpx
+
+from tecton_client.client_options import TectonClientOptions
+from tecton_client.exceptions import InvalidParameterError
+from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
@@ -17,17 +24,47 @@ class TectonClient:
 
     """
 
-    def __init__(self, url: str, api_key: str) -> None:
+    def __init__(
+        self,
+        url: str,
+        api_key: Optional[str] = None,
+        client: Optional[httpx.AsyncClient] = None,
+        client_options: Optional[TectonClientOptions] = None,
+    ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
         Args:
             url (str): The Tecton Base URL
-            api_key (str): API Key for authenticating with the FeatureService API. See `Authenticating with an API key
-                <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
+            api_key (Optional[str]): API Key for authenticating with the FeatureService API. See `Authenticating with an
+                API key <https://docs.tecton.ai/docs/reading-feature-data/reading-feature-data-for-inference/\
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
+                This parameter is optional and can be provided through an environment variable called `TECTON_API_KEY`.
+            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
+                Users can initialize their own HTTP client and pass it in to the :class:`TectonClient` object.
+                If no client is passed in, the :class:`TectonClient` object will initialize its own HTTP client.
+            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options to be passed in when the
+                :class:`TectonClient` object initializes its own HTTP client.
+                If no options are passed in, defaults defined in :class:`TectonClientOptions()` will be used.
+
         """
-        self._tecton_http_client = TectonHttpClient(url, api_key)
+        api_key = os.getenv("TECTON_API_KEY") if api_key is None else api_key
+        if api_key is None:
+            raise InvalidParameterError(InvalidParameterMessage.KEY.value)
+
+        if client and client_options:
+            message = "Cannot provide both `client` and `client_options` parameters."
+            raise InvalidParameterError(message)
+
+        if not client_options:
+            client_options = TectonClientOptions()
+
+        self._tecton_http_client = TectonHttpClient(
+            url,
+            api_key,
+            client=client,
+            client_options=client_options,
+        )
         self._loop = asyncio.new_event_loop()
 
     def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
