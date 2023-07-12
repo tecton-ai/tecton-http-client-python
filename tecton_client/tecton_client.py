@@ -2,7 +2,7 @@ import asyncio
 import os
 from typing import Optional
 
-import httpx
+import aiohttp
 
 from tecton_client.client_options import TectonClientOptions
 from tecton_client.exceptions import InvalidParameterError
@@ -28,7 +28,7 @@ class TectonClient:
         self,
         url: str,
         api_key: Optional[str] = None,
-        client: Optional[httpx.AsyncClient] = None,
+        client: Optional[aiohttp.ClientSession] = None,
         client_options: Optional[TectonClientOptions] = None,
     ) -> None:
         """Initialize the parameters required to make HTTP requests.
@@ -40,7 +40,7 @@ class TectonClient:
                 reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\
                 the-http-api>`_  for more information.
                 This parameter is optional and can be provided through an environment variable called `TECTON_API_KEY`.
-            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
+            client (Optional[aiohttp.ClientSession]): (Optional) The HTTP Asynchronous Client.
                 Users can initialize their own HTTP client and pass it in to the :class:`TectonClient` object.
                 If no client is passed in, the :class:`TectonClient` object will initialize its own HTTP client.
             client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options to be passed in when the

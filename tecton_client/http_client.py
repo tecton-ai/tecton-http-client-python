@@ -1,11 +1,9 @@
-import json
 from enum import Enum
 from typing import Optional
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
-import httpx
-from httpx_auth import HeaderApiKey
+import aiohttp
 
 from tecton_client.client_options import TectonClientOptions
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
@@ -34,7 +32,7 @@ class TectonHttpClient:
         url: str,
         api_key: str,
         client_options: TectonClientOptions,
-        client: Optional[httpx.AsyncClient] = None,
+        client: Optional[aiohttp.ClientSession] = None,
     ) -> None:
         """Initialize the parameters required to make HTTP requests.
 
@@ -43,7 +41,7 @@ class TectonHttpClient:
             api_key (str): The API Key required as part of header authorization.
             client_options (TectonClientOptions): The configurations for the HTTP Client initialized by
                 :class:`TectonHttpClient`.
-            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.
+            client (Optional[aiohttp.ClientSession]): (Optional) The HTTP Asynchronous Client.
                 Users can initialize their own HTTP client and pass it in, otherwise the :class:`TectonHttpClient`
                 object will initialize its own HTTP client.
 
@@ -51,20 +49,21 @@ class TectonHttpClient:
         self._url = self._validate_url(url)
         self._api_key = self._validate_key(api_key)
 
-        self._auth = HeaderApiKey(header_name=self.headers.AUTHORIZATION.value, api_key=f"{API_PREFIX} {self._api_key}")
-        self._client: httpx.AsyncClient = client or httpx.AsyncClient(
-            timeout=httpx.Timeout(
-                timeout=5, connect=client_options.connect_timeout.seconds, read=client_options.read_timeout.seconds
+        self._auth = {self.headers.AUTHORIZATION.value: f"{API_PREFIX} {self._api_key}"}
+        self._client: aiohttp.ClientSession = client or aiohttp.ClientSession(
+            timeout=aiohttp.ClientTimeout(
+                connect=client_options.connect_timeout.seconds, total=client_options.read_timeout.seconds
             ),
-            limits=httpx.Limits(
-                keepalive_expiry=client_options.keepalive_expiry.seconds, max_connections=client_options.max_connections
+            connector=aiohttp.TCPConnector(
+                limit=client_options.max_connections, keepalive_timeout=client_options.keepalive_expiry.seconds
             ),
         )
+        self._client_options: TectonClientOptions = client_options
         self._is_client_closed: bool = False
 
     async def close(self) -> None:
         """Close the HTTP Asynchronous Client."""
-        await self._client.aclose()
+        await self._client.close()
         self._is_client_closed = True
 
     @property
@@ -96,20 +95,15 @@ class TectonHttpClient:
         """
         url = urljoin(self._url, endpoint)
 
-        # HTTPX requires the data provided to the request to be a string and not a dictionary.
-        # The request dictionary is therefore converted to a JSON formatted string and passed in.
-        # For more information, please check the HTTPX documentation `here <https://www.python-httpx.org/quickstart/>`_.
-        response = await self._client.post(url, data=json.dumps(request_body), auth=self._auth)
-
-        if response.status_code == 200:
-            return response.json()
-        else:
-            message = INVALID_SERVER_RESPONSE(response.status_code, response.reason_phrase, response.json()["message"])
-
-            try:
-                raise SERVER_ERRORS.get(response.status_code)(message)
-            except TypeError:
-                raise TectonServerException(message)
+        async with self._client.post(url, json=request_body, headers=self._auth) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                message = INVALID_SERVER_RESPONSE(response.status, response.reason, await response.json())
+                try:
+                    raise SERVER_ERRORS.get(response.status)(message)
+                except TypeError:
+                    raise TectonServerException(message)
 
     @staticmethod
     def _validate_url(url: Optional[str]) -> str:
