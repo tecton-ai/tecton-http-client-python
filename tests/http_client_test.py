@@ -167,7 +167,9 @@ class TestHttpClient:
 
         requests_list = [self.request] * number_of_requests
 
-        responses_list = await http_client.execute_parallel_requests(self.endpoint, requests_list, timedelta(seconds=1))
+        responses_list, latency = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == 0
 
@@ -188,7 +190,7 @@ class TestHttpClient:
 
         requests_list = [self.request] * number_of_requests
 
-        responses_list = await http_client.execute_parallel_requests(
+        responses_list, latency = await http_client.execute_parallel_requests(
             self.endpoint, requests_list, timedelta(milliseconds=1)
         )
 
@@ -235,7 +237,9 @@ class TestHttpClient:
         request2 = {"params": params2}
         requests_list = [self.request, request2] * number_of_requests
 
-        responses_list = await http_client.execute_parallel_requests(self.endpoint, requests_list, timedelta(seconds=1))
+        responses_list, latency = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
 
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == 0
@@ -265,7 +269,9 @@ class TestHttpClient:
 
         requests_list = [self.request] * number_of_requests
 
-        responses_list = await http_client.execute_parallel_requests(self.endpoint, requests_list, timedelta(seconds=1))
+        responses_list, latency = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == len(requests_list) - 1
 
