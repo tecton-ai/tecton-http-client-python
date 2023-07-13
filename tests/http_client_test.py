@@ -114,6 +114,7 @@ class TestHttpClient:
         except TectonServerException as e:
             assert isinstance(e, UnauthorizedError)
 
+    @pytest.mark.asyncio
     async def test_default_client_options(self) -> None:
         assert self.http_client._client.timeout.connect == 2
         assert self.http_client._client.timeout.total == 2
@@ -124,7 +125,7 @@ class TestHttpClient:
         await client.close()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("number_of_requests", [10])
+    @pytest.mark.parametrize("number_of_requests", [10, 50, 100, 500])
     async def test_parallel_requests(self, mocked: aioresponses, number_of_requests: int) -> None:
         http_client = TectonHttpClient(
             self.URL,
@@ -153,9 +154,6 @@ class TestHttpClient:
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [10, 100])
     async def test_parallel_requests_smaller_timeout(self, mocked: aioresponses, number_of_requests: int) -> None:
-        # The function takes in `mocked` as a parameter because otherwise the test won't know that a mocked server
-        # must be used and will instead try to place an actual request
-
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
@@ -221,5 +219,32 @@ class TestHttpClient:
                 assert type({}) == type(response)
                 # Testing out order of responses by checking the value stored in the first feature of the features list
                 assert response["result"]["features"][0] == str(responses_list.index(response) % 4 + 1)
+
+        await http_client.close()
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [10, 50])
+    async def test_parallel_requests_partial(self, mocked: aioresponses, number_of_requests: int) -> None:
+        http_client = TectonHttpClient(
+            self.URL,
+            self.API_KEY,
+            client_options=self.client_options,
+        )
+
+        # Send the mocked response only once to check if the returned response list is partially filled
+        mocked.post(
+            url=self.full_url,
+            payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
+        )
+
+        requests_list = [self.request] * number_of_requests
+
+        responses_list = await http_client.execute_parallel_requests(self.endpoint, requests_list, timedelta(seconds=1))
+        assert len(responses_list) == len(requests_list)
+        assert responses_list.count(None) == len(requests_list) - 1
+
+        for response in responses_list:
+            if response:
+                assert type({}) == type(response)
 
         await http_client.close()
