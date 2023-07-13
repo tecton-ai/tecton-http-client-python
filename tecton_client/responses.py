@@ -235,7 +235,8 @@ class GetFeaturesResponse:
 
         Args:
             response (dict): JSON response returned from the GetFeatures API call.
-            request_latency (timedelta): The latency of the GetFeaturesRequest call as a :class:`timedelta` object.
+            request_latency (timedelta): The latency of the :class:`GetFeaturesRequest` call as a :class:`timedelta`
+                object.
 
         """
         feature_vector: list = response["result"]["features"]

@@ -107,9 +107,10 @@ class TectonHttpClient:
             async with self._client.post(url, json=request_body, headers=self._auth) as response:
                 json_response = await response.json()
             end_time = time.time()
+            request_latency = timedelta(seconds=(end_time - start_time))
 
             if response.status == 200:
-                return json_response, timedelta(seconds=(end_time - start_time))
+                return json_response, request_latency
             else:
                 message = INVALID_SERVER_RESPONSE(response.status, response.reason, json_response["message"])
                 error_class = SERVER_ERRORS.get(response.status, TectonServerException)
