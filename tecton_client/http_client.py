@@ -96,10 +96,11 @@ class TectonHttpClient:
         url = urljoin(self._url, endpoint)
 
         async with self._client.post(url, json=request_body, headers=self._auth) as response:
+            json_response = await response.json()
             if response.status == 200:
-                return await response.json()
+                return json_response
             else:
-                message = INVALID_SERVER_RESPONSE(response.status, response.reason, await response.json())
+                message = INVALID_SERVER_RESPONSE(response.status, response.reason, json_response["message"])
                 try:
                     raise SERVER_ERRORS.get(response.status)(message)
                 except TypeError:

@@ -115,6 +115,11 @@ class TestHttpClient:
             status=401,
             reason="Unauthorized: invalid 'Tecton-key' authorization header. "
             "Newly created credentials may take up to 60 seconds to be usable.",
+            payload={
+                "error": "GetFeatures exceeded the concurrent request limit, please retry later",
+                "message": "GetFeatures exceeded the concurrent request limit, please retry later",
+                "code": 8,
+            },
         )
 
         client = TectonHttpClient(

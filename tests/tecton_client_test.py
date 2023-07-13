@@ -288,10 +288,11 @@ class TestTectonClient:
         assert not client.is_closed
         client.close()
 
-    def test_client_and_client_options(self) -> None:
+    @pytest.mark.asyncio
+    async def test_client_and_client_options(self) -> None:
         client = aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=2))
         with pytest.raises(InvalidParameterError):
             TectonClient(
                 url="https://thisisaurl.ai", client_options=TectonClientOptions(max_connections=1), client=client
             )
-        client.close()
+        await client.close()
