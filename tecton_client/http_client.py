@@ -178,12 +178,14 @@ class TectonHttpClient:
         start_time = time.time()
         done, pending = await asyncio.wait(tasks, timeout=timeout.total_seconds())
         end_time = time.time()
-        request_latency = timedelta(seconds=(end_time - start_time))
+        latency = timedelta(seconds=(end_time - start_time))
         await self._close_tasks(tasks=pending)
 
+        # Return a list of JSON responses returned from performing the request and the overall latency of the
+        # parallel requests
         return [
             task.result()[0] if task in done and task.exception() is None else None for task in tasks
-        ], request_latency
+        ], latency
 
     @staticmethod
     async def _close_tasks(tasks: Set[asyncio.Task]) -> None:
