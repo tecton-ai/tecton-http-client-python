@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from datetime import timedelta
 from typing import Final
 from typing import List
 
@@ -45,9 +46,10 @@ class TestResponse:
     )
     def test_json_responses(self, file_name: str, expected_answer: list) -> None:
         with open(f"{TestResponse.TEST_DATA_REL_PATH}{file_name}") as json_file:
-            get_features_response = GetFeaturesResponse(json.load(json_file))
+            get_features_response = GetFeaturesResponse(json.load(json_file), timedelta(milliseconds=10))
 
             assert get_features_response.slo_info is None
+            assert get_features_response.request_latency == timedelta(milliseconds=10)
             self.assert_answers(expected_answer, get_features_response)
 
     def test_slo_response(self) -> None:
@@ -62,9 +64,10 @@ class TestResponse:
         }
 
         with open(f"{TestResponse.TEST_DATA_REL_PATH}sample_response_slo.json") as json_file:
-            get_features_response = GetFeaturesResponse(json.load(json_file))
+            get_features_response = GetFeaturesResponse(json.load(json_file), timedelta(milliseconds=10))
 
             assert get_features_response.slo_info is not None
+            assert get_features_response.request_latency == timedelta(milliseconds=10)
             assert dict_equals(vars(get_features_response.slo_info), actual_slo_info)
 
     @pytest.mark.parametrize(
@@ -95,10 +98,11 @@ class TestResponse:
     )
     def test_metadata_response(self, filename: str, expected_answers: list, expected_metadata: List[tuple]) -> None:
         with open(f"{TestResponse.TEST_DATA_REL_PATH}{filename}") as json_file:
-            get_features_response = GetFeaturesResponse(json.load(json_file))
+            get_features_response = GetFeaturesResponse(json.load(json_file), timedelta(milliseconds=10))
 
             assert get_features_response is not None
             assert get_features_response.slo_info is not None
+            assert get_features_response.request_latency == timedelta(milliseconds=10)
 
             for feature, metadata in zip(get_features_response.feature_values.values(), expected_metadata):
                 assert isinstance(feature.data_type, metadata[0])
