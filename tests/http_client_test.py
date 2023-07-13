@@ -57,7 +57,7 @@ class TestHttpClient:
             client_options=self.client_options,
         )
 
-        response = await http_client.execute_request(self.endpoint, self.request)
+        response, _ = await http_client.execute_request(self.endpoint, self.request)
 
         assert type({}) == type(response)
         await http_client.close()

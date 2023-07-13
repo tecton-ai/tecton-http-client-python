@@ -1,3 +1,5 @@
+import time
+from datetime import timedelta
 from enum import Enum
 from typing import Optional
 from urllib.parse import urljoin
@@ -79,7 +81,7 @@ class TectonHttpClient:
         """
         return self._is_client_closed
 
-    async def execute_request(self, endpoint: str, request_body: dict) -> dict:
+    async def execute_request(self, endpoint: str, request_body: dict) -> (dict, timedelta):
         """Performs an HTTP request to a specified endpoint using the client.
 
         This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
@@ -89,7 +91,8 @@ class TectonHttpClient:
             request_body (dict): The request data to be passed, in JSON format.
 
         Returns:
-            dict: The response in JSON format.
+            (dict, timedelta): A tuple of the response in JSON format and the time taken to execute the request as a
+                :class:`timedelta` object.
 
         Raises:
             TectonServerException: If the server returns an error response, different errors based on the
@@ -100,11 +103,13 @@ class TectonHttpClient:
         url = urljoin(self._url, endpoint)
 
         try:
+            start_time = time.time()
             async with self._client.post(url, json=request_body, headers=self._auth) as response:
                 json_response = await response.json()
+            end_time = time.time()
 
             if response.status == 200:
-                return json_response
+                return json_response, timedelta(seconds=(end_time - start_time))
             else:
                 message = INVALID_SERVER_RESPONSE(response.status, response.reason, json_response["message"])
                 error_class = SERVER_ERRORS.get(response.status, TectonServerException)

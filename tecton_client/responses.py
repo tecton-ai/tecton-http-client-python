@@ -1,3 +1,4 @@
+from datetime import timedelta
 from enum import Enum
 from typing import Dict
 from typing import List
@@ -228,11 +229,13 @@ class GetFeaturesResponse:
             present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
     """
 
-    def __init__(self, response: dict) -> None:
+    def __init__(self, response: dict, request_latency: timedelta) -> None:
         """Initializes the object with data from the response.
 
         Args:
             response (dict): JSON response returned from the GetFeatures API call.
+            request_latency (timedelta): The latency of the GetFeaturesRequest call as a :class:`timedelta` object.
+
         """
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
@@ -253,3 +256,5 @@ class GetFeaturesResponse:
         self.slo_info: Optional[SloInformation] = (
             SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
         )
+
+        self.request_latency = request_latency
