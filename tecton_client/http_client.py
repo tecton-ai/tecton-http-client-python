@@ -11,6 +11,7 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import SERVER_ERRORS
+from tecton_client.exceptions import TectonClientError
 from tecton_client.exceptions import TectonServerException
 
 
@@ -50,7 +51,13 @@ class TectonHttpClient:
         self._api_key = self._validate_key(api_key)
 
         self._auth = {self.headers.AUTHORIZATION.value: f"{API_PREFIX} {self._api_key}"}
-        self._client: aiohttp.ClientSession = client or aiohttp.ClientSession(
+        self._client: aiohttp.ClientSession = client or self._get_default_client(client_options)
+        self._client_options: TectonClientOptions = client_options
+        self._is_client_closed: bool = False
+
+    @staticmethod
+    def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSession:
+        return aiohttp.ClientSession(
             timeout=aiohttp.ClientTimeout(
                 connect=client_options.connect_timeout.seconds, total=client_options.read_timeout.seconds
             ),
@@ -58,8 +65,6 @@ class TectonHttpClient:
                 limit=client_options.max_connections, keepalive_timeout=client_options.keepalive_expiry.seconds
             ),
         )
-        self._client_options: TectonClientOptions = client_options
-        self._is_client_closed: bool = False
 
     async def close(self) -> None:
         """Close the HTTP Asynchronous Client."""
@@ -91,20 +96,23 @@ class TectonHttpClient:
         Raises:
             TectonServerException: If the server returns an error response, different errors based on the
                 error response are raised.
+            TectonClientError: If the client encounters an error while making the request.
 
         """
         url = urljoin(self._url, endpoint)
 
-        async with self._client.post(url, json=request_body, headers=self._auth) as response:
-            json_response = await response.json()
+        try:
+            async with self._client.post(url, json=request_body, headers=self._auth) as response:
+                json_response = await response.json()
+
             if response.status == 200:
                 return json_response
             else:
                 message = INVALID_SERVER_RESPONSE(response.status, response.reason, json_response["message"])
-                try:
-                    raise SERVER_ERRORS.get(response.status)(message)
-                except TypeError:
-                    raise TectonServerException(message)
+                error_class = SERVER_ERRORS.get(response.status, TectonServerException)
+                raise error_class(message)
+        except aiohttp.ClientError as e:
+            raise TectonClientError from e
 
     @staticmethod
     def _validate_url(url: Optional[str]) -> str:
