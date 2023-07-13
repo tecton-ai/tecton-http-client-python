@@ -225,9 +225,9 @@ class GetFeaturesResponse:
     Attributes:
         feature_values (Dict[str, FeatureValue]): Dictionary with feature names as keys and their corresponding feature
             values, one for each feature in the feature vector.
-        slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector's SLO,
-            present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
-        request_latency (timedelta): The latency of the GetFeaturesRequest call as a :class:`timedelta` object.
+        slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the feature
+            vector's SLO, present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
+        request_latency (timedelta): The latency of the :class:`GetFeaturesRequest` call as a :class:`timedelta` object.
     """
 
     def __init__(self, response: dict, request_latency: timedelta) -> None:
