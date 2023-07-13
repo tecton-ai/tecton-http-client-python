@@ -244,7 +244,9 @@ class TestTectonClient:
             assert exception.STATUS_CODE not in response_codes
             response_codes.add(exception.STATUS_CODE)
 
-    client1 = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(connect=5, total=10))
+    client1 = aiohttp.ClientSession(
+        timeout=aiohttp.ClientTimeout(connect=5, total=10), connector=aiohttp.TCPConnector(limit=10)
+    )
     client2 = aiohttp.ClientSession()
 
     @pytest.mark.parametrize(

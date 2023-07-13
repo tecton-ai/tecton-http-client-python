@@ -63,7 +63,7 @@ class TestHttpClient:
         await http_client.close()
 
     @pytest.mark.asyncio
-    async def test_perform_http_request_failure(self, mocked: pytest.fixture()) -> None:
+    async def test_perform_http_request_failure(self, mocked: aioresponses) -> None:
         mocked.post(
             url=self.full_url,
             status=401,
