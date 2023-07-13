@@ -2,6 +2,7 @@ import time
 from datetime import timedelta
 from enum import Enum
 from typing import Optional
+from typing import Tuple
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
@@ -81,7 +82,7 @@ class TectonHttpClient:
         """
         return self._is_client_closed
 
-    async def execute_request(self, endpoint: str, request_body: dict) -> (dict, timedelta):
+    async def execute_request(self, endpoint: str, request_body: dict) -> Tuple[dict, timedelta]:
         """Performs an HTTP request to a specified endpoint using the client.
 
         This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
@@ -91,8 +92,8 @@ class TectonHttpClient:
             request_body (dict): The request data to be passed, in JSON format.
 
         Returns:
-            (dict, timedelta): A tuple of the response in JSON format and the time taken to execute the request as a
-                :class:`timedelta` object.
+            Tuple[dict, timedelta]: A tuple of the response in JSON format and the time taken to execute the request as
+                a :class:`timedelta` object.
 
         Raises:
             TectonServerException: If the server returns an error response, different errors based on the
