@@ -2,10 +2,11 @@ import json
 import os
 from datetime import timedelta
 from typing import Final
+from urllib.parse import urljoin
 
-import httpx
+import aiohttp
 import pytest
-from pytest_httpx import HTTPXMock
+from aioresponses import aioresponses
 
 from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
@@ -29,9 +30,17 @@ from tecton_client.tecton_client import TectonClientOptions
 from tests.test_utils import dict_equals
 
 
+@pytest.fixture
+def mocked() -> aioresponses:
+    with aioresponses() as mock:
+        yield mock
+
+
 class TestTectonClient:
     api_key: Final[str] = "1234"
     url: Final[str] = "https://thisisaurl.ai"
+
+    final_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features")
 
     TEST_DATA_REL_PATH: Final[str] = "tests/test_data/"
 
@@ -116,21 +125,21 @@ class TestTectonClient:
             ("sample_response_long.json", expected_response_long),
         ],
     )
-    def test_get_features(self, httpx_mock: HTTPXMock, file_name: str, expected_response: dict) -> None:
+    def test_get_features(self, mocked: aioresponses, file_name: str, expected_response: dict) -> None:
         tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
 
         with open(f"{TestTectonClient.TEST_DATA_REL_PATH}{file_name}") as json_file:
-            httpx_mock.add_response(json=json.load(json_file))
+            mocked.post(url=self.final_url, payload=json.load(json_file))
             response = tecton_client.get_features(self.test_request_normal)
 
         assert dict_equals({k: v.feature_value for k, v in response.feature_values.items()}, expected_response)
         tecton_client.close()
 
     @pytest.mark.parametrize("metadata_path, expected_metadata", [("sample_response_metadata.json", expected_metadata)])
-    def test_get_features_metadata(self, httpx_mock: HTTPXMock, metadata_path: str, expected_metadata: list) -> None:
+    def test_get_features_metadata(self, mocked: aioresponses, metadata_path: str, expected_metadata: list) -> None:
         tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
         with open(f"{TestTectonClient.TEST_DATA_REL_PATH}{metadata_path}") as json_file:
-            httpx_mock.add_response(json=json.load(json_file))
+            mocked.post(url=self.final_url, payload=json.load(json_file))
             response = tecton_client.get_features(self.test_request_metadata)
 
         assert response.slo_info is not None
@@ -217,13 +226,14 @@ class TestTectonClient:
         ],
     )
     def test_get_features_error_response(
-        self, httpx_mock: HTTPXMock, exception: TectonServerException, status_code: int, error_json: dict
+        self, mocked: aioresponses, exception: TectonServerException, status_code: int, error_json: dict
     ) -> None:
         tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
         with pytest.raises(exception):
-            httpx_mock.add_response(
-                status_code=status_code,
-                json=error_json,
+            mocked.post(
+                url=self.final_url,
+                status=status_code,
+                payload=error_json,
             )
             tecton_client.get_features(self.test_request_normal)
         tecton_client.close()
@@ -234,14 +244,16 @@ class TestTectonClient:
             assert exception.STATUS_CODE not in response_codes
             response_codes.add(exception.STATUS_CODE)
 
-    client1 = httpx.AsyncClient(timeout=10, limits=httpx.Limits(max_connections=10))
-    client2 = httpx.AsyncClient()
+    client1 = aiohttp.ClientSession(
+        timeout=aiohttp.ClientTimeout(connect=5, total=10), connector=aiohttp.TCPConnector(limit=10)
+    )
+    client2 = aiohttp.ClientSession()
 
     @pytest.mark.parametrize(
         "client",
         [client1, client2, None],
     )
-    def test_custom_client_with_options(self, httpx_mock: HTTPXMock, client: httpx.AsyncClient) -> None:
+    def test_custom_client_with_options(self, mocked: aioresponses, client: aiohttp.ClientSession) -> None:
         if client is None:
             client_options = TectonClientOptions(
                 connect_timeout=timedelta(seconds=10),
@@ -257,7 +269,7 @@ class TestTectonClient:
             tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
 
         with open(f"{TestTectonClient.TEST_DATA_REL_PATH}sample_response_mixed.json") as json_file:
-            httpx_mock.add_response(json=json.load(json_file))
+            mocked.post(url=self.final_url, payload=json.load(json_file))
             response = tecton_client.get_features(self.test_request_normal)
 
         assert dict_equals(
@@ -276,10 +288,11 @@ class TestTectonClient:
         assert not client.is_closed
         client.close()
 
-    def test_client_and_client_options(self) -> None:
+    @pytest.mark.asyncio
+    async def test_client_and_client_options(self) -> None:
+        client = aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=2))
         with pytest.raises(InvalidParameterError):
             TectonClient(
-                url="https://thisisaurl.ai",
-                client_options=TectonClientOptions(max_connections=1),
-                client=httpx.AsyncClient(limits=httpx.Limits(max_connections=2)),
+                url="https://thisisaurl.ai", client_options=TectonClientOptions(max_connections=1), client=client
             )
+        await client.close()

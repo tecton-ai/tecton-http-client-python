@@ -1,4 +1,3 @@
-httpx~=0.24.1
-httpx_auth~=0.17.0
 pytest~=7.3.1
-pytest_httpx~=0.22.0
+aiohttp~=3.8.4
+aioresponses~=0.7.4
