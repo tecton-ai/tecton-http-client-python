@@ -52,7 +52,6 @@ class TectonHttpClient:
 
         self._auth = {self.headers.AUTHORIZATION.value: f"{API_PREFIX} {self._api_key}"}
         self._client: aiohttp.ClientSession = client or self._get_default_client(client_options)
-        self._client_options: TectonClientOptions = client_options
         self._is_client_closed: bool = False
 
     @staticmethod
