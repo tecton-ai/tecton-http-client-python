@@ -183,9 +183,7 @@ class TectonHttpClient:
 
         # Return a list of JSON responses returned from performing the request and the overall latency of the
         # parallel requests
-        return [
-            task.result()[0] if task in done and task.exception() is None else None for task in tasks
-        ], latency
+        return [task.result()[0] if task in done and task.exception() is None else None for task in tasks], latency
 
     @staticmethod
     async def _close_tasks(tasks: Set[asyncio.Task]) -> None:
