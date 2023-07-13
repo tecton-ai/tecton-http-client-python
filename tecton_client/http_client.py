@@ -14,8 +14,18 @@ from tecton_client.exceptions import SERVER_ERRORS
 from tecton_client.exceptions import TectonClientError
 from tecton_client.exceptions import TectonServerException
 
-
 API_PREFIX = "Tecton-key"
+
+
+def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSession:
+    return aiohttp.ClientSession(
+        timeout=aiohttp.ClientTimeout(
+            connect=client_options.connect_timeout.seconds, total=client_options.read_timeout.seconds
+        ),
+        connector=aiohttp.TCPConnector(
+            limit=client_options.max_connections, keepalive_timeout=client_options.keepalive_expiry.seconds
+        ),
+    )
 
 
 class TectonHttpClient:
@@ -51,19 +61,8 @@ class TectonHttpClient:
         self._api_key = self._validate_key(api_key)
 
         self._auth = {self.headers.AUTHORIZATION.value: f"{API_PREFIX} {self._api_key}"}
-        self._client: aiohttp.ClientSession = client or self._get_default_client(client_options)
+        self._client: aiohttp.ClientSession = client or _get_default_client(client_options)
         self._is_client_closed: bool = False
-
-    @staticmethod
-    def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSession:
-        return aiohttp.ClientSession(
-            timeout=aiohttp.ClientTimeout(
-                connect=client_options.connect_timeout.seconds, total=client_options.read_timeout.seconds
-            ),
-            connector=aiohttp.TCPConnector(
-                limit=client_options.max_connections, keepalive_timeout=client_options.keepalive_expiry.seconds
-            ),
-        )
 
     async def close(self) -> None:
         """Close the HTTP Asynchronous Client."""
