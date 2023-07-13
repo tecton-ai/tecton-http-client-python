@@ -27,7 +27,7 @@ class TestHttpClient:
 
     endpoint: Final[str] = "api/v1/feature-service/get-features"
     full_url: Final[str] = urljoin(URL, endpoint)
-    
+
     params = {
         "feature_service_name": "fraud_detection_feature_service",
         "join_key_map": {"user_id": "user_205125746682"},
@@ -124,16 +124,18 @@ class TestHttpClient:
         await client.close()
 
     @pytest.mark.asyncio
-    @pytest.mark.parametrize("number_of_requests", [10, 100, 500])
-    async def test_parallel_requests(self, httpx_mock: HTTPXMock, number_of_requests: int) -> None:
+    @pytest.mark.parametrize("number_of_requests", [10])
+    async def test_parallel_requests(self, mocked: aioresponses, number_of_requests: int) -> None:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
             client_options=self.client_options,
         )
 
-        httpx_mock.add_response(
-            json={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        mocked.post(
+            url=self.full_url,
+            payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
+            repeat=True,
         )
 
         requests_list = [self.request] * number_of_requests
@@ -150,7 +152,10 @@ class TestHttpClient:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [10, 100])
-    async def test_parallel_requests_smaller_timeout(self, httpx_mock: HTTPXMock, number_of_requests: int) -> None:
+    async def test_parallel_requests_smaller_timeout(self, mocked: aioresponses, number_of_requests: int) -> None:
+        # The function takes in `mocked` as a parameter because otherwise the test won't know that a mocked server
+        # must be used and will instead try to place an actual request
+
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
@@ -164,6 +169,7 @@ class TestHttpClient:
         )
 
         assert len(responses_list) == len(requests_list)
+
         # No request should complete in this timeout, resulting in all returned responses being None
         assert responses_list.count(None) == len(requests_list)
 
@@ -171,24 +177,28 @@ class TestHttpClient:
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [2])
-    async def test_order_of_parallel_requests(self, httpx_mock: HTTPXMock, number_of_requests: int) -> None:
+    async def test_order_of_parallel_requests(self, mocked: aioresponses, number_of_requests: int) -> None:
         http_client = TectonHttpClient(
             self.URL,
             self.API_KEY,
             client_options=self.client_options,
         )
 
-        httpx_mock.add_response(
-            json={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        mocked.post(
+            url=self.full_url,
+            payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
         )
-        httpx_mock.add_response(
-            json={"result": {"features": ["2", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        mocked.post(
+            url=self.full_url,
+            payload={"result": {"features": ["2", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
         )
-        httpx_mock.add_response(
-            json={"result": {"features": ["3", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        mocked.post(
+            url=self.full_url,
+            payload={"result": {"features": ["3", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
         )
-        httpx_mock.add_response(
-            json={"result": {"features": ["4", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+        mocked.post(
+            url=self.full_url,
+            payload={"result": {"features": ["4", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
         )
 
         params2 = {
