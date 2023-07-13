@@ -175,7 +175,7 @@ class TestHttpClient:
 
         for response in responses_list:
             if response:
-                assert type({}) == type(response)
+                assert isinstance(response[0], dict)
 
         await http_client.close()
 
@@ -246,9 +246,9 @@ class TestHttpClient:
 
         for response in responses_list:
             if response:
-                assert type({}) == type(response)
+                assert isinstance(response[0], dict)
                 # Testing out order of responses by checking the value stored in the first feature of the features list
-                assert response["result"]["features"][0] == str(responses_list.index(response) % 4 + 1)
+                assert response[0]["result"]["features"][0] == str(responses_list.index(response) % 4 + 1)
 
         await http_client.close()
 
@@ -277,6 +277,6 @@ class TestHttpClient:
 
         for response in responses_list:
             if response:
-                assert type({}) == type(response)
+                assert isinstance(response[0], dict)
 
         await http_client.close()

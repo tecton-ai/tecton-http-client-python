@@ -6,6 +6,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Set
+from typing import Tuple
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
@@ -128,7 +129,7 @@ class TectonHttpClient:
         endpoint: str,
         request_bodies: List[dict],
         timeout: timedelta = timedelta(seconds=DEFAULT_PARALLEL_REQUEST_TIMEOUT),
-    ) -> (List[Optional[dict]], timedelta):
+    ) -> (List[Optional[Tuple[dict, timedelta]]], timedelta):
         """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
 
         This method sends multiple HTTP requests to the specified endpoint in parallel, attaching the provided
@@ -142,9 +143,9 @@ class TectonHttpClient:
                 Defaults to {DEFAULT_PARALLEL_REQUEST_TIMEOUT} seconds.
 
         Returns:
-            (List[Optional[dict]], timedelta): A tuple of the list of responses in JSON format, or None if the task
-                does not complete successfully, and the time taken to execute the parallel requests, returned as a
-                :class:`timedelta` object.
+            (List[Optional[Tuple[dict, timedelta]]], timedelta): A tuple of the list of responses and their latencies,
+                or None if the task does not complete successfully, and the overall time taken to execute the parallel
+                requests, returned as a :class:`timedelta` object.
 
         """
         tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
@@ -154,9 +155,7 @@ class TectonHttpClient:
         latency = timedelta(seconds=(end_time - start_time))
         await self._close_tasks(tasks=pending)
 
-        # Return a list of JSON responses returned from performing the request and the overall latency of the
-        # parallel requests
-        return [task.result()[0] if task in done and task.exception() is None else None for task in tasks], latency
+        return [task.result() if task in done and task.exception() is None else None for task in tasks], latency
 
     @staticmethod
     async def _close_tasks(tasks: Set[asyncio.Task]) -> None:
