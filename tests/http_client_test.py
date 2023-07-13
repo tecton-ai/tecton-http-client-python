@@ -116,9 +116,11 @@ class TestHttpClient:
             reason="Unauthorized: invalid 'Tecton-key' authorization header. "
             "Newly created credentials may take up to 60 seconds to be usable.",
             payload={
-                "error": "GetFeatures exceeded the concurrent request limit, please retry later",
-                "message": "GetFeatures exceeded the concurrent request limit, please retry later",
-                "code": 8,
+                "error": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
+                "take up to 60 seconds to be usable.",
+                "message": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
+                "take up to 60 seconds to be usable.",
+                "code": 16,
             },
         )
 
