@@ -1,3 +1,4 @@
+import asyncio
 from datetime import timedelta
 from typing import Final
 from urllib.parse import urljoin
@@ -140,11 +141,11 @@ class TestHttpClient:
         )
 
         requests_list = [self.request] * number_of_requests
-        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
-                                                                              timedelta(seconds=1))
-        assert len(responses_list) == len(requests_list)
-        assert responses_list.count(None) == 0
+        responses_list, latency = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
 
+        assert len(responses_list) == len(requests_list)
         for response in responses_list:
             if response:
                 assert isinstance(response[0], dict)
@@ -160,14 +161,24 @@ class TestHttpClient:
             client_options=self.client_options,
         )
 
+        async def delay_callback(request_url: str) -> dict:
+            await asyncio.sleep(1)
+            return {"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+
+        mocked.post(
+            url=self.full_url,
+            callback=delay_callback,
+            repeat=True,
+        )
+
         requests_list = [self.request] * number_of_requests
-        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
-                                                                              timedelta(milliseconds=1))
+        responses_list, latency = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(milliseconds=1)
+        )
 
         assert len(responses_list) == len(requests_list)
-
-        # No request should complete in this timeout, resulting in all returned responses being None
-        assert responses_list.count(None) == len(requests_list)
+        # No request should complete in this timeout, resulting in all returned responses being Timeout exceptions
+        assert len([isinstance(response, TimeoutError) for response in responses_list]) == len(requests_list)
 
         await http_client.close()
 
@@ -194,11 +205,13 @@ class TestHttpClient:
             mocked.post(
                 url=self.full_url,
                 payload={
-                    "result": {"features": [str(i), 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
+                    "result": {"features": [str(i), 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}
+                },
             )
 
-        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
-                                                                              timedelta(seconds=1))
+        responses_list, latency = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
 
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == 0
@@ -220,21 +233,42 @@ class TestHttpClient:
             client_options=self.client_options,
         )
 
-        # Send the mocked response only once to check if the returned response list is partially filled
+        for i in range(number_of_requests // 2):
+            mocked.post(
+                url=self.full_url,
+                payload={
+                    "result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}
+                },
+            )
         mocked.post(
             url=self.full_url,
-            payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
+            status=401,
+            reason="Unauthorized: invalid 'Tecton-key' authorization header. "
+            "Newly created credentials may take up to 60 seconds to be usable.",
+            payload={
+                "error": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
+                "take up to 60 seconds to be usable.",
+                "message": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
+                "take up to 60 seconds to be usable.",
+                "code": 16,
+            },
+            repeat=True,
         )
 
         requests_list = [self.request] * number_of_requests
-
-        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
-                                                                              timedelta(seconds=1))
+        responses_list, latency = await http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
         assert len(responses_list) == len(requests_list)
-        assert responses_list.count(None) == len(requests_list) - 1
 
+        count_of_error_responses = 0
         for response in responses_list:
-            if response:
+            if isinstance(response, TectonServerException):
+                count_of_error_responses += 1
+            else:
                 assert isinstance(response[0], dict)
+
+        # Check whether half of the responses sent are exceptions
+        assert count_of_error_responses == len(requests_list) // 2
 
         await http_client.close()

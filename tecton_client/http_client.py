@@ -7,6 +7,7 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Tuple
+from typing import Union
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
@@ -152,11 +153,8 @@ class TectonHttpClient:
         endpoint: str,
         request_bodies: List[dict],
         timeout: Optional[timedelta] = None,
-    ) -> (List[Optional[Tuple[dict, timedelta]]], timedelta):
+    ) -> (List[Union[Tuple[dict, timedelta], Exception]], timedelta):
         """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
-
-        This method sends multiple HTTP requests to the specified endpoint in parallel, attaching the provided
-        request body data.
 
         Args:
             endpoint (str): The HTTP endpoint to attach to the URL and query.
@@ -166,19 +164,33 @@ class TectonHttpClient:
                 returning. Defaults to no timeout.
 
         Returns:
-            (List[Optional[Tuple[dict, timedelta]]], timedelta): A tuple of the list of responses and their latencies,
-                or None if the task does not complete successfully, and the overall time taken to execute the parallel
-                requests, returned as a :class:`timedelta` object.
+            (List[Union[Tuple[dict, timedelta], Exception]]], timedelta): A tuple of the list of responses and their
+                latencies, or the exception if the task does not complete successfully, and the overall time taken to
+                execute the parallel requests, returned as a :class:`timedelta` object.
 
         """
         tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
         start_time = time.time()
-        done, pending = await asyncio.wait(tasks, timeout=timeout.total_seconds())
+        done, pending = await asyncio.wait(tasks, timeout=timeout.total_seconds() if timeout else timeout)
         end_time = time.time()
         latency = timedelta(seconds=(end_time - start_time))
-        await self._close_tasks(tasks=pending)
 
-        return [task.result() if task in done and task.exception() is None else None for task in tasks], latency
+        thrown_exception = None
+        for task in done:
+            if task.exception() and isinstance(task.exception(), TectonClientError):
+                thrown_exception = task.exception()
+                break
+
+        await self._close_tasks(tasks=pending)
+        if thrown_exception:
+            raise thrown_exception
+
+        # If the task completes successfully, return the result.
+        # Else, return an exception (which can be one returned from the server, or caused due to a timeout).
+        return [
+            task.exception() if task in done and task.exception() else task.result() if task in done else TimeoutError()
+            for task in tasks
+        ], latency
 
     @staticmethod
     async def _close_tasks(tasks: Set[asyncio.Task]) -> None:
