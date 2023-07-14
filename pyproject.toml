@@ -37,15 +37,24 @@ style = 'google'
 exclude = '\.git|\.tox|tests/.'
 allow-init-docstring = true
 
-[tool.hatch]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.version]
+path = "tecton_client/__about__.py"
+
 [project]
 name = "tecton-http-client-python"
-description = "A Python Client for the Tecton Feature Service HTTP API"
+description = "A Python Client for the Tecton Online Inference"
 requires-python = ">=3.8"
 license = "Apache-2.0"
-version = "0.0.1"
+dynamic = ["version"]
+readme = "README.md"
+
+[project.urls]
+"Source" = "https://github.com/tecton-ai/tecton-http-client-python"
+"Documentation" = "https://tecton-ai.github.io/tecton-http-client-python/html/index.html"
+
+[tools.hatch.publish]
+repository = "testpypi"
