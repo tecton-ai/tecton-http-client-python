@@ -166,10 +166,8 @@ class TestHttpClient:
         )
 
         requests_list = [self.request] * number_of_requests
-
-        responses_list, latency = await http_client.execute_parallel_requests(
-            self.endpoint, requests_list, timedelta(seconds=1)
-        )
+        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
+                                                                              timedelta(seconds=1))
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == 0
 
@@ -189,10 +187,8 @@ class TestHttpClient:
         )
 
         requests_list = [self.request] * number_of_requests
-
-        responses_list, latency = await http_client.execute_parallel_requests(
-            self.endpoint, requests_list, timedelta(milliseconds=1)
-        )
+        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
+                                                                              timedelta(milliseconds=1))
 
         assert len(responses_list) == len(requests_list)
 
@@ -210,23 +206,6 @@ class TestHttpClient:
             client_options=self.client_options,
         )
 
-        mocked.post(
-            url=self.full_url,
-            payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
-        )
-        mocked.post(
-            url=self.full_url,
-            payload={"result": {"features": ["2", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
-        )
-        mocked.post(
-            url=self.full_url,
-            payload={"result": {"features": ["3", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
-        )
-        mocked.post(
-            url=self.full_url,
-            payload={"result": {"features": ["4", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
-        )
-
         params2 = {
             "feature_service_name": "fraud_detection_feature_service",
             "join_key_map": {"user_id": "user_205125746682"},
@@ -237,9 +216,15 @@ class TestHttpClient:
         request2 = {"params": params2}
         requests_list = [self.request, request2] * number_of_requests
 
-        responses_list, latency = await http_client.execute_parallel_requests(
-            self.endpoint, requests_list, timedelta(seconds=1)
-        )
+        for i in range(1, len(requests_list) + 1):
+            mocked.post(
+                url=self.full_url,
+                payload={
+                    "result": {"features": [str(i), 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
+            )
+
+        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
+                                                                              timedelta(seconds=1))
 
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == 0
@@ -269,9 +254,8 @@ class TestHttpClient:
 
         requests_list = [self.request] * number_of_requests
 
-        responses_list, latency = await http_client.execute_parallel_requests(
-            self.endpoint, requests_list, timedelta(seconds=1)
-        )
+        responses_list, latency = await http_client.execute_parallel_requests(self.endpoint, requests_list,
+                                                                              timedelta(seconds=1))
         assert len(responses_list) == len(requests_list)
         assert responses_list.count(None) == len(requests_list) - 1
 
