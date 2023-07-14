@@ -118,6 +118,8 @@ class TectonHttpClient:
     async def execute_request(self, request: HTTPRequest) -> HTTPResponse:
         """Performs an HTTP request to a specified endpoint using the client.
 
+        This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
+
         Args:
             request (HTTPRequest): An :class:`HTTPRequest` object containing the endpoint and body of the HTTP request.
 
@@ -166,7 +168,7 @@ class TectonHttpClient:
         Returns:
             (List[Union[Tuple[dict, timedelta], Exception]]], timedelta): A tuple of the list of responses and their
                 latencies, or the exception if the task does not complete successfully, and the overall time taken to
-                execute the parallel requests, returned as a :class:`timedelta` object.
+                execute the parallel requests returned as a :class:`timedelta` object.
 
         """
         tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
@@ -178,6 +180,8 @@ class TectonHttpClient:
         thrown_exception = None
         for task in done:
             if task.exception() and isinstance(task.exception(), TectonClientError):
+                # Capture the first exception thrown by the client and break.
+                # Not raising an exception here directly since all created tasks must be closed before returning.
                 thrown_exception = task.exception()
                 break
 

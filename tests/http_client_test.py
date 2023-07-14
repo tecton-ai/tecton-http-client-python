@@ -161,13 +161,13 @@ class TestHttpClient:
             client_options=self.client_options,
         )
 
-        async def delay_callback(request_url: str) -> dict:
+        async def delayed_callback(request_url: str) -> dict:
             await asyncio.sleep(1)
             return {"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
 
         mocked.post(
             url=self.full_url,
-            callback=delay_callback,
+            callback=delayed_callback,
             repeat=True,
         )
 
