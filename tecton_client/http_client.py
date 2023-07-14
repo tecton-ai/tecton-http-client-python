@@ -5,7 +5,6 @@ from datetime import timedelta
 from enum import Enum
 from typing import List
 from typing import Optional
-from typing import Tuple
 from typing import Set
 from typing import Tuple
 from urllib.parse import urljoin
@@ -14,7 +13,6 @@ from urllib.parse import urlparse
 import aiohttp
 
 from tecton_client.client_options import TectonClientOptions
-from tecton_client.constants import DEFAULT_PARALLEL_REQUEST_TIMEOUT
 from tecton_client.exceptions import INVALID_SERVER_RESPONSE
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
@@ -119,8 +117,6 @@ class TectonHttpClient:
     async def execute_request(self, request: HTTPRequest) -> HTTPResponse:
         """Performs an HTTP request to a specified endpoint using the client.
 
-        This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
-
         Args:
             request (HTTPRequest): An :class:`HTTPRequest` object containing the endpoint and body of the HTTP request.
 
@@ -155,7 +151,7 @@ class TectonHttpClient:
         self,
         endpoint: str,
         request_bodies: List[dict],
-        timeout: timedelta = timedelta(seconds=DEFAULT_PARALLEL_REQUEST_TIMEOUT),
+        timeout: Optional[timedelta] = None,
     ) -> (List[Optional[Tuple[dict, timedelta]]], timedelta):
         """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
 
@@ -166,8 +162,8 @@ class TectonHttpClient:
             endpoint (str): The HTTP endpoint to attach to the URL and query.
             request_bodies (List[dict]): The list of request data to be passed for the parallel requests,
                 in JSON format.
-            timeout (timedelta): The duration of time to wait for the parallel requests to complete before returning.
-                Defaults to {DEFAULT_PARALLEL_REQUEST_TIMEOUT} seconds.
+            timeout (Optional[timedelta]): The duration of time to wait for the parallel requests to complete before
+                returning. Defaults to no timeout.
 
         Returns:
             (List[Optional[Tuple[dict, timedelta]]], timedelta): A tuple of the list of responses and their latencies,
