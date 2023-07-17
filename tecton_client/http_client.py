@@ -155,7 +155,7 @@ class TectonHttpClient:
         endpoint: str,
         request_bodies: List[dict],
         timeout: Optional[timedelta] = None,
-    ) -> (List[Union[Tuple[dict, timedelta], Exception]], timedelta):
+    ) -> Tuple[List[Union[Tuple[dict, timedelta], Exception]], timedelta]:
         """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
 
         Args:
@@ -166,9 +166,9 @@ class TectonHttpClient:
                 returning. Defaults to no timeout.
 
         Returns:
-            (List[Union[Tuple[dict, timedelta], Exception]]], timedelta): A tuple of the list of responses and their
-                latencies, or the exception if the task does not complete successfully, and the overall time taken to
-                execute the parallel requests returned as a :class:`timedelta` object.
+            Tuple[List[Union[Tuple[dict, timedelta], Exception]]], timedelta]: A tuple of the list of responses and
+                their latencies, or the exception if the task does not complete successfully, and the overall time
+                taken to execute the parallel requests returned as a :class:`timedelta` object.
 
         """
         tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
