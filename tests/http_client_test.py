@@ -1,6 +1,7 @@
 import asyncio
 from datetime import timedelta
 from typing import Final
+from typing import Union
 from urllib.parse import urljoin
 
 import pytest
@@ -161,7 +162,9 @@ class TestHttpClient:
             client_options=self.client_options,
         )
 
-        async def delayed_callback(request_url: str) -> dict:
+        async def delayed_callback(request_url: str, **kwargs: Union[str, bool, dict]) -> dict:
+            # This is the function that sends a mock response when the client sends a request
+            # Here, `**kwargs` represents information such as the request data, headers etc. needed to parse a request
             await asyncio.sleep(1)
             return {"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
 
@@ -177,8 +180,9 @@ class TestHttpClient:
         )
 
         assert len(responses_list) == len(requests_list)
-        # No request should complete in this timeout, resulting in all returned responses being Timeout exceptions
-        assert len([isinstance(response, TimeoutError) for response in responses_list]) == len(requests_list)
+        print(responses_list)
+        # No request should complete in this timeout, resulting in all returned responses being None
+        assert responses_list.count(None) == len(requests_list)
 
         await http_client.close()
 

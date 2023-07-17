@@ -155,7 +155,7 @@ class TectonHttpClient:
         endpoint: str,
         request_bodies: List[dict],
         timeout: Optional[timedelta] = None,
-    ) -> Tuple[List[Union[Tuple[dict, timedelta], Exception]], timedelta]:
+    ) -> Tuple[List[Union[Tuple[dict, timedelta], Optional[Exception]]], timedelta]:
         """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
 
         Args:
@@ -166,9 +166,10 @@ class TectonHttpClient:
                 returning. Defaults to no timeout.
 
         Returns:
-            Tuple[List[Union[Tuple[dict, timedelta], Exception]]], timedelta]: A tuple of the list of responses and
-                their latencies, or the exception if the task does not complete successfully, and the overall time
-                taken to execute the parallel requests returned as a :class:`timedelta` object.
+            Tuple[List[Union[Tuple[dict, timedelta], Optional[Exception]]]], timedelta]: A tuple of the list of
+                responses and their latencies, or the exception if the task does not complete successfully, or None
+                if the task times out, and the overall time taken to execute the parallel requests returned as
+                a :class:`timedelta` object.
 
         """
         tasks = [asyncio.create_task(self.execute_request(endpoint, request_body)) for request_body in request_bodies]
@@ -190,9 +191,10 @@ class TectonHttpClient:
             raise thrown_exception
 
         # If the task completes successfully, return the result.
-        # Else, return an exception (which can be one returned from the server, or caused due to a timeout).
+        # Else, return an exception that's returned from the server,
+        # or return None when the task fails to due to a timeout.
         return [
-            task.exception() if task in done and task.exception() else task.result() if task in done else TimeoutError()
+            task.exception() if task in done and task.exception() else task.result() if task in done else None
             for task in tasks
         ], latency
 
