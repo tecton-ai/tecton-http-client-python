@@ -2,25 +2,24 @@
 
 A simple Python client for the Feature Server HTTP API that helps customers integrate with Tecton easily.
 
-[//]: # ()
-[//]: # (## Documentation)
 
-[//]: # ()
-[//]: # (* [Fetching Online Features]&#40;https://docs.tecton.ai/latest/examples/fetch-real-time-features.html&#41;)
+## Documentation
 
-[//]: # (* [FeatureServer API Reference]&#40;https://docs.tecton.ai/rest-swagger/docs.html&#41;)
 
-[//]: # (* [Tecton Java Client API Reference]&#40;https://www.javadoc.io/doc/ai.tecton/java-client/latest/index.html&#41;)
+* [Fetching Online Features](https://docs.tecton.ai/latest/examples/fetch-real-time-features.html)
+
+* [FeatureServer API Reference](https://docs.tecton.ai/rest-swagger/docs.html)
+
+* [Tecton Python Client API Reference](https://tecton-ai.github.io/tecton-http-client-python/html/index.html)
 
 [//]: # (* [Tecton Java Client Example Code]&#40;https://github.com/tecton-ai/TectonClientDemo/tree/main/src/main/java&#41;)
 
-[//]: # ()
-[//]: # (## Troubleshooting)
 
-[//]: # ()
-[//]: # (If you have any questions or need help,)
+## Troubleshooting
 
-[//]: # (please [open an Issue]&#40;https://github.com/tecton-ai/tecton-http-client-java/issues&#41; or reach out to us in Slack!)
+
+If you have any questions or need help, please [open an Issue](https://github.com/tecton-ai/tecton-http-client-python) 
+or reach out to us on Slack!
 
 [//]: # ()
 [//]: # (## Contributing)
