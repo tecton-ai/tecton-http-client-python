@@ -18,7 +18,7 @@ A simple Python client for the Feature Server HTTP API that helps customers inte
 ## Troubleshooting
 
 
-If you have any questions or need help, please [open an Issue](https://github.com/tecton-ai/tecton-http-client-python) 
+If you have any questions or need help, please [open an Issue](https://github.com/tecton-ai/tecton-http-client-python)
 or reach out to us on Slack!
 
 [//]: # ()
