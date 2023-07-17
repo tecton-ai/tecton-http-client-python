@@ -42,7 +42,7 @@ requires = ["hatchling", "hatch-requirements-txt"]
 build-backend = "hatchling.build"
 
 [project]
-name = "tecton-http-client-python"
+name = "tecton-client"
 description = "A Python Client for the Tecton Online Inference"
 requires-python = ">=3.8"
 license = "Apache-2.0"
