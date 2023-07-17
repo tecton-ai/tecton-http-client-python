@@ -184,7 +184,7 @@ class AbstractGetFeaturesRequest(TectonRequest):
     """Base class for all requests to fetch feature values from the Tecton API.
 
     Attributes:
-        metadata_options (Set[":class:`MetadataOptions`"]): Set of options for retrieving additional metadata about
+        metadata_options (Set[:class:`MetadataOptions`]): Set of options for retrieving additional metadata about
             features.
     """
 
@@ -205,6 +205,29 @@ class AbstractGetFeaturesRequest(TectonRequest):
         """
         super().__init__(workspace_name, feature_service_name)
         self.metadata_options = metadata_options.union(_defaults())
+
+
+def _construct_json_dict(
+    request: AbstractGetFeaturesRequest, fields_to_remove: List[str], is_batch_request: bool = False
+) -> dict:
+    self_dict = {key: value for key, value in vars(request).items() if key not in fields_to_remove}
+    self_dict["metadata_options"] = (
+        {option.value: True for option in sorted(request.metadata_options, key=lambda x: x.value)}
+        if request.metadata_options
+        else {}
+    )
+
+    if is_batch_request:
+        self_dict["request_data"] = [
+            {k: v for k, v in vars(request_data).items() if v} for request_data in request.request_data
+        ]
+    else:
+        if request.request_data.join_key_map:
+            self_dict["join_key_map"] = request.request_data.join_key_map
+        if request.request_data.request_context_map:
+            self_dict["request_context_map"] = request.request_data.request_context_map
+
+    return {"params": self_dict}
 
 
 @dataclass
@@ -253,21 +276,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
             JSON request to be sent to the API as a dictionary.
 
         """
-        fields_to_remove = ["ENDPOINT", "request_data"]
-        self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
-
-        if self.request_data.join_key_map:
-            self_dict["join_key_map"] = self.request_data.join_key_map
-        if self.request_data.request_context_map:
-            self_dict["request_context_map"] = self.request_data.request_context_map
-
-        self_dict["metadata_options"] = (
-            {option.value: True for option in sorted(self.metadata_options, key=lambda x: x.value)}
-            if self.metadata_options
-            else {}
-        )
-
-        return {"params": self_dict}
+        return _construct_json_dict(self, fields_to_remove=["ENDPOINT", "request_data"])
 
 
 @dataclass
@@ -308,17 +317,7 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
             JSON request to be sent to the API as a dictionary.
 
         """
-        fields_to_remove = ["ENDPOINT"]
-        self_dict = {key: value for key, value in vars(self).items() if key not in fields_to_remove}
-        self_dict["metadata_options"] = (
-            {option.value: True for option in sorted(self.metadata_options, key=lambda x: x.value)}
-            if self.metadata_options
-            else {}
-        )
-        self_dict["request_data"] = [
-            {k: v for k, v in vars(request_data).items() if v} for request_data in self.request_data
-        ]
-        return {"params": self_dict}
+        return _construct_json_dict(self, fields_to_remove=["ENDPOINT"], is_batch_request=True)
 
 
 class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
@@ -334,12 +333,14 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
 
     For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeatureRequestData` of size `n` and a `micro_batch_size`
     of 1, the client enqueues `n` HTTP calls to be sent parallelly to the /get-features endpoint. The client waits
-    until all calls are complete and returns a List of :class:`GetFeaturesResponse` objects of size `n`.
+    until all calls are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`
+    objects of size `n`.
 
     For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeatureRequestData` of size `n` and a `micro_batch_size`
     of `k` where `k` is in the range [{MIN_MICRO_BATCH_SIZE}, {MAX_MICRO_BATCH_SIZE}], the client enqueues
     math.ceil(n/k) microbatch requests to be sent parallelly to the /get-features-batch endpoint, waits until all
-    microbatch requests are complete and returns a List of :class:`GetFeaturesResponse` objects of size `n`.
+    microbatch requests are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`
+    objects of size `n`.
 
 
     Attributes:
@@ -432,7 +433,7 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
             raise InvalidParameterError(message)
 
     def to_json_list(self) -> List[dict]:
-        """Returns a list of JSON representations for requests in the :class:`GetFeaturesRequest` object.
+        """Returns a list of JSON representations for requests in the :class:`GetFeaturesBatchRequest` object.
 
         Returns:
             JSON requests to be sent to the API as a list of dictionaries.

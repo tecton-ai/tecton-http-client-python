@@ -1,3 +1,4 @@
+import json
 from typing import List
 from typing import Union
 
@@ -16,6 +17,8 @@ from tests.test_utils import dict_equals
 class TestRequests:
     TEST_WORKSPACE_NAME = "test_workspace_name"
     TEST_FEATURE_SERVICE_NAME = "test_feature_service_name"
+
+    TEST_DATA_PATH = "tests/test_data"
 
     default_request_data = GetFeaturesRequestData(join_key_map={"test_key": "test_value"})
 
@@ -335,83 +338,22 @@ class TestRequests:
         GetFeatureRequestData(join_key_map={"test_key": "test_value"}, request_context_map={"test_key": "test_value"}),
     ]
 
-    expected_json_list_1 = [
-        {
-            "params": {
-                "feature_service_name": "test_feature_service_name",
-                "workspace_name": "test_workspace_name",
-                "metadata_options": {"include_data_types": True, "include_names": True, "include_slo_info": True},
-                "join_key_map": {"test_key": "test_value"},
-            }
-        },
-        {
-            "params": {
-                "feature_service_name": "test_feature_service_name",
-                "workspace_name": "test_workspace_name",
-                "metadata_options": {"include_data_types": True, "include_names": True, "include_slo_info": True},
-                "request_context_map": {"test_key": "test_value"},
-            }
-        },
-        {
-            "params": {
-                "feature_service_name": "test_feature_service_name",
-                "workspace_name": "test_workspace_name",
-                "metadata_options": {"include_data_types": True, "include_names": True, "include_slo_info": True},
-                "join_key_map": {"test_key": "test_value"},
-                "request_context_map": {"test_key": "test_value"},
-            }
-        },
-    ]
-    expected_json_list_2 = [
-        {
-            "params": {
-                "feature_service_name": "test_feature_service_name",
-                "workspace_name": "test_workspace_name",
-                "metadata_options": {"include_data_types": True, "include_names": True, "include_slo_info": True},
-                "request_data": [
-                    {"join_key_map": {"test_key": "test_value"}},
-                    {"request_context_map": {"test_key": "test_value"}},
-                ],
-            }
-        },
-        {
-            "params": {
-                "feature_service_name": "test_feature_service_name",
-                "workspace_name": "test_workspace_name",
-                "metadata_options": {"include_data_types": True, "include_names": True, "include_slo_info": True},
-                "request_data": [
-                    {"join_key_map": {"test_key": "test_value"}, "request_context_map": {"test_key": "test_value"}}
-                ],
-            }
-        },
-    ]
-    expected_json_list_3 = [
-        {
-            "params": {
-                "feature_service_name": "test_feature_service_name",
-                "workspace_name": "test_workspace_name",
-                "metadata_options": {"include_data_types": True, "include_names": True, "include_slo_info": True},
-                "request_data": [
-                    {"join_key_map": {"test_key": "test_value"}},
-                    {"request_context_map": {"test_key": "test_value"}},
-                    {"join_key_map": {"test_key": "test_value"}, "request_context_map": {"test_key": "test_value"}},
-                ],
-            }
-        }
-    ]
-
     @pytest.mark.parametrize(
-        "request_list, micro_batch_size, expected_json_list",
+        "request_list, micro_batch_size, expected_json_file_name",
         [
-            (request_list, 1, expected_json_list_1),
-            (request_list, 2, expected_json_list_2),
-            (request_list, 3, expected_json_list_3),
-            (request_list, 4, expected_json_list_3),
+            (request_list, 1, "batch_expected_response_1"),
+            (request_list, 2, "batch_expected_response_2"),
+            (request_list, 3, "batch_expected_response_3"),
+            (request_list, 4, "batch_expected_response_3"),
+            (request_list * 7, 3, "batch_expected_response_4"),
         ],
     )
     def test_batch_requests(
-        self, request_list: List[GetFeatureRequestData], micro_batch_size: int, expected_json_list: List[dict]
+        self, request_list: List[GetFeatureRequestData], micro_batch_size: int, expected_json_file_name: str
     ) -> None:
+        with open(f"{self.TEST_DATA_PATH}/batch/{expected_json_file_name}.json", "r") as f:
+            expected_json_list = json.load(f)
+
         get_features_request_batch = GetFeaturesBatchRequest(
             workspace_name=self.TEST_WORKSPACE_NAME,
             feature_service_name=self.TEST_FEATURE_SERVICE_NAME,

@@ -1,0 +1,33 @@
+[
+  {
+    "params": {
+      "feature_service_name": "test_feature_service_name",
+      "workspace_name": "test_workspace_name",
+      "metadata_options": {
+        "include_data_types": true,
+        "include_names": true,
+        "include_slo_info": true
+      },
+      "request_data": [
+        {
+          "join_key_map": {
+            "test_key": "test_value"
+          }
+        },
+        {
+          "request_context_map": {
+            "test_key": "test_value"
+          }
+        },
+        {
+          "join_key_map": {
+            "test_key": "test_value"
+          },
+          "request_context_map": {
+            "test_key": "test_value"
+          }
+        }
+      ]
+    }
+  }
+]
