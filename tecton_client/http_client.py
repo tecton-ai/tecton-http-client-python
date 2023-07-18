@@ -7,7 +7,6 @@ from typing import List
 from typing import Optional
 from typing import Set
 from typing import Tuple
-from typing import Union
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
@@ -155,7 +154,7 @@ class TectonHttpClient:
         endpoint: str,
         request_bodies: List[dict],
         timeout: Optional[timedelta] = None,
-    ) -> Tuple[List[Union[Tuple[dict, timedelta], Optional[Exception]]], timedelta]:
+    ) -> Tuple[List[Optional[HTTPResponse]], timedelta]:
         """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
 
         Args:
@@ -166,9 +165,8 @@ class TectonHttpClient:
                 returning. Defaults to no timeout.
 
         Returns:
-            Tuple[List[Union[Tuple[dict, timedelta], Optional[Exception]]]], timedelta]: A tuple of the list of
-                responses and their latencies, or the exception if the task does not complete successfully, or None
-                if the task times out, and the overall time taken to execute the parallel requests returned as
+            Tuple[List[Optional[HTTPResponse]], timedelta]: A tuple of the list of :class:`HTTPResponse` objects,
+                or None if the task times out, and the overall time taken to execute the parallel requests returned as
                 a :class:`timedelta` object.
 
         """
@@ -184,16 +182,20 @@ class TectonHttpClient:
         latency = timedelta(seconds=(end_time - start_time))
 
         # Capture results of the tasks:-
-        # If the task is in the done list, it either completes successfully or returns a server thrown exceptions.
-        # If the task contains an exception, return the exception returned from the server.
+        # If the task is in the done list, it either completes successfully or returns an exception from the server.
+        # If the task contains a server returned exception, create an :class:`HTTPResponse` object with the exception.
         # Else, if the task is successful, return the result.
         # If the task is not in the done list, the task failed due to a timeout, therefore return None.
         results = [
-            task.exception() if task in done and task.exception() else task.result() if task in done else None
+            HTTPResponse(exception=task.exception())
+            if task in done and task.exception()
+            else task.result()
+            if task in done
+            else None
             for task in tasks
         ]
         # Get the list of exceptions thrown by the HTTP client
-        thrown_exceptions = [result for result in results if isinstance(result, TectonClientError)]
+        thrown_exceptions = [result for result in results if result and isinstance(result.exception, TectonClientError)]
 
         # Close all the created tasks
         await self._close_tasks(tasks=pending)

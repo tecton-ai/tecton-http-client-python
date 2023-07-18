@@ -147,9 +147,7 @@ class TestHttpClient:
         )
 
         assert len(responses_list) == len(requests_list)
-        for response in responses_list:
-            if response:
-                assert isinstance(response[0], dict)
+        assert all(isinstance(response.result, dict) for response in responses_list if response)
 
         await http_client.close()
 
@@ -218,13 +216,12 @@ class TestHttpClient:
 
         assert len(responses_list) == len(requests_list)
         assert all(response is not None for response in responses_list)
-        assert all(isinstance(response[0], dict) for response in responses_list)
 
         for response in responses_list:
             if response:
-                assert isinstance(response[0], dict)
+                assert isinstance(response.result, dict)
                 # Testing out order of responses by checking the value stored in the first feature of the features list
-                assert response[0]["result"]["features"][0] == str(responses_list.index(response) % 4 + 1)
+                assert response.result["result"]["features"][0] == str(responses_list.index(response) % 4 + 1)
 
         await http_client.close()
 
@@ -265,12 +262,10 @@ class TestHttpClient:
         )
         assert len(responses_list) == len(requests_list)
 
-        count_of_error_responses = sum(isinstance(response, TectonServerException) for response in responses_list)
-        assert all(
-            isinstance(response[0], dict)
-            for response in responses_list
-            if not isinstance(response, TectonServerException)
+        count_of_error_responses = sum(
+            isinstance(response.exception, TectonServerException) for response in responses_list
         )
+        assert all(isinstance(response.result, dict) for response in responses_list if response.result)
 
         # Check whether half of the responses sent are exceptions
         assert count_of_error_responses == len(requests_list) // 2
