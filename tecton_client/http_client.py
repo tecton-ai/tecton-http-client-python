@@ -31,7 +31,7 @@ def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSe
 
 
 class HTTPResponse:
-    """Represents an HTTP response to capture the result of making an HTTP request."""
+    """Represents an HTTP response object to capture the result of making an HTTP request."""
 
     def __init__(
         self, exception: Optional[Exception] = None, result: Optional[dict] = None, latency: Optional[timedelta] = None
@@ -39,9 +39,10 @@ class HTTPResponse:
         """Initialize the HTTP response.
 
         Args:
-            exception (Optional[Exception]): The server exception if one occurred while making the HTTP request.
-            result (Optional[dict]): The result of the HTTP request.
-            latency (Optional[timedelta]): The latency of the HTTP request.
+            exception (Optional[Exception]): The server exception if one occurred while making the HTTP request,
+                else None.
+            result (Optional[dict]): The result of the HTTP request, if the request was successful else None.
+            latency (Optional[timedelta]): The latency of the HTTP request if the request was successful, else None.
 
         """
         self._exception: Optional[Exception] = exception
@@ -125,7 +126,7 @@ class TectonHttpClient:
             request_body (dict): The request data to be passed, in JSON format.
 
         Returns:
-            HTTPResponse: A :class:`HTTPResponse` object containing the result of the HTTP request and the latency.
+            HTTPResponse: An :class:`HTTPResponse` object containing the result and the latency of the HTTP request.
 
         Raises:
             TectonServerException: If the server returns an error response, different errors based on the
