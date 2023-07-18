@@ -122,19 +122,8 @@ class TestHttpClient:
         assert self.http_client._client.timeout.total == 2
 
     @pytest.mark.asyncio
-    async def pytest_sessionfinish(self) -> None:
-        await self.http_client.close()
-        await client.close()
-
-    @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [10, 50, 100, 500])
     async def test_parallel_requests(self, mocked: aioresponses, number_of_requests: int) -> None:
-        http_client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-
         mocked.post(
             url=self.full_url,
             payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
@@ -142,24 +131,16 @@ class TestHttpClient:
         )
 
         requests_list = [self.request] * number_of_requests
-        responses_list, latency = await http_client.execute_parallel_requests(
+        responses_list, latency = await self.http_client.execute_parallel_requests(
             self.endpoint, requests_list, timedelta(seconds=1)
         )
 
         assert len(responses_list) == len(requests_list)
-        assert all(isinstance(response.result, dict) for response in responses_list if response)
-
-        await http_client.close()
+        assert all(isinstance(response.result, dict) for response in responses_list)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [10, 100])
     async def test_parallel_requests_smaller_timeout(self, mocked: aioresponses, number_of_requests: int) -> None:
-        http_client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-
         async def delayed_callback(request_url: str, **kwargs: Union[str, bool, dict]) -> dict:
             # This is the function that sends a mock response when the client sends a request
             # Here, `**kwargs` represents information such as the request data, headers etc. needed to parse a request
@@ -173,25 +154,17 @@ class TestHttpClient:
         )
 
         requests_list = [self.request] * number_of_requests
-        responses_list, latency = await http_client.execute_parallel_requests(
+        responses_list, latency = await self.http_client.execute_parallel_requests(
             self.endpoint, requests_list, timedelta(milliseconds=1)
         )
 
         assert len(responses_list) == len(requests_list)
-        # No request should complete in this timeout, resulting in all returned responses being None
-        assert responses_list.count(None) == len(requests_list)
-
-        await http_client.close()
+        # No request should complete in this timeout, resulting in all returned responses being empty
+        assert all(response.result is None and response.exception is None for response in responses_list)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [2])
     async def test_order_of_parallel_requests(self, mocked: aioresponses, number_of_requests: int) -> None:
-        http_client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-
         params2 = {
             "feature_service_name": "fraud_detection_feature_service",
             "join_key_map": {"user_id": "user_205125746682"},
@@ -210,7 +183,7 @@ class TestHttpClient:
                 },
             )
 
-        responses_list, latency = await http_client.execute_parallel_requests(
+        responses_list, latency = await self.http_client.execute_parallel_requests(
             self.endpoint, requests_list, timedelta(seconds=1)
         )
 
@@ -221,19 +194,11 @@ class TestHttpClient:
             if response:
                 assert isinstance(response.result, dict)
                 # Testing out order of responses by checking the value stored in the first feature of the features list
-                assert response.result["result"]["features"][0] == str(responses_list.index(response) % 4 + 1)
-
-        await http_client.close()
+                assert response.result["result"]["features"][0] == str(responses_list.index(response) + 1)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [10, 50])
     async def test_parallel_requests_partial(self, mocked: aioresponses, number_of_requests: int) -> None:
-        http_client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-
         for i in range(number_of_requests // 2):
             mocked.post(
                 url=self.full_url,
@@ -257,17 +222,16 @@ class TestHttpClient:
         )
 
         requests_list = [self.request] * number_of_requests
-        responses_list, latency = await http_client.execute_parallel_requests(
+        responses_list, latency = await self.http_client.execute_parallel_requests(
             self.endpoint, requests_list, timedelta(seconds=1)
         )
         assert len(responses_list) == len(requests_list)
-
-        count_of_error_responses = sum(
-            isinstance(response.exception, TectonServerException) for response in responses_list
-        )
         assert all(isinstance(response.result, dict) for response in responses_list if response.result)
 
         # Check whether half of the responses sent are exceptions
-        assert count_of_error_responses == len(requests_list) // 2
+        count_of_errors = sum(isinstance(response.exception, TectonServerException) for response in responses_list)
+        assert count_of_errors == len(requests_list) // 2
 
-        await http_client.close()
+    @pytest.mark.asyncio
+    async def pytest_sessionfinish(self) -> None:
+        await self.http_client.close()
