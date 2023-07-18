@@ -180,7 +180,6 @@ class TestHttpClient:
         )
 
         assert len(responses_list) == len(requests_list)
-        print(responses_list)
         # No request should complete in this timeout, resulting in all returned responses being None
         assert responses_list.count(None) == len(requests_list)
 
@@ -218,7 +217,8 @@ class TestHttpClient:
         )
 
         assert len(responses_list) == len(requests_list)
-        assert responses_list.count(None) == 0
+        assert all(response is not None for response in responses_list)
+        assert all(isinstance(response[0], dict) for response in responses_list)
 
         for response in responses_list:
             if response:
@@ -265,12 +265,12 @@ class TestHttpClient:
         )
         assert len(responses_list) == len(requests_list)
 
-        count_of_error_responses = 0
-        for response in responses_list:
-            if isinstance(response, TectonServerException):
-                count_of_error_responses += 1
-            else:
-                assert isinstance(response[0], dict)
+        count_of_error_responses = sum(isinstance(response, TectonServerException) for response in responses_list)
+        assert all(
+            isinstance(response[0], dict)
+            for response in responses_list
+            if not isinstance(response, TectonServerException)
+        )
 
         # Check whether half of the responses sent are exceptions
         assert count_of_error_responses == len(requests_list) // 2
