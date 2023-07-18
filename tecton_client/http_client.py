@@ -41,8 +41,8 @@ class HTTPResponse:
         Args:
             exception (Optional[Exception]): The server exception if one occurred while making the HTTP request,
                 else None.
-            result (Optional[dict]): The result of the HTTP request, if the request was successful else None.
-            latency (Optional[timedelta]): The latency of the HTTP request if the request was successful, else None.
+            result (Optional[dict]): The result of the HTTP request, if the request was successful, else None.
+            latency (Optional[timedelta]): The latency of the HTTP request, if the request was successful, else None.
 
         """
         self._exception: Optional[Exception] = exception
