@@ -235,9 +235,9 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     """Class representing a request to the /get-features endpoint.
 
     Attributes:
-        request_data: Request parameters for the query, consisting of a Join Key Map and/or a Request Context Map
-            sent as a :class:`GetFeaturesRequestData` object.
-        ENDPOINT: Endpoint string for the get-features API.
+        request_data (GetFeatureRequestData): Request parameters for the query, consisting of a Join Key Map and/or a
+            Request Context Map sent as a :class:`GetFeaturesRequestData` object.
+        ENDPOINT (str): Endpoint string for the get-features API.
 
     Examples:
         >>> request_data = GetFeatureRequestData(join_key_map={"user_id": 1234})
@@ -270,12 +270,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         self.request_data = request_data
 
     def to_json(self) -> dict:
-        """Returns a JSON representation of the :class:`GetFeaturesRequest` object.
-
-        Returns:
-            JSON request to be sent to the API as a dictionary.
-
-        """
+        """Returns a JSON representation of the :class:`GetFeaturesRequest` object as a dictionary."""
         return _construct_json_dict(self, fields_to_remove=["ENDPOINT", "request_data"])
 
 
@@ -284,8 +279,9 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
     """Class representing a micro-batch request sent to the /get-features-batch endpoint.
 
     Attributes:
-        ENDPOINT: Endpoint string for the get-features-batch API.
-        request_data: Request parameters for the query, consisting of a list of :class:`GetFeatureRequestData` objects.
+        request_data (List[GetFeatureRequestData]): Request parameters for the query, consisting of a list of
+            :class:`GetFeatureRequestData` objects.
+        ENDPOINT (str): Endpoint string for the get-features-batch API.
     """
 
     ENDPOINT: Final[str] = "/api/v1/feature-service/get-features-batch"
@@ -311,12 +307,7 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
         self.request_data = request_data_list
 
     def to_json(self) -> dict:
-        """Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object.
-
-        Returns:
-            JSON request to be sent to the API as a dictionary.
-
-        """
+        """Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object as a dictionary."""
         return _construct_json_dict(self, fields_to_remove=["ENDPOINT"], is_batch_request=True)
 
 
@@ -344,9 +335,10 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
 
 
     Attributes:
-        ENDPOINT: Endpoint string for the get-features-batch API.
-        request_list: List of :class:`GetFeaturesRequest` objects or :class:`GetFeaturesMicroBatchRequest` objects,
-            based on the `micro_batch_size` configuration.
+        request_list (List[Union[GetFeaturesRequest, GetFeaturesMicroBatchRequest]]): List of
+            :class:`GetFeaturesRequest` objects or :class:`GetFeaturesMicroBatchRequest` objects, based on the
+            `micro_batch_size` configuration.
+        ENDPOINT (str): Endpoint string for the get-features-batch API.
 
     Examples:
         >>> request_data = GetFeatureRequestData(join_key_map={"user_id": 1234})
@@ -391,8 +383,8 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
                 GetFeaturesRequest(
                     workspace_name=self.workspace_name,
                     feature_service_name=self.feature_service_name,
-                    request_data=request_data,
                     metadata_options=self.metadata_options,
+                    request_data=request_data,
                 )
                 for request_data in request_data_list
             ]
@@ -433,10 +425,5 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
             raise InvalidParameterError(message)
 
     def to_json_list(self) -> List[dict]:
-        """Returns a list of JSON representations for requests in the :class:`GetFeaturesBatchRequest` object.
-
-        Returns:
-            JSON requests to be sent to the API as a list of dictionaries.
-
-        """
+        """Returns a list of JSON representations for requests in the object as a list of dictionaries."""
         return [request.to_json() for request in self.request_list]
