@@ -127,10 +127,10 @@ class TectonClient:
                 <https://docs.tecton.ai/http-api#operation/GetFeatures>`_.
 
         """
-        response, request_latency = self._loop.run_until_complete(
+        http_response = self._loop.run_until_complete(
             self._tecton_http_client.execute_request(request.ENDPOINT, request.to_json())
         )
-        return GetFeaturesResponse(response, request_latency)
+        return GetFeaturesResponse(response=http_response.result, request_latency=http_response.latency)
 
     @property
     def is_closed(self) -> bool:

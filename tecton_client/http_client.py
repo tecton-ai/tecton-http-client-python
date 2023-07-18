@@ -2,7 +2,6 @@ import time
 from datetime import timedelta
 from enum import Enum
 from typing import Optional
-from typing import Tuple
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
@@ -29,6 +28,40 @@ def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSe
             limit=client_options.max_connections, keepalive_timeout=client_options.keepalive_expiry.seconds
         ),
     )
+
+
+class HTTPResponse:
+    """Represents an HTTP response to capture the result of making an HTTP request."""
+
+    def __init__(
+        self, exception: Optional[Exception] = None, result: Optional[dict] = None, latency: Optional[timedelta] = None
+    ) -> None:
+        """Initialize the HTTP response.
+
+        Args:
+            exception (Optional[Exception]): The server exception if one occurred while making the HTTP request.
+            result (Optional[dict]): The result of the HTTP request.
+            latency (Optional[timedelta]): The latency of the HTTP request.
+
+        """
+        self._exception: Optional[Exception] = exception
+        self._result: Optional[dict] = result
+        self._latency: Optional[timedelta] = latency
+
+    @property
+    def exception(self) -> Optional[Exception]:
+        """Returns the server exception that occurred while making the HTTP request."""
+        return self._exception
+
+    @property
+    def result(self) -> Optional[dict]:
+        """Returns the result of the HTTP request."""
+        return self._result
+
+    @property
+    def latency(self) -> Optional[timedelta]:
+        """Returns the latency of the HTTP request."""
+        return self._latency
 
 
 class TectonHttpClient:
@@ -82,7 +115,7 @@ class TectonHttpClient:
         """
         return self._is_client_closed
 
-    async def execute_request(self, endpoint: str, request_body: dict) -> Tuple[dict, timedelta]:
+    async def execute_request(self, endpoint: str, request_body: dict) -> HTTPResponse:
         """Performs an HTTP request to a specified endpoint using the client.
 
         This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
@@ -92,8 +125,7 @@ class TectonHttpClient:
             request_body (dict): The request data to be passed, in JSON format.
 
         Returns:
-            Tuple[dict, timedelta]: A tuple of the response in JSON format and the time taken to execute the request as
-                a :class:`timedelta` object.
+            HTTPResponse: A :class:`HTTPResponse` object containing the result of the HTTP request and the latency.
 
         Raises:
             TectonServerException: If the server returns an error response, different errors based on the
@@ -111,7 +143,7 @@ class TectonHttpClient:
             request_latency = timedelta(seconds=(end_time - start_time))
 
             if response.status == 200:
-                return json_response, request_latency
+                return HTTPResponse(result=json_response, latency=request_latency)
             else:
                 message = INVALID_SERVER_RESPONSE(response.status, response.reason, json_response["message"])
                 error_class = SERVER_ERRORS.get(response.status, TectonServerException)
