@@ -16,6 +16,7 @@ from tecton_client.responses import FeatureStatus
 from tecton_client.responses import GetFeaturesBatchResponse
 from tecton_client.responses import GetFeaturesResponse
 from tecton_client.responses import HTTPResponse
+from tecton_client.responses import SloIneligibilityReason
 from tecton_client.utils import parse_string_to_isotime
 from tests.test_utils import dict_equals
 
@@ -165,129 +166,35 @@ class TestResponse:
             self.assert_answers(expected_answer, response)
 
     @pytest.mark.parametrize(
-        "file_name, expected_answers, micro_batch_size",
+        "file_name, micro_batch_size, number_of_responses, feature_vector_len, feature_name, order_of_responses",
         [
             (
                 "sample_batch_response.json",
-                [
-                    [
-                        False,
-                        0.01818181818181818,
-                        0.0015965939329430547,
-                        0.0016059957173447537,
-                        672,
-                        63.27903409090909,
-                        96.72319999999999,
-                        62.30119104335397,
-                        44548.44,
-                        2418.08,
-                        130770.19999999998,
-                        682,
-                        20522,
-                        61328,
-                    ],
-                    [
-                        True,
-                        0,
-                        0.01410105757931845,
-                        0.01611963488055933,
-                        668,
-                        54.19960377358488,
-                        48.155,
-                        58.52166878980895,
-                        28725.789999999986,
-                        866.79,
-                        91879.02000000005,
-                        512,
-                        15355,
-                        45987,
-                    ],
-                    [
-                        True,
-                        0,
-                        0,
-                        0,
-                        693,
-                        68.6643213499633,
-                        42.13561403508772,
-                        63.56664792176038,
-                        93589.46999999997,
-                        2401.73,
-                        259987.58999999994,
-                        1300,
-                        40626,
-                        121947,
-                    ],
-                    [
-                        False,
-                        0,
-                        0.0030410542321338066,
-                        0.0036076275554028517,
-                        693,
-                        51.22098890942699,
-                        33.63320754716981,
-                        56.38687715991207,
-                        55421.11000000001,
-                        1782.56,
-                        179479.4300000001,
-                        1030,
-                        30385,
-                        91675,
-                    ],
-                    [
-                        True,
-                        0,
-                        0,
-                        0,
-                        693,
-                        71.65225285171101,
-                        43.10842105263158,
-                        68.77729103404191,
-                        150756.33999999997,
-                        3276.24,
-                        430339.5100000002,
-                        2028,
-                        60634,
-                        182805,
-                    ],
-                    [
-                        False,
-                        0,
-                        0,
-                        0,
-                        693,
-                        67.6827083333333,
-                        53.572978723404255,
-                        68.38951367781152,
-                        87716.78999999995,
-                        2517.93,
-                        270001.7999999999,
-                        1245,
-                        38824,
-                        116290,
-                    ],
-                    [
-                        False,
-                        0,
-                        0.007851934941110488,
-                        0.0066630650099045565,
-                        676,
-                        82.75716713881016,
-                        60.33,
-                        89.99427063339739,
-                        29213.279999999988,
-                        844.62,
-                        93774.03000000009,
-                        339,
-                        10279,
-                        30528,
-                    ],
-                ],
                 10,
-            )
+                7,
+                14,
+                "merchant_fraud_rate.is_fraud_mean_30d_1d",
+                [
+                    0.0015965939329430547,
+                    0.01410105757931845,
+                    0.0,
+                    0.0030410542321338066,
+                    0.0,
+                    0.0,
+                    0.007851934941110488,
+                ],
+            ),
         ],
     )
-    def test_batch_responses(self, file_name: str, expected_answers: list, micro_batch_size: int) -> None:
+    def test_batch_responses_without_slo_info(
+        self,
+        file_name: str,
+        micro_batch_size: int,
+        number_of_responses: int,
+        feature_vector_len: int,
+        feature_name: str,
+        order_of_responses: list,
+    ) -> None:
         with open(f"{TestResponse.TEST_DATA_REL_PATH_BATCH}{file_name}") as json_file:
             http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
             batch_response = GetFeaturesBatchResponse(
@@ -296,7 +203,145 @@ class TestResponse:
                 micro_batch_size=micro_batch_size,
             )
 
+            # Test that SLO information is none for the batch and for each response in the list
             assert batch_response.batch_slo_info is None
+            assert all(response.slo_info is None for response in batch_response.batch_response_list)
+
             assert batch_response.request_latency == timedelta(milliseconds=10)
-            for response, answer in zip(batch_response.batch_response_list, expected_answers):
-                self.assert_answers(answer, response)
+
+            # Test that the number of responses in the batch is equal to the number of feature vectors in the response
+            assert len(batch_response.batch_response_list) == number_of_responses
+            # Test that the number of feature values in each response corresponds to the individual
+            # feature vector length
+            assert all(
+                len(response.feature_values) == feature_vector_len for response in batch_response.batch_response_list
+            )
+
+            # Test that the order of responses is retained by comparing a random feature within each response
+            assert all(
+                response.feature_values[feature_name].feature_value == order_of_responses.pop(0)
+                for response in batch_response.batch_response_list
+            )
+
+    @pytest.mark.parametrize(
+        "file_name, micro_batch_size, number_of_responses, feature_vector_len, slo_information",
+        [
+            (
+                "sample_batch_response_slo.json",
+                10,
+                5,
+                14,
+                {"slo_server_time_seconds": 0.048292505, "server_time_seconds": 0.099455727, "slo_eligible": True},
+            ),
+        ],
+    )
+    def test_single_batch_response_with_slo_info(
+        self,
+        file_name: str,
+        micro_batch_size: int,
+        number_of_responses: int,
+        feature_vector_len: int,
+        slo_information: dict,
+    ) -> None:
+        with open(f"{TestResponse.TEST_DATA_REL_PATH_BATCH}{file_name}") as json_file:
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            batch_response = GetFeaturesBatchResponse(
+                responses_list=[http_response],
+                request_latency=timedelta(milliseconds=10),
+                micro_batch_size=micro_batch_size,
+            )
+
+            # Test that batch SLO information is as expected
+            assert batch_response.batch_slo_info is not None
+            assert batch_response.batch_slo_info.slo_server_time_seconds == slo_information.get(
+                "slo_server_time_seconds"
+            )
+            assert batch_response.batch_slo_info.server_time_seconds == slo_information.get("server_time_seconds")
+            assert batch_response.batch_slo_info.slo_eligible is slo_information.get("slo_eligible")
+
+            # Test that each response has SLO information
+            assert all(response.slo_info is not None for response in batch_response.batch_response_list)
+
+            assert batch_response.request_latency == timedelta(milliseconds=10)
+
+            assert len(batch_response.batch_response_list) == number_of_responses
+            assert all(
+                len(response.feature_values) == feature_vector_len for response in batch_response.batch_response_list
+            )
+
+    @pytest.mark.parametrize(
+        "file_names_list, micro_batch_size, slo_information, number_of_responses, "
+        "feature_vector_len, feature_name, order_of_responses",
+        [
+            (
+                [
+                    "sample_batch_response_slo.json",
+                    "sample_batch_response_long_slo.json",
+                ],
+                10,
+                {
+                    "slo_server_time_seconds": 0.077513756,
+                    "server_time_seconds": 0.099455727,
+                    "slo_eligible": False,
+                    "slo_ineligibility_reasons": [SloIneligibilityReason.DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED],
+                },
+                12,
+                14,
+                "user_distinct_merchant_transaction_count_30d.distinct_merchant_transaction_count_30d",
+                [693, 671, 692, 669, None, 672, 668, 697, 690, 688, 685, 676],
+            )
+        ],
+    )
+    def test_multiple_batch_response_with_slo_info(
+        self,
+        file_names_list: list,
+        micro_batch_size: int,
+        slo_information: dict,
+        number_of_responses: int,
+        feature_vector_len: int,
+        feature_name: str,
+        order_of_responses: list,
+    ) -> None:
+        http_responses_list = []
+        for file_name in file_names_list:
+            with open(f"{TestResponse.TEST_DATA_REL_PATH_BATCH}{file_name}") as json_file:
+                http_responses_list.append(
+                    HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+                )
+
+        batch_response = GetFeaturesBatchResponse(
+            responses_list=http_responses_list,
+            request_latency=timedelta(milliseconds=10),
+            micro_batch_size=micro_batch_size,
+        )
+
+        # Test that batch SLO information is as expected
+        assert batch_response.batch_slo_info is not None
+        assert batch_response.batch_slo_info.slo_server_time_seconds == slo_information.get("slo_server_time_seconds")
+        assert batch_response.batch_slo_info.server_time_seconds == slo_information.get("server_time_seconds")
+        assert batch_response.batch_slo_info.slo_eligible is slo_information.get("slo_eligible")
+        assert len(batch_response.batch_slo_info.slo_ineligibility_reasons) == len(
+            slo_information.get("slo_ineligibility_reasons")
+        )
+        assert batch_response.batch_slo_info.slo_ineligibility_reasons == slo_information.get(
+            "slo_ineligibility_reasons"
+        )
+
+        # Test that each response has SLO information
+        assert all(response.slo_info is not None for response in batch_response.batch_response_list)
+
+        assert batch_response.request_latency == timedelta(milliseconds=10)
+
+        # Test that the number of responses in the batch is equal to the number of feature vectors in the response
+        assert len(batch_response.batch_response_list) == number_of_responses
+        # Test that the number of feature values in each response corresponds to the individual
+        # feature vector length
+        assert all(
+            len(response.feature_values) == feature_vector_len for response in batch_response.batch_response_list
+        )
+
+        # Test that the order of responses is retained by comparing a random feature within each response
+        assert all(
+            response.feature_values[feature_name].feature_value == order_of_responses.pop(0)
+            for response in batch_response.batch_response_list
+        )

@@ -418,24 +418,38 @@ class GetFeaturesBatchResponse:
             return None
 
         # True if all the batch responses are SLO eligible, False otherwise
-        is_slo_eligible_batch = all(slo_info.slo_eligible for slo_info in batch_slo_information_list)
+        is_slo_eligible_batch = all(
+            slo_info.slo_eligible for slo_info in batch_slo_information_list if slo_info.slo_eligible is not None
+        )
 
         # Get the list of all slo ineligibility reasons from the list of SloInformation objects
         batch_slo_ineligibility_reasons = list(
-            {reason for slo_info in batch_slo_information_list for reason in slo_info.slo_ineligibility_reasons}
+            {
+                reason
+                for slo_info in batch_slo_information_list
+                if slo_info.slo_ineligibility_reasons
+                for reason in slo_info.slo_ineligibility_reasons
+            }
         )
 
         # Get the max of the following fields from the list of SloInformation objects
         max_slo_server_time_seconds = max(
-            (slo_info.slo_server_time_seconds for slo_info in batch_slo_information_list), default=None
+            (
+                slo_info.slo_server_time_seconds
+                for slo_info in batch_slo_information_list
+                if slo_info.slo_server_time_seconds
+            ),
+            default=None,
         )
 
         max_store_max_latency = max(
-            (slo_info.store_max_latency for slo_info in batch_slo_information_list), default=None
+            (slo_info.store_max_latency for slo_info in batch_slo_information_list if slo_info.store_max_latency),
+            default=None,
         )
 
         max_server_time_seconds = max(
-            (slo_info.server_time_seconds for slo_info in batch_slo_information_list), default=None
+            (slo_info.server_time_seconds for slo_info in batch_slo_information_list if slo_info.server_time_seconds),
+            default=None,
         )
 
         return SloInformation(
