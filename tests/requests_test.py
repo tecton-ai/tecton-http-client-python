@@ -341,11 +341,11 @@ class TestRequests:
     @pytest.mark.parametrize(
         "request_list, micro_batch_size, expected_json_file_name",
         [
-            (request_list, 1, "batch_expected_response_1"),
-            (request_list, 2, "batch_expected_response_2"),
-            (request_list, 3, "batch_expected_response_3"),
-            (request_list, 4, "batch_expected_response_3"),
-            (request_list * 7, 3, "batch_expected_response_4"),
+            (request_list, 1, "batch_expected_request_1"),
+            (request_list, 2, "batch_expected_request_2"),
+            (request_list, 3, "batch_expected_request_3"),
+            (request_list, 4, "batch_expected_request_3"),
+            (request_list * 7, 3, "batch_expected_request_4"),
         ],
     )
     def test_batch_requests(
