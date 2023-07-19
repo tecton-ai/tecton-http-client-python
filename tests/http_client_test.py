@@ -226,11 +226,10 @@ class TestHttpClient:
             self.endpoint, requests_list, timedelta(seconds=1)
         )
         assert len(responses_list) == len(requests_list)
-        assert all(isinstance(response.result, dict) for response in responses_list if response.result)
+        assert all(isinstance(response.result, dict) for response in responses_list if response)
 
         # Check whether half of the responses sent are exceptions
-        count_of_errors = sum(isinstance(response.exception, TectonServerException) for response in responses_list)
-        assert count_of_errors == len(requests_list) // 2
+        assert responses_list.count(None) == len(requests_list) // 2
 
     @pytest.mark.asyncio
     async def pytest_sessionfinish(self) -> None:

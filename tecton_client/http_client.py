@@ -166,8 +166,8 @@ class TectonHttpClient:
 
         Returns:
             Tuple[List[Optional[HTTPResponse]], timedelta]: A tuple of the list of :class:`HTTPResponse` objects,
-                or None if the request timed out, and the overall time taken to execute the parallel requests returned
-                as a :class:`timedelta` object.
+                or None if the request was unsuccessful, and the overall time taken to execute the parallel requests
+                returned as a :class:`timedelta` object.
 
         """
         # Create a list of tasks to execute the requests in parallel
@@ -186,19 +186,14 @@ class TectonHttpClient:
 
         # Capture results of the tasks:-
         # If the task is in the done list, it either completes successfully or returns an exception from the server.
-        # If the task contains a server returned exception, create an :class:`HTTPResponse` object with the exception.
-        # Else, if the task is successful, return the result.
-        # If the task is not in the done list, the task failed due to a timeout, so return None.
-        results = [
-            HTTPResponse(exception=task.exception())
-            if task in done and task.exception()
-            else task.result()
-            if task in done
-            else None
-            for task in tasks
-        ]
+        # If the task is successful, i.e. without an exception, return the result.
+        # Else, store None in case the task returned an exception or timed out.
+        results = [task.result() if task in done and not task.exception() else None for task in tasks]
+
         # Get the list of exceptions thrown by the HTTP client
-        thrown_exceptions = [result for result in results if result and isinstance(result.exception, TectonClientError)]
+        thrown_exceptions = [
+            task.exception() for task in done if task.exception() and isinstance(task.exception(), TectonClientError)
+        ]
 
         # Close all the created tasks
         await self._close_tasks(tasks=pending)
