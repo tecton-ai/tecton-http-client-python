@@ -163,3 +163,140 @@ class TestResponse:
         assert batch_response.request_latency == timedelta(milliseconds=10)
         for response, expected_answer in zip(batch_response.batch_response_list, expected_answers_list):
             self.assert_answers(expected_answer, response)
+
+    @pytest.mark.parametrize(
+        "file_name, expected_answers, micro_batch_size",
+        [
+            (
+                "sample_batch_response.json",
+                [
+                    [
+                        False,
+                        0.01818181818181818,
+                        0.0015965939329430547,
+                        0.0016059957173447537,
+                        672,
+                        63.27903409090909,
+                        96.72319999999999,
+                        62.30119104335397,
+                        44548.44,
+                        2418.08,
+                        130770.19999999998,
+                        682,
+                        20522,
+                        61328,
+                    ],
+                    [
+                        True,
+                        0,
+                        0.01410105757931845,
+                        0.01611963488055933,
+                        668,
+                        54.19960377358488,
+                        48.155,
+                        58.52166878980895,
+                        28725.789999999986,
+                        866.79,
+                        91879.02000000005,
+                        512,
+                        15355,
+                        45987,
+                    ],
+                    [
+                        True,
+                        0,
+                        0,
+                        0,
+                        693,
+                        68.6643213499633,
+                        42.13561403508772,
+                        63.56664792176038,
+                        93589.46999999997,
+                        2401.73,
+                        259987.58999999994,
+                        1300,
+                        40626,
+                        121947,
+                    ],
+                    [
+                        False,
+                        0,
+                        0.0030410542321338066,
+                        0.0036076275554028517,
+                        693,
+                        51.22098890942699,
+                        33.63320754716981,
+                        56.38687715991207,
+                        55421.11000000001,
+                        1782.56,
+                        179479.4300000001,
+                        1030,
+                        30385,
+                        91675,
+                    ],
+                    [
+                        True,
+                        0,
+                        0,
+                        0,
+                        693,
+                        71.65225285171101,
+                        43.10842105263158,
+                        68.77729103404191,
+                        150756.33999999997,
+                        3276.24,
+                        430339.5100000002,
+                        2028,
+                        60634,
+                        182805,
+                    ],
+                    [
+                        False,
+                        0,
+                        0,
+                        0,
+                        693,
+                        67.6827083333333,
+                        53.572978723404255,
+                        68.38951367781152,
+                        87716.78999999995,
+                        2517.93,
+                        270001.7999999999,
+                        1245,
+                        38824,
+                        116290,
+                    ],
+                    [
+                        False,
+                        0,
+                        0.007851934941110488,
+                        0.0066630650099045565,
+                        676,
+                        82.75716713881016,
+                        60.33,
+                        89.99427063339739,
+                        29213.279999999988,
+                        844.62,
+                        93774.03000000009,
+                        339,
+                        10279,
+                        30528,
+                    ],
+                ],
+                10,
+            )
+        ],
+    )
+    def test_batch_responses(self, file_name: str, expected_answers: list, micro_batch_size: int) -> None:
+        with open(f"{TestResponse.TEST_DATA_REL_PATH_BATCH}{file_name}") as json_file:
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            batch_response = GetFeaturesBatchResponse(
+                responses_list=[http_response],
+                request_latency=timedelta(milliseconds=10),
+                micro_batch_size=micro_batch_size,
+            )
+
+            assert batch_response.batch_slo_info is None
+            assert batch_response.request_latency == timedelta(milliseconds=10)
+            for response, answer in zip(batch_response.batch_response_list, expected_answers):
+                self.assert_answers(answer, response)
