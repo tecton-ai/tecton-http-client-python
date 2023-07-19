@@ -225,13 +225,11 @@ class HTTPResponse:
     """Represents an HTTP response object to capture the result of making an HTTP request.
 
     Attributes:
-        exception (Optional[Exception]): The server exception if one occurred while making the HTTP request, else None.
         result (Optional[dict]): The result of the HTTP request, if the request was successful, else None.
         latency (Optional[timedelta]): The latency of the HTTP request, if the request was successful, else None.
 
     """
 
-    exception: Optional[Exception] = None
     result: Optional[dict] = None
     latency: Optional[timedelta] = None
 
