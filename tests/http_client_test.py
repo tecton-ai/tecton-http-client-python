@@ -160,7 +160,7 @@ class TestHttpClient:
 
         assert len(responses_list) == len(requests_list)
         # No request should complete in this timeout, resulting in all returned responses being empty
-        assert all(response.result is None and response.exception is None for response in responses_list)
+        assert all(response is None for response in responses_list)
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [2])
