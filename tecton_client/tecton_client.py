@@ -9,6 +9,7 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
+from tecton_client.requests import HTTPRequest
 from tecton_client.responses import GetFeaturesResponse
 
 
@@ -127,9 +128,8 @@ class TectonClient:
                 <https://docs.tecton.ai/http-api#operation/GetFeatures>`_.
 
         """
-        http_response = self._loop.run_until_complete(
-            self._tecton_http_client.execute_request(request.ENDPOINT, request.to_json())
-        )
+        http_request = HTTPRequest(endpoint=request.ENDPOINT, request_body=request.to_json())
+        http_response = self._loop.run_until_complete(self._tecton_http_client.execute_request(request=http_request))
         return GetFeaturesResponse(http_response=http_response)
 
     @property

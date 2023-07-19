@@ -9,6 +9,7 @@ from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
 from tecton_client.http_client import TectonHttpClient
+from tecton_client.requests import HTTPRequest
 from tecton_client.tecton_client import TectonClientOptions
 
 
@@ -48,7 +49,8 @@ class TestHttpClient:
             url=self.full_url,
             payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
         )
-        response = await self.http_client.execute_request(self.endpoint, self.request)
+        http_request = HTTPRequest(endpoint=self.endpoint, request_body=self.request)
+        response = await self.http_client.execute_request(request=http_request)
         assert isinstance(response.result, dict)
 
     @pytest.mark.asyncio
@@ -65,7 +67,8 @@ class TestHttpClient:
             },
         )
         try:
-            await self.http_client.execute_request(self.endpoint, self.request)
+            http_request = HTTPRequest(endpoint=self.endpoint, request_body=self.request)
+            await self.http_client.execute_request(request=http_request)
         except Exception as e:
             # Confirm that a child error of :class:`TectonServerException` is raised
             assert isinstance(e, TectonServerException)
@@ -104,7 +107,8 @@ class TestHttpClient:
             },
         )
         try:
-            await self.http_client.execute_request(self.endpoint, self.request)
+            http_request = HTTPRequest(endpoint=self.endpoint, request_body=self.request)
+            await self.http_client.execute_request(request=http_request)
         except TectonServerException as e:
             assert isinstance(e, UnauthorizedError)
 

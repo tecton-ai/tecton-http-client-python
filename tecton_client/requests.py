@@ -146,6 +146,20 @@ class GetFeatureRequestData:
 
 
 @dataclass
+class HTTPRequest:
+    """Represents an HTTP request object that holds the parameters to make a request to the HTTP API.
+
+    Attributes:
+        endpoint (str): The HTTP endpoint to attach to the URL and query.
+        request_body (dict): The request data to be passed, in JSON format.
+
+    """
+
+    endpoint: str
+    request_body: dict
+
+
+@dataclass
 class TectonRequest(ABC):
     """Base class for all requests to the Tecton API.
 

@@ -15,6 +15,7 @@ from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import SERVER_ERRORS
 from tecton_client.exceptions import TectonClientError
 from tecton_client.exceptions import TectonServerException
+from tecton_client.requests import HTTPRequest
 from tecton_client.responses import HTTPResponse
 
 API_PREFIX = "Tecton-key"
@@ -82,14 +83,13 @@ class TectonHttpClient:
         """
         return self._is_client_closed
 
-    async def execute_request(self, endpoint: str, request_body: dict) -> HTTPResponse:
+    async def execute_request(self, request: HTTPRequest) -> HTTPResponse:
         """Performs an HTTP request to a specified endpoint using the client.
 
         This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
 
         Args:
-            endpoint (str): The HTTP endpoint to attach to the URL and query.
-            request_body (dict): The request data to be passed, in JSON format.
+            request (HTTPRequest): An :class:`HTTPRequest` object containing the endpoint and body of the HTTP request.
 
         Returns:
             HTTPResponse: An :class:`HTTPResponse` object containing the result and the latency of the HTTP request.
@@ -100,11 +100,11 @@ class TectonHttpClient:
             TectonClientError: If the client encounters an error while making the request.
 
         """
-        url = urljoin(self._url, endpoint)
+        url = urljoin(self._url, request.endpoint)
 
         try:
             start_time = time.time()
-            async with self._client.post(url, json=request_body, headers=self._auth) as response:
+            async with self._client.post(url, json=request.request_body, headers=self._auth) as response:
                 json_response = await response.json()
             end_time = time.time()
             request_latency = timedelta(seconds=(end_time - start_time))
