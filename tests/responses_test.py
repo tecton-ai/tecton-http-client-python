@@ -12,13 +12,17 @@ from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
 from tecton_client.data_types import StructType
 from tecton_client.responses import FeatureStatus
+from tecton_client.responses import GetFeaturesBatchResponse
 from tecton_client.responses import GetFeaturesResponse
+from tecton_client.responses import HTTPResponse
 from tecton_client.utils import parse_string_to_isotime
 from tests.test_utils import dict_equals
 
 
 class TestResponse:
-    TEST_DATA_REL_PATH: Final[str] = "tests/test_data/"
+    TEST_DATA_ROOT: Final[str] = "tests/test_data/"
+    TEST_DATA_REL_PATH_SINGLE: Final[str] = f"{TEST_DATA_ROOT}single/"
+    TEST_DATA_REL_PATH_BATCH: Final[str] = f"{TEST_DATA_ROOT}batch/"
 
     def assert_answers(self, expected_answer: list, get_features_response: GetFeaturesResponse) -> None:
         assert len(get_features_response.feature_values) == len(expected_answer)
@@ -45,10 +49,9 @@ class TestResponse:
         ],
     )
     def test_json_responses(self, file_name: str, expected_answer: list) -> None:
-        with open(f"{TestResponse.TEST_DATA_REL_PATH}{file_name}") as json_file:
-            get_features_response = GetFeaturesResponse(
-                response=json.load(json_file), request_latency=timedelta(milliseconds=10)
-            )
+        with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}{file_name}") as json_file:
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            get_features_response = GetFeaturesResponse(http_response=http_response)
 
             assert get_features_response.slo_info is None
             assert get_features_response.request_latency == timedelta(milliseconds=10)
@@ -65,10 +68,9 @@ class TestResponse:
             "store_response_size_bytes": 204,
         }
 
-        with open(f"{TestResponse.TEST_DATA_REL_PATH}sample_response_slo.json") as json_file:
-            get_features_response = GetFeaturesResponse(
-                response=json.load(json_file), request_latency=timedelta(milliseconds=10)
-            )
+        with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}sample_response_slo.json") as json_file:
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            get_features_response = GetFeaturesResponse(http_response=http_response)
 
             assert get_features_response.slo_info is not None
             assert get_features_response.request_latency == timedelta(milliseconds=10)
@@ -101,10 +103,9 @@ class TestResponse:
         ],
     )
     def test_metadata_response(self, filename: str, expected_answers: list, expected_metadata: List[tuple]) -> None:
-        with open(f"{TestResponse.TEST_DATA_REL_PATH}{filename}") as json_file:
-            get_features_response = GetFeaturesResponse(
-                response=json.load(json_file), request_latency=timedelta(milliseconds=10)
-            )
+        with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}{filename}") as json_file:
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            get_features_response = GetFeaturesResponse(http_response=http_response)
 
             assert get_features_response is not None
             assert get_features_response.slo_info is not None
@@ -122,3 +123,42 @@ class TestResponse:
     )
     def test_time_parsing(self, effective_time: str) -> None:
         assert isinstance(parse_string_to_isotime(effective_time), datetime)
+
+    @pytest.mark.parametrize(
+        "file_names_list, expected_answers_list",
+        [
+            (
+                [
+                    "sample_response.json",
+                    "sample_response_null.json",
+                    "sample_response_struct.json",
+                    "sample_response_list.json",
+                    "sample_response_mixed.json",
+                ],
+                [
+                    [0, False, None, "nimbostratus", 55.5],
+                    [True, None, None, None, 669],
+                    [["2.46", 2.46]],
+                    [[0], None, [55.5, 57.88, 58.96, 57.66, None, 55.98]],
+                    [None, ["2.46", 2.46], [1, 2, 3, None, 5], "test", 24, 691],
+                ],
+            ),
+            (["sample_response.json"] * 4, [[0, False, None, "nimbostratus", 55.5]] * 4),
+        ],
+    )
+    def test_batch_responses_micro_batch_1(self, file_names_list: list, expected_answers_list: list) -> None:
+        http_responses_list = []
+        for file_name in file_names_list:
+            with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}{file_name}") as json_file:
+                http_responses_list.append(
+                    HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+                )
+
+        batch_response = GetFeaturesBatchResponse(
+            responses_list=http_responses_list, request_latency=timedelta(milliseconds=10), micro_batch_size=1
+        )
+
+        assert batch_response.batch_slo_info is None
+        assert batch_response.request_latency == timedelta(milliseconds=10)
+        for response, expected_answer in zip(batch_response.batch_response_list, expected_answers_list):
+            self.assert_answers(expected_answer, response)

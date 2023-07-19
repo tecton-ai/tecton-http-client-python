@@ -14,7 +14,6 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
-from tecton_client.exceptions import TectonServerException
 from tecton_client.http_client import HTTPResponse
 from tecton_client.utils import parse_string_to_isotime
 
@@ -236,15 +235,14 @@ class GetFeaturesResponse:
             latency).
     """
 
-    def __init__(self, response: dict, request_latency: timedelta) -> None:
+    def __init__(self, http_response: HTTPResponse) -> None:
         """Initializes the object with data from the response.
 
         Args:
-            response (dict): JSON response returned from the GetFeatures API call.
-            request_latency (timedelta): The response time for GetFeatures API call (network latency + online store
-                latency).
+            http_response (HTTPResponse): The HTTP response object returned from the GetFeatures API call.
 
         """
+        response = http_response.result
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
 
@@ -265,33 +263,31 @@ class GetFeaturesResponse:
             SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
         )
 
-        self.request_latency = request_latency
+        self.request_latency = http_response.latency
 
 
 class GetFeaturesMicroBatchResponse:
     """Class representing a response from the GetFeaturesBatch API call.
 
     Attributes:
-        feature_vectors (List[GetFeaturesResponse]): List of :class:`GetFeaturesResponse` objects, one for
+        response_list (List[GetFeaturesResponse]): List of :class:`GetFeaturesResponse` objects, one for
             each feature vector in the batch.
-        batch_slo_information (Optional[SloInformation]): :class:`SloInformation` object containing information on the
+        batch_slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the
             batch's SLO, present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.
     """
 
-    def __init__(self, request_latency: timedelta, response: dict, micro_batch_size: int) -> None:
+    def __init__(self, http_response: HTTPResponse, micro_batch_size: int) -> None:
         """Initialize a GetFeaturesMicroBatchResponse object.
 
         Args:
-            request_latency (timedelta): The response time for GetFeaturesBatch API call (network latency +
-                online store latency).
-            response (dict): JSON response returned from the GetFeaturesBatch API call.
+            http_response (HTTPResponse): The HTTP response object returned from the GetFeaturesBatch API call.
             micro_batch_size (int): Number of requests sent in a single batch request, determining how may feature
                 vectors are present in the response returned from the server.
 
         """
         if micro_batch_size == 1:
-            self.feature_vectors = [GetFeaturesResponse(request_latency=request_latency, response=response)]
-            self.batch_slo_information = None  # Not present since the request was made to /get-features endpoint
+            self.response_list = [GetFeaturesResponse(http_response=http_response)]
+            self.batch_slo_info = None  # Not present since the request was made to /get-features endpoint
         else:
             pass
 
@@ -305,13 +301,13 @@ class GetFeaturesBatchResponse:
     feature vector and its metadata, in case of a successful request.
     If the server returned an exception or the request timed out, the list will contain None.
 
-    The `batch_slo_information` is only present for batch requests to the /get-features-batch endpoint
+    The batch SLO information is only present for batch requests to the /get-features-batch endpoint
     (i.e., `micro_batch_size` > 1)
 
     Attributes:
-        feature_vectors (List[Optional[GetFeaturesResponse]]): List of :class:`GetFeaturesResponse` objects,
+        batch_response_list (List[Optional[GetFeaturesResponse]]): List of :class:`GetFeaturesResponse` objects,
             one for each feature vector requested, or None if an exception was returned or the request timed out.
-        batch_slo_information (Optional[SloInformation]): :class:`SloInformation` object containing information on the
+        batch_slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the
             batch request's SLO, present only for batch requests to the /get-features-batch endpoint and if the
             :class:`MetadataOption` `SLO_INFO` is requested in the request.
         request_latency (timedelta): The response time for GetFeaturesBatch call (network latency + online store
@@ -320,15 +316,15 @@ class GetFeaturesBatchResponse:
 
     def __init__(
         self,
-        responses_list: List[HTTPResponse],
+        responses_list: List[Optional[HTTPResponse]],
         request_latency: timedelta,
         micro_batch_size: int,
     ) -> None:
         """Initializes the object with data from the response.
 
         Args:
-            responses_list (List[HTTPResponse]): List of JSON responses returned from the GetFeaturesBatch API call,
-                or exceptions if raised by any task.
+            responses_list (List[Optional[HTTPResponse]]): List of JSON responses returned from the GetFeaturesBatch
+                API call, or None if any requests timed out.
             request_latency (timedelta): The response time for GetFeaturesBatch API call (network latency +
                 online store latency).
             micro_batch_size (int): The number of requests sent in a single batch request.
@@ -336,22 +332,20 @@ class GetFeaturesBatchResponse:
         """
         # Parse the list of responses to get a list of all responses as :class:`GetFeaturesMicroBatchResponse` objects
         # or None if any exceptions are encountered.
-        micro_batch_responses = [
-            GetFeaturesMicroBatchResponse(
-                response=response.result, request_latency=response.latency, micro_batch_size=micro_batch_size
-            )
-            if response and response.result
+        micro_batch_response_list = [
+            GetFeaturesMicroBatchResponse(http_response=response, micro_batch_size=micro_batch_size)
+            if response
             else None
             for response in responses_list
         ]
 
-        # For each micro-batch response, get each feature vector from the list of feature vectors
-        self.feature_vectors = [
-            feature_vector
-            for response in micro_batch_responses
-            for feature_vector in response.feature_vectors
-            if response
-        ] + [None] * micro_batch_responses.count(None)
+        # For each micro-batch response, get each response object from the list of responses if it exists
+        self.batch_response_list = [
+            response
+            for micro_batch_response in micro_batch_response_list
+            if micro_batch_response
+            for response in micro_batch_response.response_list
+        ] + [None] * micro_batch_response_list.count(None)
 
-        self.batch_slo_information = None
+        self.batch_slo_info = None
         self.request_latency = request_latency

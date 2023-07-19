@@ -42,7 +42,9 @@ class TestTectonClient:
 
     final_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features")
 
-    TEST_DATA_REL_PATH: Final[str] = "tests/test_data/"
+    TEST_DATA_ROOT: Final[str] = "tests/test_data/"
+    TEST_DATA_REL_PATH_SINGLE: Final[str] = f"{TEST_DATA_ROOT}single/"
+    TEST_DATA_REL_PATH_BATCH: Final[str] = f"{TEST_DATA_ROOT}batch/"
 
     expected_response_mixed = {
         "test.output_struct1": None,
@@ -128,7 +130,7 @@ class TestTectonClient:
     def test_get_features(self, mocked: aioresponses, file_name: str, expected_response: dict) -> None:
         tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
 
-        with open(f"{TestTectonClient.TEST_DATA_REL_PATH}{file_name}") as json_file:
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH_SINGLE}{file_name}") as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
             response = tecton_client.get_features(self.test_request_normal)
 
@@ -138,7 +140,7 @@ class TestTectonClient:
     @pytest.mark.parametrize("metadata_path, expected_metadata", [("sample_response_metadata.json", expected_metadata)])
     def test_get_features_metadata(self, mocked: aioresponses, metadata_path: str, expected_metadata: list) -> None:
         tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
-        with open(f"{TestTectonClient.TEST_DATA_REL_PATH}{metadata_path}") as json_file:
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH_SINGLE}{metadata_path}") as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
             response = tecton_client.get_features(self.test_request_metadata)
 
@@ -268,7 +270,7 @@ class TestTectonClient:
         else:
             tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
 
-        with open(f"{TestTectonClient.TEST_DATA_REL_PATH}sample_response_mixed.json") as json_file:
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH_SINGLE}sample_response_mixed.json") as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
             response = tecton_client.get_features(self.test_request_normal)
 

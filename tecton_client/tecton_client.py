@@ -9,10 +9,6 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.http_client import HTTPRequest
 from tecton_client.http_client import TectonHttpClient
-from tecton_client.requests import GetFeaturesRequest
-from tecton_client.responses import GetFeaturesResponse
-from tecton_client.requests import GetFeaturesRequest, GetFeaturesBatchRequest
-from tecton_client.responses import GetFeaturesResponse, GetFeaturesBatchResponse
 from tecton_client.requests import GetFeaturesBatchRequest
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesBatchResponse
@@ -147,27 +143,28 @@ class TectonClient:
 
         Returns:
             GetFeaturesBatchResponse: The :class:`GetFeaturesBatchResponse` object representing the response from the
-                HTTP API.
+                HTTP API, with the list of feature vector and metadata (if requested).
 
         Example:
             >>> tecton_client = TectonClient(url, api_key)
             >>> join_key_map = {"example_join_key": "example_join_value"}
             >>> request_context_map = {"example_request_context": "example_string_value"}
             >>> request_data = GetFeatureRequestData(join_key_map, request_context_map)
-            >>> request = GetFeaturesBatchRequest(
+            >>> batch_request = GetFeaturesBatchRequest(
             ...     feature_service_name="example_feature_service",
-            ...     request_data=request_data,
+            ...     request_data_list=[request_data, request_data],
             ...     workspace_name="example_workspace",
-            ...     micro_batch_size=3
+            ...     micro_batch_size=2
             ... )
-            >>> batch_response = tecton_client.get_features_batch(request)
-            `batch_response.feature_vectors` returns a list of :class:`GetFeaturesResponse` object representing a
+            >>> batch_response = tecton_client.get_features_batch(batch_request)
+            `batch_response.response_list` returns a list of :class:`GetFeaturesResponse` objects representing a
             response for each request in the :class:`GetFeaturesBatchRequest` object. Each :class:`GetFeaturesResponse`
             object contains a dictionary of {feature_name: `FeatureValue`} pairs, which can be accessed using:
-            >>> print([feature.feature_value for feature_vector in batch_response for feature in
+            >>> print([feature.feature_value for feature_vector in batch_response.batch_response_list for feature in
             ...     feature_vector.feature_values.values()])
 
         Raises:
+            TectonClientError: If the client encounters an error while making the request.
             BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. Some of the possible
                 reasons for this are:
                 1. Missing required join key in the :class:`GetFeaturesRequestData` object passed in the request
