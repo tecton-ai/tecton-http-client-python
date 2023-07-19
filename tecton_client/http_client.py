@@ -1,4 +1,5 @@
 import time
+from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
 from typing import Optional
@@ -30,39 +31,20 @@ def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSe
     )
 
 
+@dataclass
 class HTTPResponse:
-    """Represents an HTTP response object to capture the result of making an HTTP request."""
+    """Represents an HTTP response object to capture the result of making an HTTP request.
 
-    def __init__(
-        self, exception: Optional[Exception] = None, result: Optional[dict] = None, latency: Optional[timedelta] = None
-    ) -> None:
-        """Initialize the HTTP response.
+    Attributes:
+        exception (Optional[Exception]): The server exception if one occurred while making the HTTP request, else None.
+        result (Optional[dict]): The result of the HTTP request, if the request was successful, else None.
+        latency (Optional[timedelta]): The latency of the HTTP request, if the request was successful, else None.
 
-        Args:
-            exception (Optional[Exception]): The server exception if one occurred while making the HTTP request,
-                else None.
-            result (Optional[dict]): The result of the HTTP request, if the request was successful, else None.
-            latency (Optional[timedelta]): The latency of the HTTP request, if the request was successful, else None.
+    """
 
-        """
-        self._exception: Optional[Exception] = exception
-        self._result: Optional[dict] = result
-        self._latency: Optional[timedelta] = latency
-
-    @property
-    def exception(self) -> Optional[Exception]:
-        """Returns the server exception that occurred while making the HTTP request."""
-        return self._exception
-
-    @property
-    def result(self) -> Optional[dict]:
-        """Returns the result of the HTTP request."""
-        return self._result
-
-    @property
-    def latency(self) -> Optional[timedelta]:
-        """Returns the latency of the HTTP request."""
-        return self._latency
+    exception: Optional[Exception] = None
+    result: Optional[dict] = None
+    latency: Optional[timedelta] = None
 
 
 class TectonHttpClient:
