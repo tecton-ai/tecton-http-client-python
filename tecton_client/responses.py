@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
 from typing import Dict
@@ -219,6 +220,22 @@ class SloInformation:
         )
 
 
+@dataclass
+class HTTPResponse:
+    """Represents an HTTP response object to capture the result of making an HTTP request.
+
+    Attributes:
+        exception (Optional[Exception]): The server exception if one occurred while making the HTTP request, else None.
+        result (Optional[dict]): The result of the HTTP request, if the request was successful, else None.
+        latency (Optional[timedelta]): The latency of the HTTP request, if the request was successful, else None.
+
+    """
+
+    exception: Optional[Exception] = None
+    result: Optional[dict] = None
+    latency: Optional[timedelta] = None
+
+
 class GetFeaturesResponse:
     """Response object for GetFeatures API call.
 
@@ -231,15 +248,14 @@ class GetFeaturesResponse:
             latency).
     """
 
-    def __init__(self, response: dict, request_latency: timedelta) -> None:
+    def __init__(self, http_response: HTTPResponse) -> None:
         """Initializes the object with data from the response.
 
         Args:
-            response (dict): JSON response returned from the GetFeatures API call.
-            request_latency (timedelta): The response time for GetFeatures API call (network latency + online store
-                latency).
+            http_response (HTTPResponse): The HTTP response object returned from the GetFeatures API call.
 
         """
+        response = http_response.result
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
 
@@ -260,4 +276,4 @@ class GetFeaturesResponse:
             SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
         )
 
-        self.request_latency = request_latency
+        self.request_latency = http_response.latency

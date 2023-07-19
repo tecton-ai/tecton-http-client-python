@@ -1,5 +1,4 @@
 import time
-from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
 from typing import Optional
@@ -16,6 +15,7 @@ from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import SERVER_ERRORS
 from tecton_client.exceptions import TectonClientError
 from tecton_client.exceptions import TectonServerException
+from tecton_client.responses import HTTPResponse
 
 API_PREFIX = "Tecton-key"
 
@@ -29,22 +29,6 @@ def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSe
             limit=client_options.max_connections, keepalive_timeout=client_options.keepalive_expiry.seconds
         ),
     )
-
-
-@dataclass
-class HTTPResponse:
-    """Represents an HTTP response object to capture the result of making an HTTP request.
-
-    Attributes:
-        exception (Optional[Exception]): The server exception if one occurred while making the HTTP request, else None.
-        result (Optional[dict]): The result of the HTTP request, if the request was successful, else None.
-        latency (Optional[timedelta]): The latency of the HTTP request, if the request was successful, else None.
-
-    """
-
-    exception: Optional[Exception] = None
-    result: Optional[dict] = None
-    latency: Optional[timedelta] = None
 
 
 class TectonHttpClient:

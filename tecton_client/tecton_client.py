@@ -130,7 +130,7 @@ class TectonClient:
         http_response = self._loop.run_until_complete(
             self._tecton_http_client.execute_request(request.ENDPOINT, request.to_json())
         )
-        return GetFeaturesResponse(response=http_response.result, request_latency=http_response.latency)
+        return GetFeaturesResponse(http_response=http_response)
 
     @property
     def is_closed(self) -> bool:

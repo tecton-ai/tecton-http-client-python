@@ -13,6 +13,7 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StructType
 from tecton_client.responses import FeatureStatus
 from tecton_client.responses import GetFeaturesResponse
+from tecton_client.responses import HTTPResponse
 from tecton_client.utils import parse_string_to_isotime
 from tests.test_utils import dict_equals
 
@@ -46,7 +47,8 @@ class TestResponse:
     )
     def test_json_responses(self, file_name: str, expected_answer: list) -> None:
         with open(f"{TestResponse.TEST_DATA_REL_PATH}{file_name}") as json_file:
-            get_features_response = GetFeaturesResponse(json.load(json_file), timedelta(milliseconds=10))
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            get_features_response = GetFeaturesResponse(http_response=http_response)
 
             assert get_features_response.slo_info is None
             assert get_features_response.request_latency == timedelta(milliseconds=10)
@@ -64,7 +66,8 @@ class TestResponse:
         }
 
         with open(f"{TestResponse.TEST_DATA_REL_PATH}sample_response_slo.json") as json_file:
-            get_features_response = GetFeaturesResponse(json.load(json_file), timedelta(milliseconds=10))
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            get_features_response = GetFeaturesResponse(http_response=http_response)
 
             assert get_features_response.slo_info is not None
             assert get_features_response.request_latency == timedelta(milliseconds=10)
@@ -98,7 +101,8 @@ class TestResponse:
     )
     def test_metadata_response(self, filename: str, expected_answers: list, expected_metadata: List[tuple]) -> None:
         with open(f"{TestResponse.TEST_DATA_REL_PATH}{filename}") as json_file:
-            get_features_response = GetFeaturesResponse(json.load(json_file), timedelta(milliseconds=10))
+            http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
+            get_features_response = GetFeaturesResponse(http_response=http_response)
 
             assert get_features_response is not None
             assert get_features_response.slo_info is not None
