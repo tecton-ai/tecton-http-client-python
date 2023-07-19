@@ -13,6 +13,10 @@ from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesResponse
 from tecton_client.requests import GetFeaturesRequest, GetFeaturesBatchRequest
 from tecton_client.responses import GetFeaturesResponse, GetFeaturesBatchResponse
+from tecton_client.requests import GetFeaturesBatchRequest
+from tecton_client.requests import GetFeaturesRequest
+from tecton_client.responses import GetFeaturesBatchResponse
+from tecton_client.responses import GetFeaturesResponse
 
 
 class TectonClient:
@@ -198,12 +202,13 @@ class TectonClient:
 
         """
         results, latency = self._loop.run_until_complete(
-            self._tecton_http_client.execute_parallel_requests(endpoint=request.ENDPOINT,
-                                                               request_bodies=request.to_json_list())
+            self._tecton_http_client.execute_parallel_requests(
+                endpoint=request.ENDPOINT, request_bodies=request.to_json_list()
+            )
         )
-        return GetFeaturesBatchResponse(responses_list=results,
-                                        request_latency=latency,
-                                        micro_batch_size=request.micro_batch_size)
+        return GetFeaturesBatchResponse(
+            responses_list=results, request_latency=latency, micro_batch_size=request.micro_batch_size
+        )
 
     @property
     def is_closed(self) -> bool:
@@ -218,4 +223,3 @@ class TectonClient:
         """
         self._loop.run_until_complete(self._tecton_http_client.close())
         self._loop.close()
-
