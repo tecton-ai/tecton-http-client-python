@@ -378,6 +378,7 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
         self._validate_batch_parameters(request_data_list, micro_batch_size)
         super().__init__(workspace_name, feature_service_name, metadata_options)
 
+        self.micro_batch_size = micro_batch_size
         if micro_batch_size == 1:
             self.request_list = [
                 GetFeaturesRequest(
