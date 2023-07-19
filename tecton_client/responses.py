@@ -225,13 +225,13 @@ class HTTPResponse:
     """Represents an HTTP response object to capture the result of making an HTTP request.
 
     Attributes:
-        result (Optional[dict]): The result of the HTTP request, if the request was successful, else None.
-        latency (Optional[timedelta]): The latency of the HTTP request, if the request was successful, else None.
+        result (dict): The result of the HTTP request.
+        latency (timedelta): The latency of the HTTP request.
 
     """
 
-    result: Optional[dict] = None
-    latency: Optional[timedelta] = None
+    result: dict
+    latency: timedelta
 
 
 class GetFeaturesResponse:
