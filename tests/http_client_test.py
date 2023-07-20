@@ -8,8 +8,8 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
+from tecton_client.http_client import HTTPRequest
 from tecton_client.http_client import TectonHttpClient
-from tecton_client.requests import HTTPRequest
 from tecton_client.tecton_client import TectonClientOptions
 
 

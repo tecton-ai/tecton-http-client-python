@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Dict
 from typing import List
@@ -15,6 +13,7 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
+from tecton_client.http_client import HTTPResponse
 from tecton_client.utils import parse_string_to_isotime
 
 
@@ -218,20 +217,6 @@ class SloInformation:
             if "sloIneligibilityReasons" in slo_information
             else None
         )
-
-
-@dataclass
-class HTTPResponse:
-    """Represents an HTTP response object to capture the result of making an HTTP request.
-
-    Attributes:
-        result (dict): The result of the HTTP request.
-        latency (timedelta): The latency of the HTTP request.
-
-    """
-
-    result: dict
-    latency: timedelta
 
 
 class GetFeaturesResponse:

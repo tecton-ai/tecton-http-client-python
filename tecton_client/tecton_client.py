@@ -7,9 +7,9 @@ import aiohttp
 from tecton_client.client_options import TectonClientOptions
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
+from tecton_client.http_client import HTTPRequest
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesRequest
-from tecton_client.requests import HTTPRequest
 from tecton_client.responses import GetFeaturesResponse
 
 
