@@ -397,7 +397,7 @@ class GetFeaturesBatchResponse:
         self.batch_response_list += [None] * micro_batch_response_list.count(None)
 
         self.batch_slo_info = self._get_batch_slo_info(
-            [response.batch_slo_info for response in micro_batch_response_list if response.batch_slo_info]
+            [response.batch_slo_info for response in micro_batch_response_list if response and response.batch_slo_info]
         )
 
         self.request_latency = request_latency

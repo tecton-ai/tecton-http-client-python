@@ -41,6 +41,7 @@ class TestTectonClient:
     url: Final[str] = "https://thisisaurl.ai"
 
     final_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features")
+    batch_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features-batch")
 
     TEST_DATA_ROOT: Final[str] = "tests/test_data/"
     TEST_DATA_REL_PATH_SINGLE: Final[str] = os.path.join(TEST_DATA_ROOT, "single/")
@@ -118,6 +119,13 @@ class TestTectonClient:
         request_data=GetFeaturesRequestData(join_key_map, request_context_map),
         workspace_name="test-workspace",
         metadata_options={MetadataOptions.SLO_INFO, MetadataOptions.FEATURE_STATUS, MetadataOptions.EFFECTIVE_TIME},
+    )
+    test_request_batch = GetFeaturesBatchRequest(
+        feature_service_name="test_feature_service",
+        request_data_list=[GetFeatureRequestData(join_key_map, request_context_map)] * 10,
+        workspace_name="test-workspace",
+        metadata_options={MetadataOptions.SLO_INFO, MetadataOptions.FEATURE_STATUS, MetadataOptions.EFFECTIVE_TIME},
+        micro_batch_size=5,
     )
 
     @pytest.mark.parametrize(
@@ -298,3 +306,26 @@ class TestTectonClient:
                 url="https://thisisaurl.ai", client_options=TectonClientOptions(max_connections=1), client=client
             )
         await client.close()
+
+    @pytest.mark.parametrize(
+        "file_name, expected_response",
+        [
+            ("sample_batch_response_long_slo.json", expected_response_mixed),
+        ],
+    )
+    def test_get_features_batch(self, file_name: str, expected_response: dict) -> None:
+        tecton_client = TectonClient(TestTectonClient.url,
+                                     TestTectonClient.api_key)
+
+        # with open(f"{TestTectonClient.TEST_DATA_REL_PATH_BATCH}{file_name}") as json_file:
+        #     mocked.post(url=self.batch_url, payload=json.load(json_file))
+
+        batch_response = tecton_client.get_features_batch(self.test_request_batch)
+        print(batch_response)
+        for response in batch_response.batch_response_list:
+            print(response)
+
+        # print([feature.feature_value for feature_vector in batch_response.batch_response_list for feature in
+        #        feature_vector.feature_values.values()])
+        # assert dict_equals({k: v.feature_value for k, v in response.feature_values.items()}, expected_response)
+        tecton_client.close()
