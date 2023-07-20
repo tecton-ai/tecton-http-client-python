@@ -191,9 +191,7 @@ class TectonHttpClient:
         results = [task.result() if task in done and not task.exception() else None for task in tasks]
 
         # Get the list of exceptions thrown by the HTTP client
-        thrown_exceptions = [
-            task.exception() for task in done if task.exception() and isinstance(task.exception(), TectonClientError)
-        ]
+        thrown_exceptions = [task.exception() for task in done if task.exception()]
 
         # Close all the created tasks
         await self._close_tasks(tasks=pending)

@@ -206,18 +206,16 @@ class TestHttpClient:
                     "result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}
                 },
             )
+
+        async def delayed_callback(request_url: str, **kwargs: Union[str, bool, dict]) -> dict:
+            # This is the function that sends a mock response when the client sends a request
+            # Here, `**kwargs` represents information such as the request data, headers etc. needed to parse a request
+            await asyncio.sleep(2)
+            return {"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+
         mocked.post(
             url=self.full_url,
-            status=401,
-            reason="Unauthorized: invalid 'Tecton-key' authorization header. "
-            "Newly created credentials may take up to 60 seconds to be usable.",
-            payload={
-                "error": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
-                "take up to 60 seconds to be usable.",
-                "message": "invalid 'Tecton-key' authorization header. Note that newly created credentials may "
-                "take up to 60 seconds to be usable.",
-                "code": 16,
-            },
+            callback=delayed_callback,
             repeat=True,
         )
 
@@ -228,7 +226,7 @@ class TestHttpClient:
         assert len(responses_list) == len(requests_list)
         assert all(isinstance(response.result, dict) for response in responses_list if response)
 
-        # Check whether half of the responses sent are exceptions
+        # Check whether half of the responses sent have timed out and returned None
         assert responses_list.count(None) == len(requests_list) // 2
 
     @pytest.mark.asyncio
