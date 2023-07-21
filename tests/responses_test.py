@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 from datetime import timedelta
 from typing import Final
@@ -21,8 +22,8 @@ from tests.test_utils import dict_equals
 
 class TestResponse:
     TEST_DATA_ROOT: Final[str] = "tests/test_data/"
-    TEST_DATA_REL_PATH_SINGLE: Final[str] = f"{TEST_DATA_ROOT}single/"
-    TEST_DATA_REL_PATH_BATCH: Final[str] = f"{TEST_DATA_ROOT}batch/"
+    TEST_DATA_REL_PATH_SINGLE: Final[str] = os.path.join(TEST_DATA_ROOT, "single/")
+    TEST_DATA_REL_PATH_BATCH: Final[str] = os.path.join(TEST_DATA_ROOT, "batch/")
 
     def assert_answers(self, expected_answer: list, get_features_response: GetFeaturesResponse) -> None:
         assert len(get_features_response.feature_values) == len(expected_answer)
@@ -49,7 +50,7 @@ class TestResponse:
         ],
     )
     def test_json_responses(self, file_name: str, expected_answer: list) -> None:
-        with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}{file_name}") as json_file:
+        with open(os.path.join(TestResponse.TEST_DATA_REL_PATH_SINGLE, file_name)) as json_file:
             http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
             get_features_response = GetFeaturesResponse(http_response=http_response)
 
@@ -68,7 +69,7 @@ class TestResponse:
             "store_response_size_bytes": 204,
         }
 
-        with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}sample_response_slo.json") as json_file:
+        with open(os.path.join(TestResponse.TEST_DATA_REL_PATH_SINGLE, "sample_response_slo.json")) as json_file:
             http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
             get_features_response = GetFeaturesResponse(http_response=http_response)
 
@@ -103,7 +104,7 @@ class TestResponse:
         ],
     )
     def test_metadata_response(self, filename: str, expected_answers: list, expected_metadata: List[tuple]) -> None:
-        with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}{filename}") as json_file:
+        with open(os.path.join(TestResponse.TEST_DATA_REL_PATH_SINGLE, filename)) as json_file:
             http_response = HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
             get_features_response = GetFeaturesResponse(http_response=http_response)
 
@@ -149,7 +150,7 @@ class TestResponse:
     def test_batch_responses_micro_batch_1(self, file_names_list: list, expected_answers_list: list) -> None:
         http_responses_list = []
         for file_name in file_names_list:
-            with open(f"{TestResponse.TEST_DATA_REL_PATH_SINGLE}{file_name}") as json_file:
+            with open(os.path.join(TestResponse.TEST_DATA_REL_PATH_SINGLE, file_name)) as json_file:
                 http_responses_list.append(
                     HTTPResponse(result=json.load(json_file), latency=timedelta(milliseconds=10))
                 )

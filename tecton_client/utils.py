@@ -48,9 +48,12 @@ def asyncio_run(coro: Coroutine) -> Optional[Future]:
     """
     try:
         loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        return loop.run_until_complete(coro)
+    except RuntimeError as e:
+        if str(e).startswith("There is no current event loop in thread"):
+            loop = asyncio.new_event_loop()
+            return loop.run_until_complete(coro)
+        else:
+            raise e
     else:
         nest_asyncio.apply(loop)
         return asyncio.run(coro)
