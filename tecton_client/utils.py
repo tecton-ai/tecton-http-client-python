@@ -1,8 +1,12 @@
+import asyncio
+from asyncio import Future
 from datetime import datetime
+from typing import Coroutine
 from typing import Final
 from typing import List
 from typing import Optional
 
+import nest_asyncio
 
 DATETIME_FORMATS: Final[List[str]] = ["%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S.%fZ"]
 
@@ -23,3 +27,30 @@ def parse_string_to_isotime(datetime_string: str) -> Optional[datetime]:
         except ValueError:
             pass
     return None
+
+
+def asyncio_run(coro: Coroutine) -> Optional[Future]:
+    """Run the given asynchronous coroutine using the appropriate event loop.
+
+    This method uses the `asyncio.get_event_loop()` to get the current event loop,
+    and if it's not available, it creates a new event loop with `asyncio.new_event_loop()`.
+    It then runs the given coroutine using `loop.run_until_complete(coro)`.
+
+    If the loop is already running, it uses `asyncio.run()` to run the coroutine.
+    This function must be called from outside any existing event loop to avoid conflicts.
+
+    Args:
+        coro (Coroutine): The asynchronous coroutine to be executed.
+
+    Returns:
+        Optional[Future]: The result of the asynchronous coroutine if the event loop is running, else None.
+
+    """
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        return loop.run_until_complete(coro)
+    else:
+        nest_asyncio.apply(loop)
+        return asyncio.run(coro)

@@ -289,7 +289,7 @@ class GetFeaturesMicroBatchResponse:
             self.response_list = [GetFeaturesResponse(http_response=http_response)]
             self.batch_slo_info = None  # Not present since the request was made to /get-features endpoint
         else:
-            pass
+            pass  # TODO: Parse response for requests with micro_batch_size > 1
 
 
 class GetFeaturesBatchResponse:
@@ -298,15 +298,14 @@ class GetFeaturesBatchResponse:
     present.
 
     The list of :class:`GetFeaturesResponse` objects represents the list of responses, each of which encapsulates a
-    feature vector and its metadata, in case of a successful request.
-    If the server returned an exception or the request timed out, the list will contain None.
+    feature vector and its metadata, in case of a successful request, or None if the request timed out.
 
     The batch SLO information is only present for batch requests to the /get-features-batch endpoint
     (i.e., `micro_batch_size` > 1)
 
     Attributes:
         batch_response_list (List[Optional[GetFeaturesResponse]]): List of :class:`GetFeaturesResponse` objects,
-            one for each feature vector requested, or None if an exception was returned or the request timed out.
+            one for each feature vector requested, or None if the request timed out.
         batch_slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the
             batch request's SLO, present only for batch requests to the /get-features-batch endpoint and if the
             :class:`MetadataOption` `SLO_INFO` is requested in the request.
@@ -331,11 +330,11 @@ class GetFeaturesBatchResponse:
 
         """
         # Parse the list of responses to get a list of all responses as :class:`GetFeaturesMicroBatchResponse` objects
-        # or None if any exceptions are encountered.
+        # if the response exists (i.e. is returned from the batch call), else store the None response as is.
         micro_batch_response_list = [
             GetFeaturesMicroBatchResponse(http_response=response, micro_batch_size=micro_batch_size)
             if response
-            else None
+            else response
             for response in responses_list
         ]
 
@@ -347,5 +346,5 @@ class GetFeaturesBatchResponse:
             for response in micro_batch_response.response_list
         ] + [None] * micro_batch_response_list.count(None)
 
-        self.batch_slo_info = None
+        self.batch_slo_info = None  # TODO: Add batch SLO info for requests of micro_batch_size > 1
         self.request_latency = request_latency
