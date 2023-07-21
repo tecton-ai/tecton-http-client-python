@@ -1,4 +1,7 @@
+import asyncio
+from datetime import timedelta
 from typing import Final
+from typing import Union
 from urllib.parse import urljoin
 
 import pytest
@@ -26,6 +29,7 @@ class TestHttpClient:
 
     endpoint: Final[str] = "api/v1/feature-service/get-features"
     full_url: Final[str] = urljoin(URL, endpoint)
+
     params = {
         "feature_service_name": "fraud_detection_feature_service",
         "join_key_map": {"user_id": "user_205125746682"},
@@ -116,6 +120,114 @@ class TestHttpClient:
     async def test_default_client_options(self) -> None:
         assert self.http_client._client.timeout.connect == 2
         assert self.http_client._client.timeout.total == 2
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [10, 50, 100, 500])
+    async def test_parallel_requests(self, mocked: aioresponses, number_of_requests: int) -> None:
+        mocked.post(
+            url=self.full_url,
+            payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
+            repeat=True,
+        )
+
+        requests_list = [self.request] * number_of_requests
+        responses_list, latency = await self.http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
+
+        assert len(responses_list) == len(requests_list)
+        assert all(isinstance(response.result, dict) for response in responses_list)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [10, 100])
+    async def test_parallel_requests_smaller_timeout(self, mocked: aioresponses, number_of_requests: int) -> None:
+        async def delayed_callback(request_url: str, **kwargs: Union[str, bool, dict]) -> dict:
+            # This is the function that sends a mock response when the client sends a request
+            # Here, `**kwargs` represents information such as the request data, headers etc. needed to parse a request
+            await asyncio.sleep(1)
+            return {"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+
+        mocked.post(
+            url=self.full_url,
+            callback=delayed_callback,
+            repeat=True,
+        )
+
+        requests_list = [self.request] * number_of_requests
+        responses_list, latency = await self.http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(milliseconds=1)
+        )
+
+        assert len(responses_list) == len(requests_list)
+        # No request should complete in this timeout, resulting in all returned responses being empty
+        assert all(response is None for response in responses_list)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [2])
+    async def test_order_of_parallel_requests(self, mocked: aioresponses, number_of_requests: int) -> None:
+        params2 = {
+            "feature_service_name": "fraud_detection_feature_service",
+            "join_key_map": {"user_id": "user_205125746682"},
+            "request_context_map": {"merch_long": 35.0, "amt": 500.0, "merch_lat": 30.0},
+            "workspace_name": "tecton-fundamentals-tutorial-live",
+            "metadata_options": {"include_names": True, "include_data_types": True},
+        }
+        request2 = {"params": params2}
+        requests_list = [self.request, request2] * number_of_requests
+
+        for i in range(1, len(requests_list) + 1):
+            mocked.post(
+                url=self.full_url,
+                payload={
+                    "result": {"features": [str(i), 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}
+                },
+            )
+
+        responses_list, latency = await self.http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
+
+        assert len(responses_list) == len(requests_list)
+        assert all(response is not None for response in responses_list)
+
+        for response in responses_list:
+            if response:
+                assert isinstance(response.result, dict)
+                # Testing out order of responses by checking the value stored in the first feature of the features list
+                assert response.result["result"]["features"][0] == str(responses_list.index(response) + 1)
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("number_of_requests", [10, 50])
+    async def test_parallel_requests_partial(self, mocked: aioresponses, number_of_requests: int) -> None:
+        for i in range(number_of_requests // 2):
+            mocked.post(
+                url=self.full_url,
+                payload={
+                    "result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}
+                },
+            )
+
+        async def delayed_callback(request_url: str, **kwargs: Union[str, bool, dict]) -> dict:
+            # This is the function that sends a mock response when the client sends a request
+            # Here, `**kwargs` represents information such as the request data, headers etc. needed to parse a request
+            await asyncio.sleep(2)
+            return {"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
+
+        mocked.post(
+            url=self.full_url,
+            callback=delayed_callback,
+            repeat=True,
+        )
+
+        requests_list = [self.request] * number_of_requests
+        responses_list, latency = await self.http_client.execute_parallel_requests(
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
+        assert len(responses_list) == len(requests_list)
+        assert all(isinstance(response.result, dict) for response in responses_list if response)
+
+        # Check whether half of the responses sent have timed out and returned None
+        assert responses_list.count(None) == len(requests_list) // 2
 
     @pytest.mark.asyncio
     async def pytest_sessionfinish(self) -> None:

@@ -1,8 +1,12 @@
+import asyncio
 import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
+from typing import List
 from typing import Optional
+from typing import Set
+from typing import Tuple
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
@@ -144,6 +148,74 @@ class TectonHttpClient:
                 raise error_class(message)
         except aiohttp.ClientError as e:
             raise TectonClientError from e
+
+    async def execute_parallel_requests(
+        self,
+        endpoint: str,
+        request_bodies: List[dict],
+        timeout: Optional[timedelta] = None,
+    ) -> Tuple[List[Optional[HTTPResponse]], timedelta]:
+        """Performs multiple HTTP requests to a specified endpoint in parallel using the client.
+
+        Args:
+            endpoint (str): The HTTP endpoint to attach to the URL and query.
+            request_bodies (List[dict]): The list of request data to be passed for the parallel requests,
+                in JSON format.
+            timeout (Optional[timedelta]): The duration of time to wait for the parallel requests to complete before
+                returning. Defaults to no timeout.
+
+        Returns:
+            Tuple[List[Optional[HTTPResponse]], timedelta]: A tuple of the list of :class:`HTTPResponse` objects,
+                or None if the request was unsuccessful, and the overall time taken to execute the parallel requests
+                returned as a :class:`timedelta` object.
+
+        """
+        # Create a list of tasks to execute the requests in parallel
+        tasks = [
+            asyncio.create_task(self.execute_request(HTTPRequest(endpoint=endpoint, request_body=request_body)))
+            for request_body in request_bodies
+        ]
+
+        # Execute the tasks in parallel and wait for them to complete or timeout
+        start_time = time.time()
+        done, pending = await asyncio.wait(tasks, timeout=timeout.total_seconds() if timeout else timeout)
+        end_time = time.time()
+
+        # Calculate the latency of the request
+        latency = timedelta(seconds=(end_time - start_time))
+
+        # Capture results of the tasks:-
+        # If the task is in the done list, it either completes successfully or returns an exception from the server.
+        # If the task is successful, i.e. without an exception, return the result.
+        # Else, store None in case the task returned an exception or timed out.
+        results = [task.result() if task in done and not task.exception() else None for task in tasks]
+
+        # Get the list of exceptions thrown by the HTTP client
+        thrown_exceptions = [task.exception() for task in done if task.exception()]
+
+        # Close all the created tasks
+        await self._close_tasks(tasks=pending)
+
+        # If there are any exceptions thrown by the HTTP client, raise the first exception
+        if thrown_exceptions:
+            raise thrown_exceptions[0]
+
+        return results, latency
+
+    @staticmethod
+    async def _close_tasks(tasks: Set[asyncio.Task]) -> None:
+        """Closes a set of tasks.
+
+        Args:
+            tasks (Set[asyncio.Task]): The set of tasks to be closed.
+
+        """
+        for task in tasks:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
 
     @staticmethod
     def _validate_url(url: Optional[str]) -> str:
