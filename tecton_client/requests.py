@@ -1,5 +1,6 @@
 from abc import ABC
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from itertools import zip_longest
 from typing import Dict
@@ -16,6 +17,7 @@ from tecton_client.constants import SUPPORTED_JOIN_KEY_VALUE_TYPES
 from tecton_client.constants import SUPPORTED_REQUEST_CONTEXT_MAP_TYPES
 from tecton_client.exceptions import EMPTY_KEY_VALUE
 from tecton_client.exceptions import INVALID_TYPE_KEY_VALUE
+from tecton_client.exceptions import InvalidMicroBatchSizeError
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.exceptions import UnsupportedTypeError
@@ -207,9 +209,20 @@ class AbstractGetFeaturesRequest(TectonRequest):
         self.metadata_options = metadata_options.union(_defaults())
 
 
-def _construct_json_dict(
+def _request_to_json(
     request: AbstractGetFeaturesRequest, fields_to_remove: List[str], is_batch_request: bool = False
 ) -> dict:
+    """Returns a JSON representation of any :class:`AbstractGetFeaturesRequest` object as a dictionary.
+
+    Args:
+        request (AbstractGetFeaturesRequest): The :class:`AbstractGetFeaturesRequest` object to be converted to JSON.
+        fields_to_remove (List[str]): List of fields to be removed from the JSON representation of the object.
+        is_batch_request (bool): Whether the request is a batch request or not. Defaults to False.
+
+    Returns:
+        dict: The JSON representation of the :class:`AbstractGetFeaturesRequest` object.
+
+    """
     self_dict = {key: value for key, value in vars(request).items() if key not in fields_to_remove}
     self_dict["metadata_options"] = (
         {option.value: True for option in sorted(request.metadata_options, key=lambda x: x.value)}
@@ -235,12 +248,12 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
     """Class representing a request to the /get-features endpoint.
 
     Attributes:
-        request_data (GetFeatureRequestData): Request parameters for the query, consisting of a Join Key Map and/or a
+        request_data (GetFeaturesRequestData): Request parameters for the query, consisting of a Join Key Map and/or a
             Request Context Map sent as a :class:`GetFeaturesRequestData` object.
         ENDPOINT (str): Endpoint string for the get-features API.
 
     Examples:
-        >>> request_data = GetFeatureRequestData(join_key_map={"user_id": 1234})
+        >>> request_data = GetFeaturesRequestData(join_key_map={"user_id": 1234})
         >>> get_features_request = GetFeaturesRequest("my_workspace", "my_feature_service", request_data=request_data)
         >>> get_features_request.to_json()
             {"params":{"feature_service_name": "my_feature_service","workspace_name": "my_workspace",
@@ -271,7 +284,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
 
     def to_json(self) -> dict:
         """Returns a JSON representation of the :class:`GetFeaturesRequest` object as a dictionary."""
-        return _construct_json_dict(self, fields_to_remove=["ENDPOINT", "request_data"])
+        return _request_to_json(self, fields_to_remove=["ENDPOINT", "request_data"])
 
 
 @dataclass
@@ -279,8 +292,8 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
     """Class representing a micro-batch request sent to the /get-features-batch endpoint.
 
     Attributes:
-        request_data (List[GetFeatureRequestData]): Request parameters for the query, consisting of a list of
-            :class:`GetFeatureRequestData` objects.
+        request_data (List[GetFeaturesRequestData]): Request parameters for the query, consisting of a list of
+            :class:`GetFeaturesRequestData` objects.
         ENDPOINT (str): Endpoint string for the get-features-batch API.
     """
 
@@ -290,7 +303,7 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
         self,
         workspace_name: str,
         feature_service_name: str,
-        request_data_list: List[GetFeatureRequestData],
+        request_data_list: List[GetFeaturesRequestData],
         metadata_options: Set[MetadataOptions] = _defaults(),
     ) -> None:
         """Initializing the :class:`GetFeaturesMicroBatchRequest` object with the given parameters.
@@ -298,7 +311,7 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
         Args:
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
-            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.
+            request_data_list (List[GetFeaturesRequestData]): List of request parameters for the batch query.
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
 
@@ -308,9 +321,10 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
 
     def to_json(self) -> dict:
         """Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object as a dictionary."""
-        return _construct_json_dict(self, fields_to_remove=["ENDPOINT"], is_batch_request=True)
+        return _request_to_json(self, fields_to_remove=["ENDPOINT"], is_batch_request=True)
 
 
+@dataclass
 class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
     """A class that represents a batch request to retrieve a list of feature vectors from the feature server.
 
@@ -322,12 +336,12 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
     configuration `micro_batch_size`. By default, the `micro_batch_size` is set to {DEFAULT_MICRO_BATCH_SIZE}.
     It can be configured to any value in the range [{MIN_MICRO_BATCH_SIZE}, {MAX_MICRO_BATCH_SIZE}].
 
-    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeatureRequestData` of size `n` and a `micro_batch_size`
+    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`
     of 1, the client enqueues `n` HTTP calls to be sent parallelly to the /get-features endpoint. The client waits
     until all calls are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`
     objects of size `n`.
 
-    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeatureRequestData` of size `n` and a `micro_batch_size`
+    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`
     of `k` where `k` is in the range [{MIN_MICRO_BATCH_SIZE}, {MAX_MICRO_BATCH_SIZE}], the client enqueues
     math.ceil(n/k) microbatch requests to be sent parallelly to the /get-features-batch endpoint, waits until all
     microbatch requests are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`
@@ -341,7 +355,7 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
         ENDPOINT (str): Endpoint string for the get-features-batch API.
 
     Examples:
-        >>> request_data = GetFeatureRequestData(join_key_map={"user_id": 1234})
+        >>> request_data = GetFeaturesRequestData(join_key_map={"user_id": 1234})
         >>> request = GetFeaturesBatchRequest(
         ...      workspace_name="my_workspace",
         ...      feature_service_name="my_feature_service",
@@ -359,26 +373,31 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
         self,
         workspace_name: str,
         feature_service_name: str,
-        request_data_list: List[GetFeatureRequestData],
+        request_data_list: List[GetFeaturesRequestData],
         metadata_options: Set[MetadataOptions] = _defaults(),
         micro_batch_size: int = DEFAULT_MICRO_BATCH_SIZE,
+        timeout: Optional[timedelta] = None,
     ) -> None:
         """Initializing the :class:`GetFeaturesBatchRequest` object with the given parameters.
 
         Args:
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
-            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.
+            request_data_list (List[GetFeaturesRequestData]): List of request parameters for the batch query.
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
             micro_batch_size (int): (Optional) Number of requests to be sent in a single batch request. Defaults to
                 {DEFAULT_MICRO_BATCH_SIZE}.
+            timeout (Optional[timedelta]): (Optional) The maximum time the client waits for the batch requests to
+                complete before canceling the operation and returning the partial list of results. Defaults to None.
 
         """
         self._validate_batch_parameters(request_data_list, micro_batch_size)
         super().__init__(workspace_name, feature_service_name, metadata_options)
 
         self.micro_batch_size = micro_batch_size
+        self.timeout = timeout
+
         if micro_batch_size == 1:
             self.request_list = [
                 GetFeaturesRequest(
@@ -402,11 +421,13 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
             ]
             self.ENDPOINT = GetFeaturesMicroBatchRequest.ENDPOINT
 
-    def _validate_batch_parameters(self, request_data_list: List[GetFeatureRequestData], micro_batch_size: int) -> None:
+    def _validate_batch_parameters(
+        self, request_data_list: List[GetFeaturesRequestData], micro_batch_size: int
+    ) -> None:
         """Validates the parameters for the batch request.
 
         Args:
-            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.
+            request_data_list (List[GetFeaturesRequestData]): List of request parameters for the batch query.
             micro_batch_size (int): Number of requests to be sent in a single batch.
 
         Raises:
@@ -416,14 +437,14 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
 
         """
         if not request_data_list or None in request_data_list:
-            message = "List of GetFeaturesRequestData for get-features-batch/ cannot be empty"
+            message = "List of GetFeaturesRequestData for the get features batch request cannot be empty"
             raise InvalidParameterError(message)
         if micro_batch_size < MIN_MICRO_BATCH_SIZE or micro_batch_size > MAX_MICRO_BATCH_SIZE:
             message = (
-                f"Micro batch size for get-features-batch/ must be between {MIN_MICRO_BATCH_SIZE} and "
+                f"Micro batch size for get features batch request must be between {MIN_MICRO_BATCH_SIZE} and "
                 f"{MAX_MICRO_BATCH_SIZE}"
             )
-            raise InvalidParameterError(message)
+            raise InvalidMicroBatchSizeError(message)
 
     def to_json_list(self) -> List[dict]:
         """Returns a list of JSON representations for requests in the object as a list of dictionaries."""

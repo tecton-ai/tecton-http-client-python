@@ -1,9 +1,11 @@
 import json
+import os
 from typing import List
 from typing import Union
 
 import pytest
 
+from tecton_client.exceptions import InvalidMicroBatchSizeError
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import UnsupportedTypeError
 from tecton_client.requests import GetFeaturesBatchRequest
@@ -107,7 +109,7 @@ class TestRequests:
 
     def test_empty_maps(self) -> None:
         with pytest.raises(InvalidParameterError):
-            GetFeatureRequestData()
+            GetFeaturesRequestData()
 
     @pytest.mark.parametrize("workspace", ["", None])
     def test_error_workspace_name(self, workspace: str) -> None:
@@ -118,10 +120,6 @@ class TestRequests:
     def test_error_feature_service_name(self, feature_service: str) -> None:
         with pytest.raises(InvalidParameterError):
             GetFeaturesRequest(self.TEST_WORKSPACE_NAME, feature_service, self.default_request_data)
-
-    def test_empty_maps(self) -> None:
-        with pytest.raises(InvalidParameterError):
-            GetFeaturesRequestData()
 
     def test_simple_request_with_none_join_key(self) -> None:
         local_request_data = GetFeaturesRequestData(join_key_map={"test_key": "test_value", "test_none_key": None})
@@ -289,22 +287,20 @@ class TestRequests:
     @pytest.mark.parametrize("workspace", ["", None])
     def test_error_workspace_name_batch(self, workspace: str) -> None:
         with pytest.raises(InvalidParameterError):
-            GetFeaturesBatchRequest(workspace, self.TEST_FEATURE_SERVICE_NAME, [self.default_get_feature_request_data])
+            GetFeaturesBatchRequest(workspace, self.TEST_FEATURE_SERVICE_NAME, [self.default_request_data])
 
     @pytest.mark.parametrize("feature_service", ["", None])
     def test_error_feature_service_name_batch(self, feature_service: str) -> None:
         with pytest.raises(InvalidParameterError):
-            GetFeaturesBatchRequest(self.TEST_WORKSPACE_NAME, feature_service, [self.default_get_feature_request_data])
+            GetFeaturesBatchRequest(self.TEST_WORKSPACE_NAME, feature_service, [self.default_request_data])
 
     def test_batch_request_with_none_join_keys(self) -> None:
-        local_get_feature_request_data = GetFeatureRequestData(
-            join_key_map={"test_key": "test_value", "test_none_key": None}
-        )
+        local_request_data = GetFeaturesRequestData(join_key_map={"test_key": "test_value", "test_none_key": None})
 
         request = GetFeaturesBatchRequest(
             workspace_name=self.TEST_WORKSPACE_NAME,
             feature_service_name=self.TEST_FEATURE_SERVICE_NAME,
-            request_data_list=[local_get_feature_request_data],
+            request_data_list=[local_request_data],
             metadata_options={MetadataOptions.NAME, MetadataOptions.DATA_TYPE},
             micro_batch_size=1,
         )
@@ -333,9 +329,9 @@ class TestRequests:
             assert dict_equals(json_request, expected_json_request)
 
     request_list = [
-        GetFeatureRequestData(join_key_map={"test_key": "test_value"}),
-        GetFeatureRequestData(request_context_map={"test_key": "test_value"}),
-        GetFeatureRequestData(join_key_map={"test_key": "test_value"}, request_context_map={"test_key": "test_value"}),
+        GetFeaturesRequestData(join_key_map={"test_key": "test_value"}),
+        GetFeaturesRequestData(request_context_map={"test_key": "test_value"}),
+        GetFeaturesRequestData(join_key_map={"test_key": "test_value"}, request_context_map={"test_key": "test_value"}),
     ]
 
     @pytest.mark.parametrize(
@@ -349,9 +345,9 @@ class TestRequests:
         ],
     )
     def test_batch_requests(
-        self, request_list: List[GetFeatureRequestData], micro_batch_size: int, expected_json_file_name: str
+        self, request_list: List[GetFeaturesRequestData], micro_batch_size: int, expected_json_file_name: str
     ) -> None:
-        with open(f"{self.TEST_DATA_PATH}/batch/{expected_json_file_name}.json", "r") as f:
+        with open(os.path.join(self.TEST_DATA_PATH, "batch", f"{expected_json_file_name}.json"), "r") as f:
             expected_json_list = json.load(f)
 
         get_features_request_batch = GetFeaturesBatchRequest(
@@ -368,16 +364,24 @@ class TestRequests:
         for actual_json, expected_json in zip(get_features_request_batch.to_json_list(), expected_json_list):
             assert dict_equals(actual_json, expected_json)
 
-    @pytest.mark.parametrize(
-        "request_list, micro_batch_size",
-        [([], 1), (request_list, -1), (request_list, 0), (request_list, 11), ([None], 1)],
-    )
-    def test_error_batch_requests(self, request_list: List[GetFeatureRequestData], micro_batch_size: int) -> None:
+    @pytest.mark.parametrize("request_list", [[], [None]])
+    def test_error_batch_request_list(self, request_list: List[GetFeaturesRequestData]) -> None:
         with pytest.raises(InvalidParameterError):
             GetFeaturesBatchRequest(
                 workspace_name=self.TEST_WORKSPACE_NAME,
                 feature_service_name=self.TEST_FEATURE_SERVICE_NAME,
                 request_data_list=request_list,
+                metadata_options={MetadataOptions.NAME, MetadataOptions.DATA_TYPE},
+                micro_batch_size=1,
+            )
+
+    @pytest.mark.parametrize("micro_batch_size", [-1, 0, 11])
+    def test_error_micro_batch_size(self, micro_batch_size: int) -> None:
+        with pytest.raises(InvalidMicroBatchSizeError):
+            GetFeaturesBatchRequest(
+                workspace_name=self.TEST_WORKSPACE_NAME,
+                feature_service_name=self.TEST_FEATURE_SERVICE_NAME,
+                request_data_list=self.request_list,
                 metadata_options={MetadataOptions.NAME, MetadataOptions.DATA_TYPE},
                 micro_batch_size=micro_batch_size,
             )

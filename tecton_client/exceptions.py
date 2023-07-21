@@ -40,6 +40,10 @@ class InvalidURLError(TectonClientError):
     """Raised when the URL passed is invalid or empty."""
 
 
+class InvalidMicroBatchSizeError(TectonClientError):
+    """Raised when the micro batch size is invalid."""
+
+
 class InvalidParameterMessage(str, Enum):
     """Error Messages for Invalid Parameters passed."""
 
