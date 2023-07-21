@@ -5,10 +5,12 @@ from typing import Union
 
 import pytest
 
+from tecton_client.constants import DEFAULT_WORKSPACE_NAME
 from tecton_client.exceptions import InvalidMicroBatchSizeError
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import UnsupportedTypeError
 from tecton_client.requests import GetFeaturesBatchRequest
+from tecton_client.requests import GetFeatureServiceMetadataRequest
 from tecton_client.requests import GetFeaturesMicroBatchRequest
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import GetFeaturesRequestData
@@ -384,4 +386,51 @@ class TestRequests:
                 request_data_list=self.request_list,
                 metadata_options={MetadataOptions.NAME, MetadataOptions.DATA_TYPE},
                 micro_batch_size=micro_batch_size,
+            )
+
+    @pytest.mark.parametrize(
+        "workspace_name, expected_response",
+        [
+            (
+                TEST_WORKSPACE_NAME,
+                {
+                    "feature_service_name": "test_feature_service_name",
+                    "workspace_name": "test_workspace_name",
+                },
+            ),
+            (
+                None,
+                {
+                    "feature_service_name": "test_feature_service_name",
+                    "workspace_name": "prod",
+                },
+            ),
+            (
+                "",
+                {
+                    "feature_service_name": "test_feature_service_name",
+                    "workspace_name": "prod",
+                },
+            ),
+        ],
+    )
+    def test_metadata_request(self, workspace_name: str, expected_response: dict) -> None:
+        request = GetFeatureServiceMetadataRequest(
+            feature_service_name=self.TEST_FEATURE_SERVICE_NAME, workspace_name=workspace_name
+        )
+        if workspace_name:
+            assert request.workspace_name == workspace_name
+        else:
+            assert request.workspace_name == DEFAULT_WORKSPACE_NAME
+
+        assert request.feature_service_name == self.TEST_FEATURE_SERVICE_NAME
+        assert request.ENDPOINT == GetFeatureServiceMetadataRequest.ENDPOINT
+
+        assert request.to_json() == {"params": expected_response}
+
+    @pytest.mark.parametrize("feature_service", ["", None])
+    def test_error_feature_service_name_metadata(self, feature_service: str) -> None:
+        with pytest.raises(InvalidParameterError):
+            GetFeatureServiceMetadataRequest(
+                workspace_name=self.TEST_WORKSPACE_NAME, feature_service_name=feature_service
             )
