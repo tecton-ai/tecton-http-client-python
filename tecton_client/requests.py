@@ -47,7 +47,7 @@ def _defaults() -> Set[MetadataOptions]:
 
 
 @dataclass
-class GetFeatureRequestData:
+class GetFeaturesRequestData:
     """Class for request data needed for get-features queries.
 
     Attributes:
@@ -225,7 +225,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         self,
         workspace_name: str,
         feature_service_name: str,
-        request_data: GetFeatureRequestData,
+        request_data: GetFeaturesRequestData,
         metadata_options: Set[MetadataOptions] = _defaults(),
     ) -> None:
         """Initializing the :class:`GetFeaturesRequest` object with the given parameters.
@@ -233,7 +233,7 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
         Args:
             workspace_name (str): Name of the workspace in which the Feature Service is defined.
             feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.
-            request_data (GetFeatureRequestData): Request parameters for the query.
+            request_data (GetFeaturesRequestData): Request parameters for the query.
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
         """

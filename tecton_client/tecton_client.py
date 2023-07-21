@@ -82,7 +82,7 @@ class TectonClient:
             >>> tecton_client = TectonClient(url, api_key)
             >>> join_key_map = {"example_join_key": "example_join_value"}
             >>> request_context_map = {"example_request_context": "example_string_value"}
-            >>> request_data = GetFeatureRequestData(join_key_map, request_context_map)
+            >>> request_data = GetFeaturesRequestData(join_key_map, request_context_map)
             >>> request = GetFeaturesRequest(
             ...     feature_service_name="example_feature_service",
             ...     request_data=request_data,
