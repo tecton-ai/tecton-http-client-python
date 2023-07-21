@@ -139,7 +139,7 @@ class TestTectonClient:
         ],
     )
     def test_get_features(self, mocked: aioresponses, file_name: str, expected_response: dict) -> None:
-        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
+        TectonClient(TestTectonClient.url, TestTectonClient.api_key)
 
         with open(os.path.join(TestTectonClient.TEST_DATA_REL_PATH_SINGLE, file_name)) as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
@@ -149,7 +149,7 @@ class TestTectonClient:
 
     @pytest.mark.parametrize("metadata_path, expected_metadata", [("sample_response_metadata.json", expected_metadata)])
     def test_get_features_metadata(self, mocked: aioresponses, metadata_path: str, expected_metadata: list) -> None:
-        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
+        TectonClient(TestTectonClient.url, TestTectonClient.api_key)
         with open(os.path.join(TestTectonClient.TEST_DATA_REL_PATH_SINGLE, metadata_path)) as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
             response = self.tecton_client.get_features(self.test_request_metadata)
