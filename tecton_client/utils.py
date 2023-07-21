@@ -8,6 +8,8 @@ from typing import Optional
 
 import nest_asyncio
 
+from tecton_client.exceptions import TectonClientError
+
 DATETIME_FORMATS: Final[List[str]] = ["%Y-%m-%dT%H:%M:%SZ", "%Y-%m-%dT%H:%M:%S.%fZ"]
 
 
@@ -45,6 +47,9 @@ def asyncio_run(coro: Coroutine) -> Optional[Future]:
     Returns:
         Optional[Future]: The result of the asynchronous coroutine if the event loop is running, else None.
 
+    Raises:
+        TectonClientError: If the event loop throws any errors apart from there being no current event loop in thread.
+
     """
     try:
         loop = asyncio.get_event_loop()
@@ -53,7 +58,7 @@ def asyncio_run(coro: Coroutine) -> Optional[Future]:
             loop = asyncio.new_event_loop()
             return loop.run_until_complete(coro)
         else:
-            raise e
+            raise TectonClientError from e
     else:
         nest_asyncio.apply(loop)
         return asyncio.run(coro)
