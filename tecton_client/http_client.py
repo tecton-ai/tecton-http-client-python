@@ -1,8 +1,8 @@
 import time
+from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
 from typing import Optional
-from typing import Tuple
 from urllib.parse import urljoin
 from urllib.parse import urlparse
 
@@ -29,6 +29,34 @@ def _get_default_client(client_options: TectonClientOptions) -> aiohttp.ClientSe
             limit=client_options.max_connections, keepalive_timeout=client_options.keepalive_expiry.seconds
         ),
     )
+
+
+@dataclass
+class HTTPRequest:
+    """Represents an HTTP request object that holds the parameters to make a request to the HTTP API.
+
+    Attributes:
+        endpoint (str): The HTTP endpoint to attach to the URL and query.
+        request_body (dict): The request data to be passed, in JSON format.
+
+    """
+
+    endpoint: str
+    request_body: dict
+
+
+@dataclass
+class HTTPResponse:
+    """Represents an HTTP response object to capture the result of making an HTTP request.
+
+    Attributes:
+        result (dict): The result of the HTTP request.
+        latency (timedelta): The latency of the HTTP request.
+
+    """
+
+    result: dict
+    latency: timedelta
 
 
 class TectonHttpClient:
@@ -82,18 +110,16 @@ class TectonHttpClient:
         """
         return self._is_client_closed
 
-    async def execute_request(self, endpoint: str, request_body: dict) -> Tuple[dict, timedelta]:
+    async def execute_request(self, request: HTTPRequest) -> HTTPResponse:
         """Performs an HTTP request to a specified endpoint using the client.
 
         This method sends an HTTP POST request to the specified endpoint, attaching the provided request body data.
 
         Args:
-            endpoint (str): The HTTP endpoint to attach to the URL and query.
-            request_body (dict): The request data to be passed, in JSON format.
+            request (HTTPRequest): An :class:`HTTPRequest` object containing the endpoint and body of the HTTP request.
 
         Returns:
-            Tuple[dict, timedelta]: A tuple of the response in JSON format and the time taken to execute the request as
-                a :class:`timedelta` object.
+            HTTPResponse: An :class:`HTTPResponse` object containing the result and the latency of the HTTP request.
 
         Raises:
             TectonServerException: If the server returns an error response, different errors based on the
@@ -101,17 +127,17 @@ class TectonHttpClient:
             TectonClientError: If the client encounters an error while making the request.
 
         """
-        url = urljoin(self._url, endpoint)
+        url = urljoin(self._url, request.endpoint)
 
         try:
             start_time = time.time()
-            async with self._client.post(url, json=request_body, headers=self._auth) as response:
+            async with self._client.post(url, json=request.request_body, headers=self._auth) as response:
                 json_response = await response.json()
             end_time = time.time()
             request_latency = timedelta(seconds=(end_time - start_time))
 
             if response.status == 200:
-                return json_response, request_latency
+                return HTTPResponse(result=json_response, latency=request_latency)
             else:
                 message = INVALID_SERVER_RESPONSE(response.status, response.reason, json_response["message"])
                 error_class = SERVER_ERRORS.get(response.status, TectonServerException)

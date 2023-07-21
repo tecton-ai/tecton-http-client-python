@@ -1,4 +1,3 @@
-from datetime import timedelta
 from enum import Enum
 from typing import Dict
 from typing import List
@@ -14,6 +13,7 @@ from tecton_client.data_types import IntType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
 from tecton_client.exceptions import TectonClientError
+from tecton_client.http_client import HTTPResponse
 from tecton_client.utils import parse_string_to_isotime
 
 
@@ -231,15 +231,14 @@ class GetFeaturesResponse:
             latency).
     """
 
-    def __init__(self, response: dict, request_latency: timedelta) -> None:
+    def __init__(self, http_response: HTTPResponse) -> None:
         """Initializes the object with data from the response.
 
         Args:
-            response (dict): JSON response returned from the GetFeatures API call.
-            request_latency (timedelta): The response time for GetFeatures API call (network latency + online store
-                latency).
+            http_response (HTTPResponse): The HTTP response object returned from the GetFeatures API call.
 
         """
+        response = http_response.result
         feature_vector: list = response["result"]["features"]
         feature_metadata: List[dict] = response["metadata"]["features"]
 
@@ -260,4 +259,4 @@ class GetFeaturesResponse:
             SloInformation(response["metadata"]["sloInfo"]) if "sloInfo" in response["metadata"] else None
         )
 
-        self.request_latency = request_latency
+        self.request_latency = http_response.latency

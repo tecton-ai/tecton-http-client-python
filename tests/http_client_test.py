@@ -8,6 +8,7 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidURLError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
+from tecton_client.http_client import HTTPRequest
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.tecton_client import TectonClientOptions
 
@@ -33,16 +34,14 @@ class TestHttpClient:
         "metadata_options": None,
     }
     request = {"params": params}
+    http_client = TectonHttpClient(
+        url=URL,
+        api_key=API_KEY,
+        client_options=client_options,
+    )
 
-    @pytest.mark.asyncio
-    async def test_http_client(self) -> None:
-        http_client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-        assert not http_client.is_closed
-        await http_client.close()
+    def test_http_client(self) -> None:
+        assert not self.http_client.is_closed
 
     @pytest.mark.asyncio
     async def test_perform_http_request_success(self, mocked: aioresponses) -> None:
@@ -50,17 +49,9 @@ class TestHttpClient:
             url=self.full_url,
             payload={"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}},
         )
-
-        http_client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-
-        response, _ = await http_client.execute_request(self.endpoint, self.request)
-
-        assert type({}) == type(response)
-        await http_client.close()
+        http_request = HTTPRequest(endpoint=self.endpoint, request_body=self.request)
+        response = await self.http_client.execute_request(request=http_request)
+        assert isinstance(response.result, dict)
 
     @pytest.mark.asyncio
     async def test_perform_http_request_failure(self, mocked: aioresponses) -> None:
@@ -75,27 +66,19 @@ class TestHttpClient:
                 "code": 16,
             },
         )
-        http_client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-
         try:
-            await http_client.execute_request(self.endpoint, self.request)
-
+            http_request = HTTPRequest(endpoint=self.endpoint, request_body=self.request)
+            await self.http_client.execute_request(request=http_request)
         except Exception as e:
             # Confirm that a child error of :class:`TectonServerException` is raised
             assert isinstance(e, TectonServerException)
-
-        await http_client.close()
 
     @pytest.mark.parametrize("url", ["", None, "###", "somesite"])
     def test_invalid_url(self, url: object) -> None:
         with pytest.raises(InvalidURLError):
             TectonHttpClient(
-                url,
-                "1234",
+                url=url,
+                api_key="1234",
                 client_options=self.client_options,
             )
 
@@ -103,8 +86,8 @@ class TestHttpClient:
     def test_empty_or_none_key(self, key: object) -> None:
         with pytest.raises(InvalidParameterError):
             TectonHttpClient(
-                self.URL,
-                key,
+                url=self.URL,
+                api_key=key,
                 client_options=self.client_options,
             )
 
@@ -123,27 +106,17 @@ class TestHttpClient:
                 "code": 16,
             },
         )
-
-        client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
         try:
-            await client.execute_request(self.endpoint, self.request)
+            http_request = HTTPRequest(endpoint=self.endpoint, request_body=self.request)
+            await self.http_client.execute_request(request=http_request)
         except TectonServerException as e:
             assert isinstance(e, UnauthorizedError)
-        finally:
-            await client.close()
 
     @pytest.mark.asyncio
     async def test_default_client_options(self) -> None:
-        client = TectonHttpClient(
-            self.URL,
-            self.API_KEY,
-            client_options=self.client_options,
-        )
-        assert client._client.timeout.connect == 2
-        assert client._client.timeout.total == 2
+        assert self.http_client._client.timeout.connect == 2
+        assert self.http_client._client.timeout.total == 2
 
-        await client.close()
+    @pytest.mark.asyncio
+    async def pytest_sessionfinish(self) -> None:
+        await self.http_client.close()
