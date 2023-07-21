@@ -4,8 +4,8 @@ import pytest
 
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import UnsupportedTypeError
-from tecton_client.requests import GetFeaturesRequestData
 from tecton_client.requests import GetFeaturesRequest
+from tecton_client.requests import GetFeaturesRequestData
 from tecton_client.requests import MetadataOptions
 from tests.test_utils import dict_equals
 

@@ -21,8 +21,8 @@ from tecton_client.exceptions import ResourcesExhaustedError
 from tecton_client.exceptions import ServiceUnavailableError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
-from tecton_client.requests import GetFeaturesRequestData
 from tecton_client.requests import GetFeaturesRequest
+from tecton_client.requests import GetFeaturesRequestData
 from tecton_client.requests import MetadataOptions
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
