@@ -21,8 +21,8 @@ from tecton_client.exceptions import ResourcesExhaustedError
 from tecton_client.exceptions import ServiceUnavailableError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
-from tecton_client.requests import GetFeatureRequestData
 from tecton_client.requests import GetFeaturesRequest
+from tecton_client.requests import GetFeaturesRequestData
 from tecton_client.requests import MetadataOptions
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
@@ -108,12 +108,12 @@ class TestTectonClient:
 
     test_request_normal = GetFeaturesRequest(
         feature_service_name="test_feature_service",
-        request_data=GetFeatureRequestData(join_key_map, request_context_map),
+        request_data=GetFeaturesRequestData(join_key_map, request_context_map),
         workspace_name="test-workspace",
     )
     test_request_metadata = GetFeaturesRequest(
         feature_service_name="test_feature_service",
-        request_data=GetFeatureRequestData(join_key_map, request_context_map),
+        request_data=GetFeaturesRequestData(join_key_map, request_context_map),
         workspace_name="test-workspace",
         metadata_options={MetadataOptions.SLO_INFO, MetadataOptions.FEATURE_STATUS, MetadataOptions.EFFECTIVE_TIME},
     )
