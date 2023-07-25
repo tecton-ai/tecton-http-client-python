@@ -437,14 +437,10 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
 
         """
         if not request_data_list or None in request_data_list:
-            message = "List of GetFeaturesRequestData for the get features batch request cannot be empty"
+            message = "List of GetFeaturesRequestData for the GetFeaturesBatchRequest cannot be empty"
             raise InvalidParameterError(message)
         if micro_batch_size < MIN_MICRO_BATCH_SIZE or micro_batch_size > MAX_MICRO_BATCH_SIZE:
-            message = (
-                f"Micro batch size for get features batch request must be between {MIN_MICRO_BATCH_SIZE} and "
-                f"{MAX_MICRO_BATCH_SIZE}"
-            )
-            raise InvalidMicroBatchSizeError(message)
+            raise InvalidMicroBatchSizeError
 
     def to_json_list(self) -> List[dict]:
         """Returns a list of JSON representations for requests in the object as a list of dictionaries."""
