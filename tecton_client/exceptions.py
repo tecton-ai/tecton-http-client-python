@@ -1,6 +1,9 @@
 from enum import Enum
 from typing import Optional
 
+from tecton_client.constants import MAX_MICRO_BATCH_SIZE
+from tecton_client.constants import MIN_MICRO_BATCH_SIZE
+
 
 class TectonException(Exception):
     """Base class for all Tecton specific exceptions."""
@@ -38,6 +41,18 @@ class InvalidParameterError(TectonClientError):
 
 class InvalidURLError(TectonClientError):
     """Raised when the URL passed is invalid or empty."""
+
+
+class InvalidMicroBatchSizeError(TectonClientError):
+    """Raised when the micro batch size is invalid."""
+
+    def __init__(self) -> None:
+        """Initialize the error class with a custom error message related to micro batch size."""
+        message = (
+            f"Micro batch size for get features batch request must be between {MIN_MICRO_BATCH_SIZE} and "
+            f"{MAX_MICRO_BATCH_SIZE}"
+        )
+        super().__init__(message)
 
 
 class InvalidParameterMessage(str, Enum):
