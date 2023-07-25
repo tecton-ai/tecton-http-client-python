@@ -330,7 +330,8 @@ class GetFeaturesBatchResponse:
 
         """
         # Parse the list of responses to get a list of all responses as :class:`GetFeaturesMicroBatchResponse` objects
-        # if the response exists (i.e. is returned from the batch call), else store the None response as is.
+        # if the response exists (i.e. is returned from the batch call),
+        # else store the None response as is (i.e. the request timed out and returned None).
         micro_batch_response_list = [
             GetFeaturesMicroBatchResponse(http_response=response, micro_batch_size=micro_batch_size)
             if response
@@ -344,7 +345,9 @@ class GetFeaturesBatchResponse:
             for micro_batch_response in micro_batch_response_list
             if micro_batch_response
             for response in micro_batch_response.response_list
-        ] + [None] * micro_batch_response_list.count(None)
+        ]
+        # If the micro-batch response is None (i.e. the request timed out), add None to the batch response list
+        self.batch_response_list += [None] * micro_batch_response_list.count(None)
 
         self.batch_slo_info = None  # TODO: Add batch SLO info for requests of micro_batch_size > 1
         self.request_latency = request_latency

@@ -54,7 +54,7 @@ def asyncio_run(coro: Coroutine) -> Optional[Future]:
     try:
         loop = asyncio.get_event_loop()
     except RuntimeError as e:
-        if str(e).startswith("There is no current event loop in thread"):
+        if "no current event loop in thread" in str(e):
             loop = asyncio.new_event_loop()
             return loop.run_until_complete(coro)
         else:
