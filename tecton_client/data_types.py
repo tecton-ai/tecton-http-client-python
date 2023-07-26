@@ -1,4 +1,5 @@
 import abc
+from dataclasses import dataclass
 from typing import List
 from typing import Optional
 
@@ -195,3 +196,11 @@ def get_data_type(data_type: str, element_type: Optional[dict] = None, fields: O
             f"If problem persists, please contact Tecton Support for assistance."
         )
         raise TectonClientError(message)
+
+
+@dataclass
+class NameAndType:
+    """Class to represent a name and data type pair."""
+
+    name: str
+    data_type: DataType
