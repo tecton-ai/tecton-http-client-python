@@ -9,8 +9,10 @@ from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.http_client import HTTPRequest
 from tecton_client.http_client import TectonHttpClient
 from tecton_client.requests import GetFeaturesBatchRequest
+from tecton_client.requests import GetFeatureServiceMetadataRequest
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.responses import GetFeaturesBatchResponse
+from tecton_client.responses import GetFeatureServiceMetadataResponse
 from tecton_client.responses import GetFeaturesResponse
 from tecton_client.utils import asyncio_run
 
@@ -197,6 +199,62 @@ class TectonClient:
         return GetFeaturesBatchResponse(
             responses_list=results, request_latency=latency, micro_batch_size=request.micro_batch_size
         )
+
+    def get_feature_service_metadata(
+        self, request: GetFeatureServiceMetadataRequest
+    ) -> GetFeatureServiceMetadataResponse:
+        """Makes a request to the /metadata endpoint and returns the response in the form of a
+        :class:`GetFeatureServiceMetadataResponse` object.
+
+        Args:
+            request (GetFeatureServiceMetadataRequest): The :class:`GetFeatureServiceMetadataRequest` object
+                with the request parameters.
+
+        Returns:
+            GetFeatureServiceMetadataResponse: The :class:`GetFeatureServiceMetadataResponse` object representing the
+                response from the HTTP API with the requested information.
+
+        Example:
+            >>> tecton_client = TectonClient(url, api_key)
+            >>> metadata_request = GetFeatureServiceMetadataRequest(
+            ...     feature_service_name="example_feature_service",
+            ...     workspace_name="example_workspace",
+            ... )
+            >>> metadata_response = tecton_client.get_feature_service_metadata(metadata_request)
+            The `metadata_response` object contains the metadata information requested as different
+            fields of the object.
+
+            >>> print(metadata_response.feature_values)
+            >>> print(metadata_response.input_join_keys)
+
+        Raises:
+            TectonClientError: If the client encounters an error while making the request.
+            UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized, it could be because
+                Tecton does not recognize the API Key in your request. Please refer to the `API Key Documentation
+                <https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\
+                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\
+                to-the-http-api>`_ for more information on how to create a Service Account with an API Key
+            ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden, it could be because the
+                Service Account associated with your API Key does not have the necessary permissions to query
+                the feature service. Please refer to the `Tecton Documentation <https://docs.tecton.ai/docs/beta/\
+                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\
+                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api>`_ for more information.
+            NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception
+                message for detailed information.
+            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Please
+                check the exception message for detailed information.
+            ServiceUnavailableError: If the response returned from the Tecton Server is 503 Service Unavailable, it
+                could be because Tecton is currently unable to process your request. Please retry later.
+            GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
+                that processing the request exceeded the 2 seconds timeout limit set by Tecton.
+
+                For more detailed information on the errors, please refer to the error responses `here
+                <https://docs.tecton.ai/http-api#operation/GetFeaturesBatch>`_.
+
+        """
+        http_request = HTTPRequest(endpoint=request.ENDPOINT, request_body=request.to_json())
+        http_response = asyncio_run(self._tecton_http_client.execute_request(request=http_request))
+        return GetFeatureServiceMetadataResponse(http_response=http_response)
 
     @property
     def is_closed(self) -> bool:

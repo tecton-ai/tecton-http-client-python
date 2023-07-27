@@ -22,9 +22,11 @@ from tecton_client.exceptions import ServiceUnavailableError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
 from tecton_client.requests import GetFeaturesBatchRequest
+from tecton_client.requests import GetFeatureServiceMetadataRequest
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import GetFeaturesRequestData
 from tecton_client.requests import MetadataOptions
+from tecton_client.responses import FeatureServiceType
 from tecton_client.responses import FeatureStatus
 from tecton_client.tecton_client import TectonClient
 from tecton_client.tecton_client import TectonClientOptions
@@ -43,6 +45,7 @@ class TestTectonClient:
 
     final_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features")
     batch_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features-batch")
+    metadata_url: Final[str] = urljoin(url, "api/v1/feature-service/metadata")
 
     TEST_DATA_ROOT: Final[str] = "tests/test_data/"
     TEST_DATA_REL_PATH_SINGLE: Final[str] = os.path.join(TEST_DATA_ROOT, "single/")
@@ -127,6 +130,10 @@ class TestTectonClient:
         workspace_name="test-workspace",
         metadata_options={MetadataOptions.SLO_INFO, MetadataOptions.FEATURE_STATUS, MetadataOptions.EFFECTIVE_TIME},
         micro_batch_size=5,
+    )
+    test_request_fs_metadata = GetFeatureServiceMetadataRequest(
+        feature_service_name="test_feature_service",
+        workspace_name="test-workspace",
     )
 
     tecton_client = TectonClient(url=url, api_key=api_key)
@@ -337,6 +344,28 @@ class TestTectonClient:
                 response.feature_values[feature_name].feature_value == order_of_responses.pop(0)
                 for response in batch_response.batch_response_list
             )
+
+    @pytest.mark.parametrize(
+        "file_name, feature_service_type",
+        [
+            ("sample_metadata_response.json", FeatureServiceType.DEFAULT),
+            ("sample_metadata_response_long.json", FeatureServiceType.DEFAULT),
+        ],
+    )
+    def test_get_metadata(self, mocked: aioresponses, file_name: str, feature_service_type: FeatureServiceType) -> None:
+        with open(os.path.join(TestTectonClient.TEST_DATA_ROOT, file_name)) as json_file:
+            json_request = json.load(json_file)
+            mocked.post(url=self.metadata_url, payload=json_request)
+            response = self.tecton_client.get_feature_service_metadata(self.test_request_fs_metadata)
+
+            print(json_request)
+
+            assert response is not None
+            assert response.feature_service_type == feature_service_type
+            assert len(response.input_join_keys) == len(json_request.get("inputJoinKeys", []))
+            assert len(response.input_request_context_keys) == len(json_request.get("inputRequestContextKeys", []))
+            assert len(response.feature_values) == len(json_request.get("featureValues", []))
+            assert len(response.output_join_keys) == len(json_request.get("outputJoinKeys", []))
 
     def pytest_sessionfinish(self) -> None:
         self.tecton_client.close()
