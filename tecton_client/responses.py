@@ -523,18 +523,18 @@ class GetFeaturesBatchResponse:
         )
 
 
-def _parse_metadata_to_name_type_list(response_dict: dict) -> List[NameAndType]:
+def _parse_metadata_to_name_type_dict(response_dict: dict) -> Dict[str, NameAndType]:
     """Parse the returned metadata information to a list of :class:`NameAndType` objects.
 
     Args:
-        response_dict: The response dictionary returned from the server containing metadata information.
+        response_dict (dict): The response dictionary returned from the server containing metadata information.
 
     Returns:
-        List[NameAndType]: List of :class:`NameAndType` objects.
+        Dict[str, NameAndType]: Dictionary of names mapping to :class:`NameAndType` objects.
 
     """
-    return [
-        NameAndType(
+    return {
+        key["name"]: NameAndType(
             name=key.get("name"),
             data_type=get_data_type(
                 data_type=key["dataType"].get("type"),
@@ -543,18 +543,29 @@ def _parse_metadata_to_name_type_list(response_dict: dict) -> List[NameAndType]:
             ),
         )
         for key in response_dict
-    ]
+    }
+
+
+class FeatureServiceType(str, Enum):
+    """Enum to represent the type of the feature service."""
+
+    DEFAULT = "DEFAULT"
+    """The feature service is a default feature service."""
+
+    WILDCARD = "WILDCARD"
+    """The feature service is a wildcard feature service."""
 
 
 class GetFeatureServiceMetadataResponse:
     """Response object for GetFeatureServiceMetadata API call.
 
     Attributes:
-        feature_service_type (str): The type of the feature service.
+        feature_service_type (FeatureServiceType): The type of the feature service.
         input_join_keys (List[NameAndType]): List of :class:`NameAndType` objects representing the input join keys.
         input_request_context_keys (List[NameAndType]): List of :class:`NameAndType` objects representing the input
             request context keys.
         feature_values (List[NameAndType]): List of :class:`NameAndType` objects representing the feature valuess.
+        output_join_keys (List[NameAndType]): List of :class:`NameAndType` objects representing the output join keys.
     """
 
     def __init__(self, http_response: HTTPResponse) -> None:
@@ -565,7 +576,10 @@ class GetFeatureServiceMetadataResponse:
 
         """
         response = http_response.result
-        self.feature_service_type = response.get("featureServiceType")
-        self.input_join_keys = _parse_metadata_to_name_type_list(response.get("inputJoinKeys"))
-        self.input_request_context_keys = _parse_metadata_to_name_type_list(response.get("inputRequestContextKeys"))
-        self.feature_values = _parse_metadata_to_name_type_list(response.get("featureValues"))
+        self.feature_service_type = (
+            FeatureServiceType(response["featureServiceType"]) if response.get("featureServiceType") else None
+        )
+        self.input_join_keys = _parse_metadata_to_name_type_dict(response.get("inputJoinKeys", {}))
+        self.input_request_context_keys = _parse_metadata_to_name_type_dict(response.get("inputRequestContextKeys", {}))
+        self.feature_values = _parse_metadata_to_name_type_dict(response.get("featureValues", {}))
+        self.output_join_keys = _parse_metadata_to_name_type_dict(response.get("outputJoinKeys", {}))
