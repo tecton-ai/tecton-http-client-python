@@ -170,7 +170,7 @@ class TestResponse:
         [
             (
                 ["sample_batch_response.json"],
-                10,
+                5,
                 7,
                 14,
                 "merchant_fraud_rate.is_fraud_mean_30d_1d",
@@ -244,7 +244,7 @@ class TestResponse:
                     "sample_batch_response_slo.json",
                     "sample_batch_response_long_slo.json",
                 ],
-                10,
+                5,
                 {
                     "slo_server_time_seconds": 0.077513756,
                     "server_time_seconds": 0.099455727,
@@ -274,7 +274,7 @@ class TestResponse:
             ),
             (
                 ["sample_batch_response_slo.json", "sample_batch_response_long_slo.json"] * 2,
-                7,
+                3,
                 {
                     "slo_server_time_seconds": 0.077513756,
                     "server_time_seconds": 0.099455727,

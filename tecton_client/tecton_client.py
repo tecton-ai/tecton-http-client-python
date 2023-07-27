@@ -91,7 +91,6 @@ class TectonClient:
             ... )
             >>> response = tecton_client.get_features(request)
             `response.feature_values()` returns a dictionary of {feature_name: `FeatureValue`} pairs.
-
             To access the values of the features stored as :class:`FeatureValue` objects in the dictionary, use:
             >>> print([feature.feature_value for feature in response.feature_values.values()])
             [1, 2, 3, "test_feature", ["test", "array"]]
@@ -158,7 +157,6 @@ class TectonClient:
             >>> batch_response = tecton_client.get_features_batch(batch_request)
             `batch_response.response_list` returns a list of :class:`GetFeaturesResponse` objects representing a
             response for each request in the :class:`GetFeaturesBatchRequest` object.
-
             Each :class:`GetFeaturesResponse` object contains a dictionary of {feature_name: `FeatureValue`} pairs,
             which can be accessed using:
             >>> for response in batch_response.response_list:
