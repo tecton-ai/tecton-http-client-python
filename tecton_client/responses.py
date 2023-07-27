@@ -561,11 +561,14 @@ class GetFeatureServiceMetadataResponse:
 
     Attributes:
         feature_service_type (FeatureServiceType): The type of the feature service.
-        input_join_keys (List[NameAndType]): List of :class:`NameAndType` objects representing the input join keys.
-        input_request_context_keys (List[NameAndType]): List of :class:`NameAndType` objects representing the input
-            request context keys.
-        feature_values (List[NameAndType]): List of :class:`NameAndType` objects representing the feature valuess.
-        output_join_keys (List[NameAndType]): List of :class:`NameAndType` objects representing the output join keys.
+        input_join_keys (Dict[str, NameAndType]): Dictionary of names mapping to :class:`NameAndType` objects
+            representing the input join keys.
+        input_request_context_keys (Dict[str, NameAndType]): Dictionary of names mapping to :class:`NameAndType` objects
+            representing the input request context keys.
+        feature_values (Dict[str, NameAndType]): Dictionary of names mapping to :class:`NameAndType` objects
+            representing the feature values.
+        output_join_keys (Dict[str, NameAndType]): Dictionary of names mapping to :class:`NameAndType` objects
+            representing the output join keys.
     """
 
     def __init__(self, http_response: HTTPResponse) -> None:
