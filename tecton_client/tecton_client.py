@@ -1,4 +1,3 @@
-import asyncio
 import os
 from typing import Optional
 
@@ -9,8 +8,11 @@ from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidParameterMessage
 from tecton_client.http_client import HTTPRequest
 from tecton_client.http_client import TectonHttpClient
+from tecton_client.requests import GetFeaturesBatchRequest
 from tecton_client.requests import GetFeaturesRequest
+from tecton_client.responses import GetFeaturesBatchResponse
 from tecton_client.responses import GetFeaturesResponse
+from tecton_client.utils import asyncio_run
 
 
 class TectonClient:
@@ -66,7 +68,6 @@ class TectonClient:
             client=client,
             client_options=client_options,
         )
-        self._loop = asyncio.new_event_loop()
 
     def get_features(self, request: GetFeaturesRequest) -> GetFeaturesResponse:
         """Makes a request to the /get-features endpoint and returns the response in the form of a
@@ -129,8 +130,75 @@ class TectonClient:
 
         """
         http_request = HTTPRequest(endpoint=request.ENDPOINT, request_body=request.to_json())
-        http_response = self._loop.run_until_complete(self._tecton_http_client.execute_request(request=http_request))
+        http_response = asyncio_run(self._tecton_http_client.execute_request(request=http_request))
         return GetFeaturesResponse(http_response=http_response)
+
+    def get_features_batch(self, request: GetFeaturesBatchRequest) -> GetFeaturesBatchResponse:
+        """Makes a batch request to retrieve a list of feature vectors and metadata for a given workspace
+        and feature service, and returns the response in the form of a :class:`GetFeaturesBatchResponse` object.
+
+        Args:
+            request (GetFeaturesBatchRequest): The :class:`GetFeaturesBatchRequest` object with the request parameters.
+
+        Returns:
+            GetFeaturesBatchResponse: The :class:`GetFeaturesBatchResponse` object representing the response from the
+                HTTP API, with the list of feature vectors and metadata (if requested).
+
+        Example:
+            >>> tecton_client = TectonClient(url, api_key)
+            >>> join_key_map = {"example_join_key": "example_join_value"}
+            >>> request_context_map = {"example_request_context": "example_string_value"}
+            >>> request_data = GetFeaturesRequestData(join_key_map, request_context_map)
+            >>> batch_request = GetFeaturesBatchRequest(
+            ...     feature_service_name="example_feature_service",
+            ...     request_data_list=[request_data, request_data],
+            ...     workspace_name="example_workspace",
+            ...     micro_batch_size=2
+            ... )
+            >>> batch_response = tecton_client.get_features_batch(batch_request)
+            `batch_response.response_list` returns a list of :class:`GetFeaturesResponse` objects representing a
+            response for each request in the :class:`GetFeaturesBatchRequest` object.
+
+            Each :class:`GetFeaturesResponse` object contains a dictionary of {feature_name: `FeatureValue`} pairs,
+            which can be accessed using:
+            >>> for response in batch_response.response_list:
+            >>>     print([feature.feature_value for feature in response.feature_values.values()])
+
+        Raises:
+            TectonClientError: If the client encounters an error while making the request.
+            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. Please
+                check the exception message for detailed information.
+            UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized, it could be because
+                Tecton does not recognize the API Key in your request. Please refer to the `API Key Documentation
+                <https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\
+                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\
+                to-the-http-api>`_ for more information on how to create a Service Account with an API Key
+            ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden, it could be because the
+                Service Account associated with your API Key does not have the necessary permissions to query
+                the feature service. Please refer to the `Tecton Documentation <https://docs.tecton.ai/docs/beta/\
+                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\
+                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api>`_ for more information.
+            NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception
+                message for detailed information.
+            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Please
+                check the exception message for detailed information.
+            ServiceUnavailableError: If the response returned from the Tecton Server is 503 Service Unavailable, it
+                could be because Tecton is currently unable to process your request. Please retry later.
+            GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
+                that processing the request exceeded the 2 seconds timeout limit set by Tecton.
+
+                For more detailed information on the errors, please refer to the error responses `here
+                <https://docs.tecton.ai/http-api#operation/GetFeaturesBatch>`_.
+
+        """
+        results, latency = asyncio_run(
+            self._tecton_http_client.execute_parallel_requests(
+                endpoint=request.ENDPOINT, request_bodies=request.to_json_list(), timeout=request.timeout
+            )
+        )
+        return GetFeaturesBatchResponse(
+            responses_list=results, request_latency=latency, micro_batch_size=request.micro_batch_size
+        )
 
     @property
     def is_closed(self) -> bool:
@@ -143,5 +211,4 @@ class TectonClient:
         Important for proper resource management and graceful termination of the client.
 
         """
-        self._loop.run_until_complete(self._tecton_http_client.close())
-        self._loop.close()
+        asyncio_run(self._tecton_http_client.close())
