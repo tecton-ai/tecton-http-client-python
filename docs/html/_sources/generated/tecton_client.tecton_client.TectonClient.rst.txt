@@ -16,6 +16,7 @@
       ~TectonClient.__init__
       ~TectonClient.close
       ~TectonClient.get_features
+      ~TectonClient.get_features_batch
    
    
 

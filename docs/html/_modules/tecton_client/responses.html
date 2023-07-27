@@ -9,7 +9,7 @@
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
+  
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
@@ -17,17 +17,17 @@
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-
-
+          
+          
           <a href="../../index.html" class="icon icon-home">
             Tecton HTTP API Client Python
           </a>
@@ -71,9 +71,10 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-
+             
   <h1>Source code for tecton_client.responses</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
@@ -88,6 +89,7 @@
 <span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">StringType</span>
 <span class="kn">from</span> <span class="nn">tecton_client.data_types</span> <span class="kn">import</span> <span class="n">StructType</span>
 <span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">TectonClientError</span>
+<span class="kn">from</span> <span class="nn">tecton_client.http_client</span> <span class="kn">import</span> <span class="n">HTTPResponse</span>
 <span class="kn">from</span> <span class="nn">tecton_client.utils</span> <span class="kn">import</span> <span class="n">parse_string_to_isotime</span>
 
 
@@ -105,6 +107,7 @@
 <span class="sd">        Raises:</span>
 <span class="sd">            TectonClientError: If the feature value cannot be converted to the specified type or</span>
 <span class="sd">                if the specified type is not supported.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data_type</span> <span class="o">=</span> <span class="n">data_type</span>
@@ -215,6 +218,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TectonClientError: If the name of the feature is not in the format of &lt;namespace&gt;.&lt;feature_name&gt;.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">feature_namespace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
@@ -279,6 +283,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            slo_information (dict): The SLO information dictionary received from the server.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slo_eligible</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sloEligible&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">server_time_seconds</span> <span class="o">=</span> <span class="n">slo_information</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;serverTimeSeconds&quot;</span><span class="p">)</span>
@@ -299,16 +304,20 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        feature_values (Dict[str, FeatureValue]): Dictionary with feature names as keys and their corresponding feature</span>
 <span class="sd">            values, one for each feature in the feature vector.</span>
-<span class="sd">        slo_info (Optional[SloInformation]): SloInformation object containing information on the feature vector&#39;s SLO,</span>
-<span class="sd">            present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.</span>
+<span class="sd">        slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the feature</span>
+<span class="sd">            vector&#39;s SLO, present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.</span>
+<span class="sd">        request_latency (timedelta): The response time for GetFeatures API call (network latency + online store</span>
+<span class="sd">            latency).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GetFeaturesResponse.__init__"><a class="viewcode-back" href="../../generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="GetFeaturesResponse.__init__"><a class="viewcode-back" href="../../generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">http_response</span><span class="p">:</span> <span class="n">HTTPResponse</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the object with data from the response.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            response (dict): JSON response returned from the GetFeatures API call.</span>
+<span class="sd">            http_response (HTTPResponse): The HTTP response object returned from the GetFeatures API call.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">http_response</span><span class="o">.</span><span class="n">result</span>
         <span class="n">feature_vector</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;features&quot;</span><span class="p">]</span>
         <span class="n">feature_metadata</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;features&quot;</span><span class="p">]</span>
 
@@ -327,7 +336,96 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">slo_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SloInformation</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">SloInformation</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;sloInfo&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="s2">&quot;sloInfo&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_latency</span> <span class="o">=</span> <span class="n">http_response</span><span class="o">.</span><span class="n">latency</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">GetFeaturesMicroBatchResponse</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a response from the GetFeaturesBatch API call.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        response_list (List[GetFeaturesResponse]): List of :class:`GetFeaturesResponse` objects, one for</span>
+<span class="sd">            each feature vector in the batch.</span>
+<span class="sd">        batch_slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the</span>
+<span class="sd">            batch&#39;s SLO, present only if the :class:`MetadataOption` `SLO_INFO` is requested in the request.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">http_response</span><span class="p">:</span> <span class="n">HTTPResponse</span><span class="p">,</span> <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a GetFeaturesMicroBatchResponse object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            http_response (HTTPResponse): The HTTP response object returned from the GetFeaturesBatch API call.</span>
+<span class="sd">            micro_batch_size (int): Number of requests sent in a single batch request, determining how may feature</span>
+<span class="sd">                vectors are present in the response returned from the server.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">micro_batch_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">response_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">GetFeaturesResponse</span><span class="p">(</span><span class="n">http_response</span><span class="o">=</span><span class="n">http_response</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">batch_slo_info</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Not present since the request was made to /get-features endpoint</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c1"># TODO: Parse response for requests with micro_batch_size &gt; 1</span>
+
+
+<div class="viewcode-block" id="GetFeaturesBatchResponse"><a class="viewcode-back" href="../../generated/tecton_client.responses.GetFeaturesBatchResponse.html#tecton_client.responses.GetFeaturesBatchResponse">[docs]</a><span class="k">class</span> <span class="nc">GetFeaturesBatchResponse</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class that represents the response from the HTTP API when fetching batch features. The</span>
+<span class="sd">    class provides methods to access the list of feature vectors returned, along with their metadata, if</span>
+<span class="sd">    present.</span>
+
+<span class="sd">    The list of :class:`GetFeaturesResponse` objects represents the list of responses, each of which encapsulates a</span>
+<span class="sd">    feature vector and its metadata, in case of a successful request, or None if the request timed out.</span>
+
+<span class="sd">    The batch SLO information is only present for batch requests to the /get-features-batch endpoint</span>
+<span class="sd">    (i.e., `micro_batch_size` &gt; 1)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        batch_response_list (List[Optional[GetFeaturesResponse]]): List of :class:`GetFeaturesResponse` objects,</span>
+<span class="sd">            one for each feature vector requested, or None if the request timed out.</span>
+<span class="sd">        batch_slo_info (Optional[SloInformation]): :class:`SloInformation` object containing information on the</span>
+<span class="sd">            batch request&#39;s SLO, present only for batch requests to the /get-features-batch endpoint and if the</span>
+<span class="sd">            :class:`MetadataOption` `SLO_INFO` is requested in the request.</span>
+<span class="sd">        request_latency (timedelta): The response time for GetFeaturesBatch call (network latency + online store</span>
+<span class="sd">            latency).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GetFeaturesBatchResponse.__init__"><a class="viewcode-back" href="../../generated/tecton_client.responses.GetFeaturesBatchResponse.html#tecton_client.responses.GetFeaturesBatchResponse.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">responses_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">HTTPResponse</span><span class="p">]],</span>
+        <span class="n">request_latency</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span>
+        <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the object with data from the response.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            responses_list (List[Optional[HTTPResponse]]): List of JSON responses returned from the GetFeaturesBatch</span>
+<span class="sd">                API call, or None if any requests timed out.</span>
+<span class="sd">            request_latency (timedelta): The response time for GetFeaturesBatch API call (network latency +</span>
+<span class="sd">                online store latency).</span>
+<span class="sd">            micro_batch_size (int): The number of requests sent in a single batch request.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parse the list of responses to get a list of all responses as :class:`GetFeaturesMicroBatchResponse` objects</span>
+        <span class="c1"># if the response exists (i.e. is returned from the batch call),</span>
+        <span class="c1"># else store the None response as is (i.e. the request timed out and returned None).</span>
+        <span class="n">micro_batch_response_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">GetFeaturesMicroBatchResponse</span><span class="p">(</span><span class="n">http_response</span><span class="o">=</span><span class="n">response</span><span class="p">,</span> <span class="n">micro_batch_size</span><span class="o">=</span><span class="n">micro_batch_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">response</span>
+            <span class="k">else</span> <span class="n">response</span>
+            <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">responses_list</span>
+        <span class="p">]</span>
+
+        <span class="c1"># For each micro-batch response, get each response object from the list of responses if it exists</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_response_list</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">response</span>
+            <span class="k">for</span> <span class="n">micro_batch_response</span> <span class="ow">in</span> <span class="n">micro_batch_response_list</span>
+            <span class="k">if</span> <span class="n">micro_batch_response</span>
+            <span class="k">for</span> <span class="n">response</span> <span class="ow">in</span> <span class="n">micro_batch_response</span><span class="o">.</span><span class="n">response_list</span>
+        <span class="p">]</span>
+        <span class="c1"># If the micro-batch response is None (i.e. the request timed out), add None to the batch response list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_response_list</span> <span class="o">+=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">micro_batch_response_list</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_slo_info</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># TODO: Add batch SLO info for requests of micro_batch_size &gt; 1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_latency</span> <span class="o">=</span> <span class="n">request_latency</span></div></div>
 </pre></div>
 
            </div>
@@ -343,7 +441,7 @@
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
+   
 
 </footer>
         </div>
@@ -354,7 +452,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
+  </script> 
 
 </body>
 </html>

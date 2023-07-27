@@ -7,7 +7,7 @@ tecton\_client.responses module
 This module consists of classes that help represent the responses from the Tecton API.
 
 .. automodule:: tecton_client.responses
-   :members: FeatureStatus, FeatureValue, SloInformation, SloIneligibilityReason, GetFeaturesResponse
+   :members: FeatureStatus, FeatureValue, SloInformation, SloIneligibilityReason, GetFeaturesResponse, GetFeaturesBatchResponse
    :undoc-members:
    :show-inheritance:
    :noindex:
@@ -20,3 +20,4 @@ This module consists of classes that help represent the responses from the Tecto
     SloInformation
     SloIneligibilityReason
     GetFeaturesResponse
+    GetFeaturesBatchResponse

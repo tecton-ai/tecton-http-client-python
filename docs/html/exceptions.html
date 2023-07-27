@@ -51,6 +51,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.exceptions.TectonServerException.html">tecton_client.exceptions.TectonServerException</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.exceptions.InvalidParameterError.html">tecton_client.exceptions.InvalidParameterError</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.exceptions.InvalidURLError.html">tecton_client.exceptions.InvalidURLError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.exceptions.InvalidMicroBatchSizeError.html">tecton_client.exceptions.InvalidMicroBatchSizeError</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.exceptions.UnsupportedTypeError.html">tecton_client.exceptions.UnsupportedTypeError</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.exceptions.BadRequestError.html">tecton_client.exceptions.BadRequestError</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.exceptions.UnauthorizedError.html">tecton_client.exceptions.UnauthorizedError</a></li>
@@ -134,6 +135,13 @@
 <span class="sig-name descname"><span class="pre">STATUS_CODE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">504</span></em></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidMicroBatchSizeError</span></span><a class="reference internal" href="_modules/tecton_client/exceptions.html#InvalidMicroBatchSizeError"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <a class="reference internal" href="generated/tecton_client.exceptions.TectonClientError.html#tecton_client.exceptions.TectonClientError" title="tecton_client.exceptions.TectonClientError"><code class="xref py py-class docutils literal notranslate"><span class="pre">TectonClientError</span></code></a></p>
+<p>Raised when the micro batch size is invalid.</p>
 </dd></dl>
 
 <dl class="py exception">
@@ -242,28 +250,31 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.InvalidURLError.html#tecton_client.exceptions.InvalidURLError" title="tecton_client.exceptions.InvalidURLError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidURLError</span></code></a></p></td>
 <td><p>Raised when the URL passed is invalid or empty.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.UnsupportedTypeError.html#tecton_client.exceptions.UnsupportedTypeError" title="tecton_client.exceptions.UnsupportedTypeError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnsupportedTypeError</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.InvalidMicroBatchSizeError.html#tecton_client.exceptions.InvalidMicroBatchSizeError" title="tecton_client.exceptions.InvalidMicroBatchSizeError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InvalidMicroBatchSizeError</span></code></a>()</p></td>
+<td><p>Raised when the micro batch size is invalid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.UnsupportedTypeError.html#tecton_client.exceptions.UnsupportedTypeError" title="tecton_client.exceptions.UnsupportedTypeError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnsupportedTypeError</span></code></a></p></td>
 <td><p>Raised when the data type of one or more parameters passed in is not supported by Tecton.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.BadRequestError.html#tecton_client.exceptions.BadRequestError" title="tecton_client.exceptions.BadRequestError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BadRequestError</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.BadRequestError.html#tecton_client.exceptions.BadRequestError" title="tecton_client.exceptions.BadRequestError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BadRequestError</span></code></a></p></td>
 <td><p>Raised when the Tecton API returns a 400 Bad Request error.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.UnauthorizedError.html#tecton_client.exceptions.UnauthorizedError" title="tecton_client.exceptions.UnauthorizedError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnauthorizedError</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.UnauthorizedError.html#tecton_client.exceptions.UnauthorizedError" title="tecton_client.exceptions.UnauthorizedError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UnauthorizedError</span></code></a></p></td>
 <td><p>Raised when the Tecton API returns a 401 Unauthorized error.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.ForbiddenError.html#tecton_client.exceptions.ForbiddenError" title="tecton_client.exceptions.ForbiddenError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ForbiddenError</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.ForbiddenError.html#tecton_client.exceptions.ForbiddenError" title="tecton_client.exceptions.ForbiddenError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ForbiddenError</span></code></a></p></td>
 <td><p>Raised when the Tecton API returns a 403 Forbidden error.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.NotFoundError.html#tecton_client.exceptions.NotFoundError" title="tecton_client.exceptions.NotFoundError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NotFoundError</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.NotFoundError.html#tecton_client.exceptions.NotFoundError" title="tecton_client.exceptions.NotFoundError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NotFoundError</span></code></a></p></td>
 <td><p>Raised when the Tecton API returns a 404 Not Found error.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.ResourcesExhaustedError.html#tecton_client.exceptions.ResourcesExhaustedError" title="tecton_client.exceptions.ResourcesExhaustedError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResourcesExhaustedError</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.ResourcesExhaustedError.html#tecton_client.exceptions.ResourcesExhaustedError" title="tecton_client.exceptions.ResourcesExhaustedError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResourcesExhaustedError</span></code></a></p></td>
 <td><p>Raised when the Tecton API returns a 429 Resources Exhausted error.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.ServiceUnavailableError.html#tecton_client.exceptions.ServiceUnavailableError" title="tecton_client.exceptions.ServiceUnavailableError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ServiceUnavailableError</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.ServiceUnavailableError.html#tecton_client.exceptions.ServiceUnavailableError" title="tecton_client.exceptions.ServiceUnavailableError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ServiceUnavailableError</span></code></a></p></td>
 <td><p>Raised when the Tecton API returns a 503 Service Unavailable error.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.GatewayTimeoutError.html#tecton_client.exceptions.GatewayTimeoutError" title="tecton_client.exceptions.GatewayTimeoutError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GatewayTimeoutError</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.exceptions.GatewayTimeoutError.html#tecton_client.exceptions.GatewayTimeoutError" title="tecton_client.exceptions.GatewayTimeoutError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GatewayTimeoutError</span></code></a></p></td>
 <td><p>Raised when the Tecton API returns a 504 Gateway Timeout error.</p></td>
 </tr>
 </tbody>

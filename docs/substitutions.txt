@@ -1,0 +1,3 @@
+.. |DEFAULT_MICRO_BATCH_SIZE| replace:: 1
+.. |MAX_MICRO_BATCH_SIZE| replace:: 5
+.. |MIN_MICRO_BATCH_SIZE| replace:: 1

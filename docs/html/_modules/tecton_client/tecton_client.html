@@ -73,42 +73,21 @@
            <div itemprop="articleBody">
              
   <h1>Source code for tecton_client.tecton_client</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">asyncio</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">httpx</span>
+<span class="kn">import</span> <span class="nn">aiohttp</span>
 
+<span class="kn">from</span> <span class="nn">tecton_client.client_options</span> <span class="kn">import</span> <span class="n">TectonClientOptions</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">InvalidParameterError</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">InvalidParameterMessage</span>
+<span class="kn">from</span> <span class="nn">tecton_client.http_client</span> <span class="kn">import</span> <span class="n">HTTPRequest</span>
 <span class="kn">from</span> <span class="nn">tecton_client.http_client</span> <span class="kn">import</span> <span class="n">TectonHttpClient</span>
+<span class="kn">from</span> <span class="nn">tecton_client.requests</span> <span class="kn">import</span> <span class="n">GetFeaturesBatchRequest</span>
 <span class="kn">from</span> <span class="nn">tecton_client.requests</span> <span class="kn">import</span> <span class="n">GetFeaturesRequest</span>
+<span class="kn">from</span> <span class="nn">tecton_client.responses</span> <span class="kn">import</span> <span class="n">GetFeaturesBatchResponse</span>
 <span class="kn">from</span> <span class="nn">tecton_client.responses</span> <span class="kn">import</span> <span class="n">GetFeaturesResponse</span>
-
-
-<span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">TectonClientOptions</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to represent the Tecton Client options.</span>
-
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; options = TectonClientOptions(connect_timeout_seconds=10, keepalive_expiry_seconds=600)</span>
-<span class="sd">        &gt;&gt;&gt; tecton_client = TectonClient(url, api_key, client_options=options)</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        connect_timeout_seconds (float): (Optional) The maximum amount of time to wait until a socket connection to the</span>
-<span class="sd">            requested host is established. Defaults to 2.0 seconds.</span>
-<span class="sd">        read_timeout_seconds (float): (Optional) The maximum duration to wait for a chunk of data to be received (for</span>
-<span class="sd">            example, a chunk of the response body). Defaults to 2.0 seconds.</span>
-<span class="sd">        keepalive_expiry_seconds (Optional[int]): (Optional) The time limit on idle keep-alive connections in seconds,</span>
-<span class="sd">            or None for no limits. Defaults to 300 seconds (5 minutes).</span>
-<span class="sd">        max_connections (Optional[int]): (Optional) The maximum number of allowable connections, or None for no limits.</span>
-<span class="sd">            Defaults to 10.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">connect_timeout_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>
-    <span class="n">read_timeout_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">2.0</span>
-    <span class="n">keepalive_expiry_seconds</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">300</span>
-    <span class="n">max_connections</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="kn">from</span> <span class="nn">tecton_client.utils</span> <span class="kn">import</span> <span class="n">asyncio_run</span>
 
 
 <div class="viewcode-block" id="TectonClient"><a class="viewcode-back" href="../../tecton_client.html#tecton_client.tecton_client.TectonClient">[docs]</a><span class="k">class</span> <span class="nc">TectonClient</span><span class="p">:</span>
@@ -127,7 +106,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">api_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">client_options</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TectonClientOptions</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the parameters required to make HTTP requests.</span>
@@ -139,29 +118,31 @@
 <span class="sd">                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-\</span>
 <span class="sd">                the-http-api&gt;`_  for more information.</span>
 <span class="sd">                This parameter is optional and can be provided through an environment variable called `TECTON_API_KEY`.</span>
-<span class="sd">            client (Optional[httpx.AsyncClient]): (Optional) The HTTP Asynchronous Client.</span>
+<span class="sd">            client (Optional[aiohttp.ClientSession]): (Optional) The HTTP Asynchronous Client.</span>
 <span class="sd">                Users can initialize their own HTTP client and pass it in to the :class:`TectonClient` object.</span>
 <span class="sd">                If no client is passed in, the :class:`TectonClient` object will initialize its own HTTP client.</span>
-<span class="sd">            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options.</span>
+<span class="sd">            client_options (Optional[TectonClientOptions]): (Optional) The HTTP client options to be passed in when the</span>
+<span class="sd">                :class:`TectonClient` object initializes its own HTTP client.</span>
 <span class="sd">                If no options are passed in, defaults defined in :class:`TectonClientOptions()` will be used.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TECTON_API_KEY&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">api_key</span>
         <span class="k">if</span> <span class="n">api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TECTON_API_KEY&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">KEY</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">client_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">client</span> <span class="ow">and</span> <span class="n">client_options</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Cannot provide both `client` and `client_options` parameters.&quot;</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">client_options</span><span class="p">:</span>
             <span class="n">client_options</span> <span class="o">=</span> <span class="n">TectonClientOptions</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tecton_http_client</span> <span class="o">=</span> <span class="n">TectonHttpClient</span><span class="p">(</span>
             <span class="n">url</span><span class="p">,</span>
             <span class="n">api_key</span><span class="p">,</span>
-            <span class="n">connect_timeout_seconds</span><span class="o">=</span><span class="n">client_options</span><span class="o">.</span><span class="n">connect_timeout_seconds</span><span class="p">,</span>
-            <span class="n">read_timeout_seconds</span><span class="o">=</span><span class="n">client_options</span><span class="o">.</span><span class="n">read_timeout_seconds</span><span class="p">,</span>
-            <span class="n">keepalive_expiry_seconds</span><span class="o">=</span><span class="n">client_options</span><span class="o">.</span><span class="n">keepalive_expiry_seconds</span><span class="p">,</span>
-            <span class="n">max_connections</span><span class="o">=</span><span class="n">client_options</span><span class="o">.</span><span class="n">max_connections</span><span class="p">,</span>
             <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">new_event_loop</span><span class="p">()</span></div>
+            <span class="n">client_options</span><span class="o">=</span><span class="n">client_options</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TectonClient.get_features"><a class="viewcode-back" href="../../tecton_client.html#tecton_client.tecton_client.TectonClient.get_features">[docs]</a>    <span class="k">def</span> <span class="nf">get_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">GetFeaturesRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetFeaturesResponse</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Makes a request to the /get-features endpoint and returns the response in the form of a</span>
@@ -177,7 +158,7 @@
 <span class="sd">            &gt;&gt;&gt; tecton_client = TectonClient(url, api_key)</span>
 <span class="sd">            &gt;&gt;&gt; join_key_map = {&quot;example_join_key&quot;: &quot;example_join_value&quot;}</span>
 <span class="sd">            &gt;&gt;&gt; request_context_map = {&quot;example_request_context&quot;: &quot;example_string_value&quot;}</span>
-<span class="sd">            &gt;&gt;&gt; request_data = GetFeatureRequestData(join_key_map, request_context_map)</span>
+<span class="sd">            &gt;&gt;&gt; request_data = GetFeaturesRequestData(join_key_map, request_context_map)</span>
 <span class="sd">            &gt;&gt;&gt; request = GetFeaturesRequest(</span>
 <span class="sd">            ...     feature_service_name=&quot;example_feature_service&quot;,</span>
 <span class="sd">            ...     request_data=request_data,</span>
@@ -185,14 +166,13 @@
 <span class="sd">            ... )</span>
 <span class="sd">            &gt;&gt;&gt; response = tecton_client.get_features(request)</span>
 <span class="sd">            `response.feature_values()` returns a dictionary of {feature_name: `FeatureValue`} pairs.</span>
-
 <span class="sd">            To access the values of the features stored as :class:`FeatureValue` objects in the dictionary, use:</span>
 <span class="sd">            &gt;&gt;&gt; print([feature.feature_value for feature in response.feature_values.values()])</span>
 <span class="sd">            [1, 2, 3, &quot;test_feature&quot;, [&quot;test&quot;, &quot;array&quot;]]</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. The error could be</span>
-<span class="sd">                caused by one of the following:</span>
+<span class="sd">            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. Some of the possible</span>
+<span class="sd">                reasons for this are:</span>
 <span class="sd">                1. Missing required join key in the :class:`GetFeaturesRequestData` object passed in the request</span>
 <span class="sd">                2. An expected key is not found in the requestContextMap of the :class:`GetFeaturesRequestData` object</span>
 <span class="sd">                3. Unexpected type for a key in the joinKeyMap passed in the :class:`GetFeaturesRequestData` object</span>
@@ -207,14 +187,10 @@
 <span class="sd">                the feature service. Please refer to the `Tecton Documentation &lt;https://docs.tecton.ai/docs/beta/\</span>
 <span class="sd">                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\</span>
 <span class="sd">                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api&gt;`_ for more information.</span>
-<span class="sd">            NotFoundError: If the response returned from the Tecton Server is 404 Not Found, it could be because of the</span>
-<span class="sd">                following reasons:</span>
-<span class="sd">                1. The service is unable to query the FeatureService or workspace passed in the</span>
-<span class="sd">                    :class:`GetFeaturesRequest` object</span>
-<span class="sd">                2. The FeatureView has no materialized data in the online store</span>
-<span class="sd">                4. The DynamoDB table was not found</span>
-<span class="sd">            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted, the</span>
-<span class="sd">                reason could be one of the following:</span>
+<span class="sd">            NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception</span>
+<span class="sd">                message for detailed information.</span>
+<span class="sd">            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Some</span>
+<span class="sd">                of the possible reasons for the error are:</span>
 <span class="sd">                1. GetFeatures exceeded the concurrent request limit, please retry later</span>
 <span class="sd">                2. DynamoDB throttled the request. The request rate exceeds the AWS account&#39;s throughput limit, or</span>
 <span class="sd">                    you may be requesting a hot key</span>
@@ -227,10 +203,75 @@
 <span class="sd">                &lt;https://docs.tecton.ai/http-api#operation/GetFeatures&gt;`_.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tecton_http_client</span><span class="o">.</span><span class="n">execute_request</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">ENDPOINT</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+        <span class="n">http_request</span> <span class="o">=</span> <span class="n">HTTPRequest</span><span class="p">(</span><span class="n">endpoint</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">ENDPOINT</span><span class="p">,</span> <span class="n">request_body</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+        <span class="n">http_response</span> <span class="o">=</span> <span class="n">asyncio_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tecton_http_client</span><span class="o">.</span><span class="n">execute_request</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">http_request</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">GetFeaturesResponse</span><span class="p">(</span><span class="n">http_response</span><span class="o">=</span><span class="n">http_response</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TectonClient.get_features_batch"><a class="viewcode-back" href="../../tecton_client.html#tecton_client.tecton_client.TectonClient.get_features_batch">[docs]</a>    <span class="k">def</span> <span class="nf">get_features_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">GetFeaturesBatchRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetFeaturesBatchResponse</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Makes a batch request to retrieve a list of feature vectors and metadata for a given workspace</span>
+<span class="sd">        and feature service, and returns the response in the form of a :class:`GetFeaturesBatchResponse` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (GetFeaturesBatchRequest): The :class:`GetFeaturesBatchRequest` object with the request parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GetFeaturesBatchResponse: The :class:`GetFeaturesBatchResponse` object representing the response from the</span>
+<span class="sd">                HTTP API, with the list of feature vectors and metadata (if requested).</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; tecton_client = TectonClient(url, api_key)</span>
+<span class="sd">            &gt;&gt;&gt; join_key_map = {&quot;example_join_key&quot;: &quot;example_join_value&quot;}</span>
+<span class="sd">            &gt;&gt;&gt; request_context_map = {&quot;example_request_context&quot;: &quot;example_string_value&quot;}</span>
+<span class="sd">            &gt;&gt;&gt; request_data = GetFeaturesRequestData(join_key_map, request_context_map)</span>
+<span class="sd">            &gt;&gt;&gt; batch_request = GetFeaturesBatchRequest(</span>
+<span class="sd">            ...     feature_service_name=&quot;example_feature_service&quot;,</span>
+<span class="sd">            ...     request_data_list=[request_data, request_data],</span>
+<span class="sd">            ...     workspace_name=&quot;example_workspace&quot;,</span>
+<span class="sd">            ...     micro_batch_size=2</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; batch_response = tecton_client.get_features_batch(batch_request)</span>
+<span class="sd">            `batch_response.response_list` returns a list of :class:`GetFeaturesResponse` objects representing a</span>
+<span class="sd">            response for each request in the :class:`GetFeaturesBatchRequest` object.</span>
+<span class="sd">            Each :class:`GetFeaturesResponse` object contains a dictionary of {feature_name: `FeatureValue`} pairs,</span>
+<span class="sd">            which can be accessed using:</span>
+<span class="sd">            &gt;&gt;&gt; for response in batch_response.response_list:</span>
+<span class="sd">            &gt;&gt;&gt;     print([feature.feature_value for feature in response.feature_values.values()])</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TectonClientError: If the client encounters an error while making the request.</span>
+<span class="sd">            BadRequestError: If the response returned from the Tecton Server is 400 Bad Request. Please</span>
+<span class="sd">                check the exception message for detailed information.</span>
+<span class="sd">            UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized, it could be because</span>
+<span class="sd">                Tecton does not recognize the API Key in your request. Please refer to the `API Key Documentation</span>
+<span class="sd">                &lt;https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\</span>
+<span class="sd">                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\</span>
+<span class="sd">                to-the-http-api&gt;`_ for more information on how to create a Service Account with an API Key</span>
+<span class="sd">            ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden, it could be because the</span>
+<span class="sd">                Service Account associated with your API Key does not have the necessary permissions to query</span>
+<span class="sd">                the feature service. Please refer to the `Tecton Documentation &lt;https://docs.tecton.ai/docs/beta/\</span>
+<span class="sd">                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\</span>
+<span class="sd">                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api&gt;`_ for more information.</span>
+<span class="sd">            NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception</span>
+<span class="sd">                message for detailed information.</span>
+<span class="sd">            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Please</span>
+<span class="sd">                check the exception message for detailed information.</span>
+<span class="sd">            ServiceUnavailableError: If the response returned from the Tecton Server is 503 Service Unavailable, it</span>
+<span class="sd">                could be because Tecton is currently unable to process your request. Please retry later.</span>
+<span class="sd">            GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates</span>
+<span class="sd">                that processing the request exceeded the 2 seconds timeout limit set by Tecton.</span>
+
+<span class="sd">                For more detailed information on the errors, please refer to the error responses `here</span>
+<span class="sd">                &lt;https://docs.tecton.ai/http-api#operation/GetFeaturesBatch&gt;`_.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span><span class="p">,</span> <span class="n">latency</span> <span class="o">=</span> <span class="n">asyncio_run</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tecton_http_client</span><span class="o">.</span><span class="n">execute_parallel_requests</span><span class="p">(</span>
+                <span class="n">endpoint</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">ENDPOINT</span><span class="p">,</span> <span class="n">request_bodies</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">to_json_list</span><span class="p">(),</span> <span class="n">timeout</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">timeout</span>
+            <span class="p">)</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">GetFeaturesResponse</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">GetFeaturesBatchResponse</span><span class="p">(</span>
+            <span class="n">responses_list</span><span class="o">=</span><span class="n">results</span><span class="p">,</span> <span class="n">request_latency</span><span class="o">=</span><span class="n">latency</span><span class="p">,</span> <span class="n">micro_batch_size</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">micro_batch_size</span>
+        <span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -243,8 +284,7 @@
 <span class="sd">        Important for proper resource management and graceful termination of the client.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tecton_http_client</span><span class="o">.</span><span class="n">close</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+        <span class="n">asyncio_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tecton_http_client</span><span class="o">.</span><span class="n">close</span><span class="p">())</span></div></div>
 </pre></div>
 
            </div>

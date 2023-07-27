@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tecton_client.requests.GetFeatureRequestData &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
+  <title>tecton_client.requests.GetFeaturesRequestData &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -49,11 +49,12 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../requests.html">Requests</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../requests.html#tecton-client-requests-module">tecton_client.requests module</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.requests.MetadataOptions.html">tecton_client.requests.MetadataOptions</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">tecton_client.requests.GetFeatureRequestData</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#tecton_client.requests.GetFeatureRequestData"><code class="docutils literal notranslate"><span class="pre">GetFeatureRequestData</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tecton_client.requests.GetFeaturesRequestData</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.requests.GetFeaturesRequestData"><code class="docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.requests.GetFeaturesRequest.html">tecton_client.requests.GetFeaturesRequest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tecton_client.requests.GetFeaturesBatchRequest.html">tecton_client.requests.GetFeaturesBatchRequest</a></li>
 </ul>
 </li>
 </ul>
@@ -77,9 +78,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../requests.html">Requests</a></li>
-      <li class="breadcrumb-item active">tecton_client.requests.GetFeatureRequestData</li>
+      <li class="breadcrumb-item active">tecton_client.requests.GetFeaturesRequestData</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/generated/tecton_client.requests.GetFeatureRequestData.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/generated/tecton_client.requests.GetFeaturesRequestData.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -87,15 +88,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tecton-client-requests-getfeaturerequestdata">
-<h1>tecton_client.requests.GetFeatureRequestData<a class="headerlink" href="#tecton-client-requests-getfeaturerequestdata" title="Permalink to this heading"></a></h1>
+  <section id="tecton-client-requests-getfeaturesrequestdata">
+<h1>tecton_client.requests.GetFeaturesRequestData<a class="headerlink" href="#tecton-client-requests-getfeaturesrequestdata" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="tecton_client.requests.GetFeatureRequestData">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeatureRequestData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">join_key_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_context_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tecton_client/requests.html#GetFeatureRequestData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.requests.GetFeatureRequestData" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="tecton_client.requests.GetFeaturesRequestData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesRequestData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">join_key_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_context_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tecton_client/requests.html#GetFeaturesRequestData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.requests.GetFeaturesRequestData" title="Permalink to this definition"></a></dt>
 <dd><p>Class for request data needed for get-features queries.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tecton_client.requests.GetFeatureRequestData.join_key_map">
-<span class="sig-name descname"><span class="pre">join_key_map</span></span><a class="headerlink" href="#tecton_client.requests.GetFeatureRequestData.join_key_map" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="tecton_client.requests.GetFeaturesRequestData.join_key_map">
+<span class="sig-name descname"><span class="pre">join_key_map</span></span><a class="headerlink" href="#tecton_client.requests.GetFeaturesRequestData.join_key_map" title="Permalink to this definition"></a></dt>
 <dd><p>Join keys used for Batch and Stream FeatureViews
 The values can be of type (int, str, type(None)) and are encoded as follows:</p>
 <ol class="arabic simple">
@@ -110,8 +111,8 @@ The values can be of type (int, str, type(None)) and are encoded as follows:</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="tecton_client.requests.GetFeatureRequestData.request_context_map">
-<span class="sig-name descname"><span class="pre">request_context_map</span></span><a class="headerlink" href="#tecton_client.requests.GetFeatureRequestData.request_context_map" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="tecton_client.requests.GetFeaturesRequestData.request_context_map">
+<span class="sig-name descname"><span class="pre">request_context_map</span></span><a class="headerlink" href="#tecton_client.requests.GetFeaturesRequestData.request_context_map" title="Permalink to this definition"></a></dt>
 <dd><p>Request context used for OnDemand FeatureViews.
 The Request Context values can be of type (int, str, float) and are encoded as follows:</p>
 <ol class="arabic simple">
@@ -127,9 +128,9 @@ The Request Context values can be of type (int, str, float) and are encoded as f
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="tecton_client.requests.GetFeatureRequestData.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">join_key_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_context_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tecton_client/requests.html#GetFeatureRequestData.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.requests.GetFeatureRequestData.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Initializes a <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> instance with the given parameters.</p>
+<dt class="sig sig-object py" id="tecton_client.requests.GetFeaturesRequestData.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">join_key_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_context_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/tecton_client/requests.html#GetFeaturesRequestData.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.requests.GetFeaturesRequestData.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes a <a class="reference internal" href="#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code></a> instance with the given parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -154,8 +155,8 @@ and the value is the request context value for this request.</p></li>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tecton_client.requests.GetFeatureRequestData.__init__" title="tecton_client.requests.GetFeatureRequestData.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([join_key_map, request_context_map])</p></td>
-<td><p>Initializes a <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> instance with the given parameters.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tecton_client.requests.GetFeaturesRequestData.__init__" title="tecton_client.requests.GetFeaturesRequestData.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>([join_key_map, request_context_map])</p></td>
+<td><p>Initializes a <a class="reference internal" href="#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code></a> instance with the given parameters.</p></td>
 </tr>
 </tbody>
 </table>

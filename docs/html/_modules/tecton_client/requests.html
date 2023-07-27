@@ -75,6 +75,7 @@
   <h1>Source code for tecton_client.requests</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
@@ -84,17 +85,17 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Set</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
+<span class="kn">from</span> <span class="nn">tecton_client.constants</span> <span class="kn">import</span> <span class="n">DEFAULT_MICRO_BATCH_SIZE</span>
+<span class="kn">from</span> <span class="nn">tecton_client.constants</span> <span class="kn">import</span> <span class="n">MAX_MICRO_BATCH_SIZE</span>
+<span class="kn">from</span> <span class="nn">tecton_client.constants</span> <span class="kn">import</span> <span class="n">MIN_MICRO_BATCH_SIZE</span>
+<span class="kn">from</span> <span class="nn">tecton_client.constants</span> <span class="kn">import</span> <span class="n">SUPPORTED_JOIN_KEY_VALUE_TYPES</span>
+<span class="kn">from</span> <span class="nn">tecton_client.constants</span> <span class="kn">import</span> <span class="n">SUPPORTED_REQUEST_CONTEXT_MAP_TYPES</span>
 <span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">EMPTY_KEY_VALUE</span>
 <span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">INVALID_TYPE_KEY_VALUE</span>
+<span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">InvalidMicroBatchSizeError</span>
 <span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">InvalidParameterError</span>
 <span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">InvalidParameterMessage</span>
 <span class="kn">from</span> <span class="nn">tecton_client.exceptions</span> <span class="kn">import</span> <span class="n">UnsupportedTypeError</span>
-
-<span class="n">SUPPORTED_JOIN_KEY_VALUE_TYPES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)}</span>
-<span class="n">SUPPORTED_REQUEST_CONTEXT_MAP_TYPES</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">set</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">}</span>
-
-<span class="n">MAX_MICRO_BATCH_SIZE</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">DEFAULT_MICRO_BATCH_SIZE</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
 
 <div class="viewcode-block" id="MetadataOptions"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.MetadataOptions">[docs]</a><span class="k">class</span> <span class="nc">MetadataOptions</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
@@ -126,8 +127,8 @@
     <span class="k">return</span> <span class="p">{</span><span class="n">MetadataOptions</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="n">MetadataOptions</span><span class="o">.</span><span class="n">DATA_TYPE</span><span class="p">}</span>
 
 
-<div class="viewcode-block" id="GetFeatureRequestData"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeatureRequestData">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">GetFeatureRequestData</span><span class="p">:</span>
+<div class="viewcode-block" id="GetFeaturesRequestData"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesRequestData">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GetFeaturesRequestData</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for request data needed for get-features queries.</span>
 
 <span class="sd">    Attributes:</span>
@@ -146,7 +147,7 @@
 <span class="sd">            3) For float values, the value should be a number.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="GetFeatureRequestData.__init__"><a class="viewcode-back" href="../../generated/tecton_client.requests.GetFeatureRequestData.html#tecton_client.requests.GetFeatureRequestData.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="GetFeaturesRequestData.__init__"><a class="viewcode-back" href="../../generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">join_key_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">request_context_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -262,7 +263,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all requests to fetch feature values from the Tecton API.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        metadata_options (Set[&quot;:class:`MetadataOptions`&quot;]): Set of options for retrieving additional metadata about</span>
+<span class="sd">        metadata_options (Set[:class:`MetadataOptions`]): Set of options for retrieving additional metadata about</span>
 <span class="sd">            features.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -285,17 +286,51 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span> <span class="o">=</span> <span class="n">metadata_options</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">_defaults</span><span class="p">())</span>
 
 
+<span class="k">def</span> <span class="nf">_request_to_json</span><span class="p">(</span>
+    <span class="n">request</span><span class="p">:</span> <span class="n">AbstractGetFeaturesRequest</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">is_batch_request</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of any :class:`AbstractGetFeaturesRequest` object as a dictionary.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        request (AbstractGetFeaturesRequest): The :class:`AbstractGetFeaturesRequest` object to be converted to JSON.</span>
+<span class="sd">        fields_to_remove (List[str]): List of fields to be removed from the JSON representation of the object.</span>
+<span class="sd">        is_batch_request (bool): Whether the request is a batch request or not. Defaults to False.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: The JSON representation of the :class:`AbstractGetFeaturesRequest` object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">self_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">}</span>
+    <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;metadata_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">metadata_options</span>
+        <span class="k">else</span> <span class="p">{}</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_batch_request</span><span class="p">:</span>
+        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">request_data</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span>
+        <span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span><span class="p">:</span>
+            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;join_key_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span><span class="p">:</span>
+            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_context_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">self_dict</span><span class="p">}</span>
+
+
 <div class="viewcode-block" id="GetFeaturesRequest"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesRequest">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">GetFeaturesRequest</span><span class="p">(</span><span class="n">AbstractGetFeaturesRequest</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a request to the /get-features endpoint.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        request_data: Request parameters for the query, consisting of a Join Key Map and/or a Request Context Map</span>
-<span class="sd">            sent as a :class:`GetFeaturesRequestData` object.</span>
-<span class="sd">        ENDPOINT: Endpoint string for the get-features API.</span>
+<span class="sd">        request_data (GetFeaturesRequestData): Request parameters for the query, consisting of a Join Key Map and/or a</span>
+<span class="sd">            Request Context Map sent as a :class:`GetFeaturesRequestData` object.</span>
+<span class="sd">        ENDPOINT (str): Endpoint string for the get-features API.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; request_data = GetFeatureRequestData(join_key_map={&quot;user_id&quot;: 1234})</span>
+<span class="sd">        &gt;&gt;&gt; request_data = GetFeaturesRequestData(join_key_map={&quot;user_id&quot;: 1234})</span>
 <span class="sd">        &gt;&gt;&gt; get_features_request = GetFeaturesRequest(&quot;my_workspace&quot;, &quot;my_feature_service&quot;, request_data=request_data)</span>
 <span class="sd">        &gt;&gt;&gt; get_features_request.to_json()</span>
 <span class="sd">            {&quot;params&quot;:{&quot;feature_service_name&quot;: &quot;my_feature_service&quot;,&quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
@@ -308,7 +343,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">request_data</span><span class="p">:</span> <span class="n">GetFeatureRequestData</span><span class="p">,</span>
+        <span class="n">request_data</span><span class="p">:</span> <span class="n">GetFeaturesRequestData</span><span class="p">,</span>
         <span class="n">metadata_options</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]</span> <span class="o">=</span> <span class="n">_defaults</span><span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the :class:`GetFeaturesRequest` object with the given parameters.</span>
@@ -316,7 +351,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
 <span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
-<span class="sd">            request_data (GetFeatureRequestData): Request parameters for the query.</span>
+<span class="sd">            request_data (GetFeaturesRequestData): Request parameters for the query.</span>
 <span class="sd">            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature</span>
 <span class="sd">                values.</span>
 
@@ -325,27 +360,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span> <span class="o">=</span> <span class="n">request_data</span></div>
 
 <div class="viewcode-block" id="GetFeaturesRequest.to_json"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesRequest.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeaturesRequest` object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dictionary of the request in the expected format.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fields_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">,</span> <span class="s2">&quot;request_data&quot;</span><span class="p">]</span>
-        <span class="n">self_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">}</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span><span class="p">:</span>
-            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;join_key_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span><span class="p">:</span>
-            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_context_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span>
-
-        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;metadata_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)}</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span>
-            <span class="k">else</span> <span class="p">{}</span>
-        <span class="p">)</span>
-
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">self_dict</span><span class="p">}</span></div></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeaturesRequest` object as a dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_request_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">,</span> <span class="s2">&quot;request_data&quot;</span><span class="p">])</span></div></div>
 
 
 <span class="nd">@dataclass</span>
@@ -353,8 +369,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a micro-batch request sent to the /get-features-batch endpoint.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        ENDPOINT: Endpoint string for the get-features-batch API.</span>
-<span class="sd">        request_data: Request parameters for the query, consisting of a list of :class:`GetFeatureRequestData` objects.</span>
+<span class="sd">        request_data (List[GetFeaturesRequestData]): Request parameters for the query, consisting of a list of</span>
+<span class="sd">            :class:`GetFeaturesRequestData` objects.</span>
+<span class="sd">        ENDPOINT (str): Endpoint string for the get-features-batch API.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ENDPOINT</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/api/v1/feature-service/get-features-batch&quot;</span>
@@ -363,7 +380,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeatureRequestData</span><span class="p">],</span>
+        <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeaturesRequestData</span><span class="p">],</span>
         <span class="n">metadata_options</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]</span> <span class="o">=</span> <span class="n">_defaults</span><span class="p">(),</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the :class:`GetFeaturesMicroBatchRequest` object with the given parameters.</span>
@@ -371,7 +388,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
 <span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
-<span class="sd">            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.</span>
+<span class="sd">            request_data_list (List[GetFeaturesRequestData]): List of request parameters for the batch query.</span>
 <span class="sd">            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature</span>
 <span class="sd">                values.</span>
 
@@ -380,25 +397,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span> <span class="o">=</span> <span class="n">request_data_list</span>
 
     <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Dictionary of the request in the expected format.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fields_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">]</span>
-        <span class="n">self_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">}</span>
-        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;metadata_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)}</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span>
-            <span class="k">else</span> <span class="p">{}</span>
-        <span class="p">)</span>
-        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">request_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_data</span>
-        <span class="p">]</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">self_dict</span><span class="p">}</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object as a dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_request_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">],</span> <span class="n">is_batch_request</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
+<div class="viewcode-block" id="GetFeaturesBatchRequest"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesBatchRequest">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">GetFeaturesBatchRequest</span><span class="p">(</span><span class="n">AbstractGetFeaturesRequest</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class that represents a batch request to retrieve a list of feature vectors from the feature server.</span>
 
@@ -407,8 +410,8 @@
 <span class="sd">    :class:`TectonClientOptions` and the size of the connection pool.</span>
 
 <span class="sd">    :class:`GetFeaturesBatchRequest` uses either the /get-features or the /get-features-batch endpoint depending on the</span>
-<span class="sd">    configuration `micro_batch_size`. By default, the `micro_batch_size` is set to {DEFAULT_MICRO_BATCH_SIZE}.</span>
-<span class="sd">    It can be configured to any value in the range [1, {MAX_MICRO_BATCH_SIZE}].</span>
+<span class="sd">    configuration `micro_batch_size`. By default, the `micro_batch_size` is set to |DEFAULT_MICRO_BATCH_SIZE|.</span>
+<span class="sd">    It can be configured to any value in the range [|MIN_MICRO_BATCH_SIZE|, |MAX_MICRO_BATCH_SIZE|].</span>
 
 <span class="sd">    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`</span>
 <span class="sd">    of 1, the client enqueues `n` HTTP calls to be sent parallelly to the /get-features endpoint. The client waits</span>
@@ -416,19 +419,20 @@
 <span class="sd">    objects of size `n`.</span>
 
 <span class="sd">    For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`</span>
-<span class="sd">    of `k` where `k` is in the range [1, {MAX_MICRO_BATCH_SIZE}], the client enqueues math.ceil(n/k) microbatch</span>
-<span class="sd">    requests to be sent parallelly to the /get-features-batch endpoint, waits until all microbatch requests are</span>
-<span class="sd">    complete or a specific configured timeout has elapsed, and returns a List of :class:`GetFeaturesResponse`</span>
+<span class="sd">    of `k` where `k` is in the range [|MIN_MICRO_BATCH_SIZE|, |MAX_MICRO_BATCH_SIZE|], the client enqueues</span>
+<span class="sd">    math.ceil(n/k) microbatch requests to be sent parallelly to the /get-features-batch endpoint, waits until all</span>
+<span class="sd">    microbatch requests are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`</span>
 <span class="sd">    objects of size `n`.</span>
 
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        ENDPOINT: Endpoint string for the get-features-batch API.</span>
-<span class="sd">        request_list: List of :class:`GetFeaturesRequest` objects or :class:`GetFeaturesMicroBatchRequest` objects,</span>
-<span class="sd">            based on the `micro_batch_size` configuration.</span>
+<span class="sd">        request_list (List[Union[GetFeaturesRequest, GetFeaturesMicroBatchRequest]]): List of</span>
+<span class="sd">            :class:`GetFeaturesRequest` objects or :class:`GetFeaturesMicroBatchRequest` objects, based on the</span>
+<span class="sd">            `micro_batch_size` configuration.</span>
+<span class="sd">        ENDPOINT (str): Endpoint string for the get-features-batch API.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; request_data = GetFeatureRequestData(join_key_map={&quot;user_id&quot;: 1234})</span>
+<span class="sd">        &gt;&gt;&gt; request_data = GetFeaturesRequestData(join_key_map={&quot;user_id&quot;: 1234})</span>
 <span class="sd">        &gt;&gt;&gt; request = GetFeaturesBatchRequest(</span>
 <span class="sd">        ...      workspace_name=&quot;my_workspace&quot;,</span>
 <span class="sd">        ...      feature_service_name=&quot;my_feature_service&quot;,</span>
@@ -437,45 +441,51 @@
 <span class="sd">        ...      micro_batch_size=2</span>
 <span class="sd">        ...     )</span>
 <span class="sd">        &gt;&gt;&gt; request.to_json_list()</span>
-<span class="sd">            {&quot;params&quot;:{&quot;feature_service_name&quot;: &quot;my_feature_service&quot;,&quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
-<span class="sd">            &quot;metadata_options&quot;: {&quot;include_data_types&quot;: True, &quot;include_names&quot;: True},</span>
-<span class="sd">            &quot;request_data&quot;: [ {&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}, {&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}]}}</span>
+<span class="sd">            {&quot;params&quot;: {&quot;feature_service_name&quot;: &quot;my_feature_service&quot;, &quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
+<span class="sd">            &quot;metadata_options&quot;: {&quot;include_data_types&quot;: true, &quot;include_names&quot;: true},</span>
+<span class="sd">            &quot;request_data&quot;: [{&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}, {&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}]}}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ENDPOINT</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/api/v1/feature-service/get-features-batch&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<div class="viewcode-block" id="GetFeaturesBatchRequest.__init__"><a class="viewcode-back" href="../../generated/tecton_client.requests.GetFeaturesBatchRequest.html#tecton_client.requests.GetFeaturesBatchRequest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeatureRequestData</span><span class="p">],</span>
+        <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeaturesRequestData</span><span class="p">],</span>
         <span class="n">metadata_options</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">MetadataOptions</span><span class="p">]</span> <span class="o">=</span> <span class="n">_defaults</span><span class="p">(),</span>
-        <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_MICRO_BATCH_SIZE</span><span class="p">,</span>
+        <span class="n">timeout</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">timedelta</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the :class:`GetFeaturesBatchRequest` object with the given parameters.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined.</span>
 <span class="sd">            feature_service_name (str): Name of the Feature Service for which the feature vector is being requested.</span>
-<span class="sd">            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.</span>
+<span class="sd">            request_data_list (List[GetFeaturesRequestData]): List of request parameters for the batch query.</span>
 <span class="sd">            metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature</span>
 <span class="sd">                values.</span>
-<span class="sd">            micro_batch_size (int): Number of requests to be sent in a single batch request. Defaults to 5.</span>
+<span class="sd">            micro_batch_size (int): (Optional) Number of requests to be sent in a single batch request. Defaults to</span>
+<span class="sd">                |DEFAULT_MICRO_BATCH_SIZE|.</span>
+<span class="sd">            timeout (Optional[timedelta]): (Optional) The maximum time the client waits for the batch requests to</span>
+<span class="sd">                complete before canceling the operation and returning the partial list of results. Defaults to None.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_batch_parameters</span><span class="p">(</span><span class="n">request_data_list</span><span class="p">,</span> <span class="n">micro_batch_size</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">workspace_name</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="p">,</span> <span class="n">metadata_options</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">micro_batch_size</span> <span class="o">=</span> <span class="n">micro_batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout</span> <span class="o">=</span> <span class="n">timeout</span>
 
         <span class="k">if</span> <span class="n">micro_batch_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">GetFeaturesRequest</span><span class="p">(</span>
                     <span class="n">workspace_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_name</span><span class="p">,</span>
                     <span class="n">feature_service_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_service_name</span><span class="p">,</span>
-                    <span class="n">request_data</span><span class="o">=</span><span class="n">request_data</span><span class="p">,</span>
                     <span class="n">metadata_options</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span>
+                    <span class="n">request_data</span><span class="o">=</span><span class="n">request_data</span><span class="p">,</span>
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">request_data</span> <span class="ow">in</span> <span class="n">request_data_list</span>
             <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ENDPOINT</span> <span class="o">=</span> <span class="n">GetFeaturesRequest</span><span class="o">.</span><span class="n">ENDPOINT</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">GetFeaturesMicroBatchRequest</span><span class="p">(</span>
@@ -486,32 +496,32 @@
                 <span class="p">)</span>
                 <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">zip_longest</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="nb">iter</span><span class="p">(</span><span class="n">request_data_list</span><span class="p">)]</span> <span class="o">*</span> <span class="n">micro_batch_size</span><span class="p">)</span>
             <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ENDPOINT</span> <span class="o">=</span> <span class="n">GetFeaturesMicroBatchRequest</span><span class="o">.</span><span class="n">ENDPOINT</span></div>
 
-    <span class="k">def</span> <span class="nf">_validate_batch_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeatureRequestData</span><span class="p">],</span> <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_validate_batch_parameters</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">request_data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GetFeaturesRequestData</span><span class="p">],</span> <span class="n">micro_batch_size</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates the parameters for the batch request.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            request_data_list (List[GetFeatureRequestData]): List of request parameters for the batch query.</span>
+<span class="sd">            request_data_list (List[GetFeaturesRequestData]): List of request parameters for the batch query.</span>
 <span class="sd">            micro_batch_size (int): Number of requests to be sent in a single batch.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            InvalidParameterError: If the request_list is empty or contains None values,</span>
-<span class="sd">                or if the micro_batch_size is not in the expected range of values (1, {MAX_MICRO_BATCH_SIZE}).</span>
+<span class="sd">                or if the micro_batch_size is not in the expected range of values ({MIN_MICRO_BATCH_SIZE},</span>
+<span class="sd">                {MAX_MICRO_BATCH_SIZE}).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">request_data_list</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">request_data_list</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">REQUEST_DATA_LIST</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">micro_batch_size</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">micro_batch_size</span> <span class="o">&gt;</span> <span class="n">MAX_MICRO_BATCH_SIZE</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">InvalidParameterMessage</span><span class="o">.</span><span class="n">INVALID_BATCH_SIZE</span><span class="o">.</span><span class="n">value</span> <span class="o">%</span> <span class="n">MAX_MICRO_BATCH_SIZE</span><span class="p">)</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;List of GetFeaturesRequestData for the GetFeaturesBatchRequest cannot be empty&quot;</span>
+            <span class="k">raise</span> <span class="n">InvalidParameterError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">micro_batch_size</span> <span class="o">&lt;</span> <span class="n">MIN_MICRO_BATCH_SIZE</span> <span class="ow">or</span> <span class="n">micro_batch_size</span> <span class="o">&gt;</span> <span class="n">MAX_MICRO_BATCH_SIZE</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidMicroBatchSizeError</span>
 
-    <span class="k">def</span> <span class="nf">to_json_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of JSON representations for requests in the :class:`GetFeaturesRequest` object.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            List of dictionaries of the requests in the expected format.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span> <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span><span class="p">]</span>
+<div class="viewcode-block" id="GetFeaturesBatchRequest.to_json_list"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesBatchRequest.to_json_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_json_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of JSON representations for requests in the object as a list of dictionaries.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span> <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span><span class="p">]</span></div></div>
 </pre></div>
 
            </div>

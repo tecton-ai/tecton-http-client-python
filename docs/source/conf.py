@@ -29,6 +29,8 @@ extensions = [
     "sphinx.ext.autosummary",
 ]
 
+rst_epilog = open('../substitutions.txt', 'r').read()
+
 # AutosectionLabel settings.
 # Uses a <page>:<label> schema which doesn't work for duplicate sub-section
 # labels, so set max depth.

@@ -49,8 +49,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Requests</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tecton-client-requests-module">tecton_client.requests module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html">tecton_client.requests.MetadataOptions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.GetFeatureRequestData.html">tecton_client.requests.GetFeatureRequestData</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html">tecton_client.requests.GetFeaturesRequestData</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html">tecton_client.requests.GetFeaturesRequest</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesBatchRequest.html">tecton_client.requests.GetFeaturesBatchRequest</a></li>
 </ul>
 </li>
 </ul>
@@ -90,7 +91,123 @@
 <p>This module contains classes used to build the request sent to Tecton’s API.</p>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeatureRequestData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">join_key_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_context_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeatureRequestData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesBatchRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workspace_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_service_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_data_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><span class="pre">GetFeaturesRequestData</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html#tecton_client.requests.MetadataOptions" title="tecton_client.requests.MetadataOptions"><span class="pre">MetadataOptions</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{MetadataOptions.DATA_TYPE,</span> <span class="pre">MetadataOptions.NAME}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">micro_batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">timedelta</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesBatchRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractGetFeaturesRequest</span></code></p>
+<p>A class that represents a batch request to retrieve a list of feature vectors from the feature server.</p>
+<p>The class can be used to make parallel requests to retrieve multiple feature vectors from the feature server API.
+The actual number of concurrent calls depends on the <cite>max_connections</cite> configuration in
+<code class="xref py py-class docutils literal notranslate"><span class="pre">TectonClientOptions</span></code> and the size of the connection pool.</p>
+<p><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesBatchRequest.html#tecton_client.requests.GetFeaturesBatchRequest" title="tecton_client.requests.GetFeaturesBatchRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesBatchRequest</span></code></a> uses either the /get-features or the /get-features-batch endpoint depending on the
+configuration <cite>micro_batch_size</cite>. By default, the <cite>micro_batch_size</cite> is set to 1.
+It can be configured to any value in the range [1, 5].</p>
+<p>For a <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesBatchRequest.html#tecton_client.requests.GetFeaturesBatchRequest" title="tecton_client.requests.GetFeaturesBatchRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesBatchRequest</span></code></a> with a <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code></a> of size <cite>n</cite> and a <cite>micro_batch_size</cite>
+of 1, the client enqueues <cite>n</cite> HTTP calls to be sent parallelly to the /get-features endpoint. The client waits
+until all calls are complete or a specific time has elapsed and returns a List of <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code>
+objects of size <cite>n</cite>.</p>
+<p>For a <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesBatchRequest.html#tecton_client.requests.GetFeaturesBatchRequest" title="tecton_client.requests.GetFeaturesBatchRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesBatchRequest</span></code></a> with a <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code></a> of size <cite>n</cite> and a <cite>micro_batch_size</cite>
+of <cite>k</cite> where <cite>k</cite> is in the range [1, 5], the client enqueues
+math.ceil(n/k) microbatch requests to be sent parallelly to the /get-features-batch endpoint, waits until all
+microbatch requests are complete or a specific time has elapsed and returns a List of <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code>
+objects of size <cite>n</cite>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">request_list</span></span></dt>
+<dd><p>List of
+<a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequest</span></code></a> objects or <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesMicroBatchRequest</span></code> objects, based on the
+<cite>micro_batch_size</cite> configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Union[<a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest">GetFeaturesRequest</a>, GetFeaturesMicroBatchRequest]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ENDPOINT</span></span></dt>
+<dd><p>Endpoint string for the get-features-batch API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">request_data</span> <span class="o">=</span> <span class="n">GetFeaturesRequestData</span><span class="p">(</span><span class="n">join_key_map</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">request</span> <span class="o">=</span> <span class="n">GetFeaturesBatchRequest</span><span class="p">(</span>
+<span class="gp">... </span>     <span class="n">workspace_name</span><span class="o">=</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="n">feature_service_name</span><span class="o">=</span><span class="s2">&quot;my_feature_service&quot;</span><span class="p">,</span>
+<span class="gp">... </span>     <span class="n">request_data_list</span><span class="o">=</span><span class="p">[</span><span class="n">request_data</span><span class="p">,</span> <span class="n">request_data</span><span class="p">],</span>
+<span class="gp">... </span>     <span class="n">metadata_options</span><span class="o">=</span><span class="p">{</span><span class="n">MetadataOptions</span><span class="o">.</span><span class="n">NAME</span><span class="p">,</span> <span class="n">MetadataOptions</span><span class="o">.</span><span class="n">DATA_TYPE</span><span class="p">},</span>
+<span class="gp">... </span>     <span class="n">micro_batch_size</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">request</span><span class="o">.</span><span class="n">to_json_list</span><span class="p">()</span>
+<span class="go">    {&quot;params&quot;: {&quot;feature_service_name&quot;: &quot;my_feature_service&quot;, &quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
+<span class="go">    &quot;metadata_options&quot;: {&quot;include_data_types&quot;: true, &quot;include_names&quot;: true},</span>
+<span class="go">    &quot;request_data&quot;: [{&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}, {&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}]}}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">to_json_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesBatchRequest.to_json_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Returns a list of JSON representations for requests in the object as a list of dictionaries.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workspace_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_service_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><span class="pre">GetFeaturesRequestData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html#tecton_client.requests.MetadataOptions" title="tecton_client.requests.MetadataOptions"><span class="pre">MetadataOptions</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{MetadataOptions.DATA_TYPE,</span> <span class="pre">MetadataOptions.NAME}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractGetFeaturesRequest</span></code></p>
+<p>Class representing a request to the /get-features endpoint.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">request_data</span></span></dt>
+<dd><p>Request parameters for the query, consisting of a Join Key Map and/or a
+Request Context Map sent as a <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code></a> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData">GetFeaturesRequestData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ENDPOINT</span></span></dt>
+<dd><p>Endpoint string for the get-features API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">request_data</span> <span class="o">=</span> <span class="n">GetFeaturesRequestData</span><span class="p">(</span><span class="n">join_key_map</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_features_request</span> <span class="o">=</span> <span class="n">GetFeaturesRequest</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">,</span> <span class="s2">&quot;my_feature_service&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="n">request_data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_features_request</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
+<span class="go">    {&quot;params&quot;:{&quot;feature_service_name&quot;: &quot;my_feature_service&quot;,&quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
+<span class="go">    &quot;metadata_options&quot;: {&quot;include_data_types&quot;: True, &quot;include_names&quot;: True},&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}}</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">ENDPOINT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/api/v1/feature-service/get-features'</span></em></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesRequest.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Returns a JSON representation of the <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequest</span></code></a> object as a dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesRequestData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">join_key_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_context_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesRequestData"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class for request data needed for get-features queries.</p>
 <dl class="py attribute">
@@ -122,55 +239,6 @@ The Request Context values can be of type (int, str, float) and are encoded as f
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Optional[Dict[str, Union[int, str, float]]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.requests.</span></span><span class="sig-name descname"><span class="pre">GetFeaturesRequest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workspace_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_service_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">request_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="generated/tecton_client.requests.GetFeatureRequestData.html#tecton_client.requests.GetFeatureRequestData" title="tecton_client.requests.GetFeatureRequestData"><span class="pre">GetFeatureRequestData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata_options</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html#tecton_client.requests.MetadataOptions" title="tecton_client.requests.MetadataOptions"><span class="pre">MetadataOptions</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{MetadataOptions.DATA_TYPE,</span> <span class="pre">MetadataOptions.NAME}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesRequest"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractGetFeaturesRequest</span></code></p>
-<p>Class representing a request to the /get-features endpoint.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">request_data</span></span></dt>
-<dd><p>Request parameters for the query, consisting of a Join Key Map and/or a Request Context Map
-sent as a <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">ENDPOINT</span></span></dt>
-<dd><p>Endpoint string for the get-features API.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Final[str]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">request_data</span> <span class="o">=</span> <span class="n">GetFeatureRequestData</span><span class="p">(</span><span class="n">join_key_map</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">get_features_request</span> <span class="o">=</span> <span class="n">GetFeaturesRequest</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">,</span> <span class="s2">&quot;my_feature_service&quot;</span><span class="p">,</span> <span class="n">request_data</span><span class="o">=</span><span class="n">request_data</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">get_features_request</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span>
-<span class="go">    {&quot;params&quot;:{&quot;feature_service_name&quot;: &quot;my_feature_service&quot;,&quot;workspace_name&quot;: &quot;my_workspace&quot;,</span>
-<span class="go">    &quot;metadata_options&quot;: {&quot;include_data_types&quot;: True, &quot;include_names&quot;: True},&quot;join_key_map&quot;: {&quot;user_id&quot;: 1234}}}</span>
-</pre></div>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">ENDPOINT</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Final</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/api/v1/feature-service/get-features'</span></em></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">to_json</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/tecton_client/requests.html#GetFeaturesRequest.to_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
-<dd><p>Returns a JSON representation of the <a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequest</span></code></a> object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dictionary of the request in the expected format.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -219,11 +287,14 @@ sent as a <code class="xref py py-class docutils literal notranslate"><span clas
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.requests.MetadataOptions.html#tecton_client.requests.MetadataOptions" title="tecton_client.requests.MetadataOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MetadataOptions</span></code></a>(value)</p></td>
 <td><p>Options for retrieving metadata for get-features request.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.requests.GetFeatureRequestData.html#tecton_client.requests.GetFeatureRequestData" title="tecton_client.requests.GetFeatureRequestData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeatureRequestData</span></code></a>([join_key_map, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequestData.html#tecton_client.requests.GetFeaturesRequestData" title="tecton_client.requests.GetFeaturesRequestData"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code></a>([join_key_map, ...])</p></td>
 <td><p>Class for request data needed for get-features queries.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesRequest</span></code></a>(workspace_name, ...[, ...])</p></td>
 <td><p>Class representing a request to the /get-features endpoint.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesBatchRequest.html#tecton_client.requests.GetFeaturesBatchRequest" title="tecton_client.requests.GetFeaturesBatchRequest"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesBatchRequest</span></code></a>(workspace_name, ...)</p></td>
+<td><p>A class that represents a batch request to retrieve a list of feature vectors from the feature server.</p></td>
 </tr>
 </tbody>
 </table>

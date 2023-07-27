@@ -7,9 +7,9 @@ tecton\_client.exceptions module
 This module consists of all the exceptions that can be raised by the Tecton client.
 
 .. automodule:: tecton_client.exceptions
-   :members: TectonClientError, TectonServerException, InvalidParameterError, InvalidURLError, UnsupportedTypeError,
-    BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError, ResourcesExhaustedError, ServiceUnavailableError,
-    GatewayTimeoutError
+   :members: TectonClientError, TectonServerException, InvalidParameterError, InvalidURLError, InvalidMicroBatchSizeError,
+    UnsupportedTypeError, BadRequestError, UnauthorizedError, ForbiddenError, NotFoundError, ResourcesExhaustedError,
+    ServiceUnavailableError, GatewayTimeoutError
    :undoc-members:
    :show-inheritance:
    :noindex:
@@ -21,6 +21,7 @@ This module consists of all the exceptions that can be raised by the Tecton clie
     TectonServerException
     InvalidParameterError
     InvalidURLError
+    InvalidMicroBatchSizeError
     UnsupportedTypeError
     BadRequestError
     UnauthorizedError
