@@ -21,6 +21,7 @@ from tecton_client.exceptions import ResourcesExhaustedError
 from tecton_client.exceptions import ServiceUnavailableError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
+from tecton_client.requests import GetFeaturesBatchRequest
 from tecton_client.requests import GetFeaturesRequest
 from tecton_client.requests import GetFeaturesRequestData
 from tecton_client.requests import MetadataOptions
@@ -41,6 +42,7 @@ class TestTectonClient:
     url: Final[str] = "https://thisisaurl.ai"
 
     final_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features")
+    batch_url: Final[str] = urljoin(url, "api/v1/feature-service/get-features-batch")
 
     TEST_DATA_ROOT: Final[str] = "tests/test_data/"
     TEST_DATA_REL_PATH_SINGLE: Final[str] = os.path.join(TEST_DATA_ROOT, "single/")
@@ -119,6 +121,15 @@ class TestTectonClient:
         workspace_name="test-workspace",
         metadata_options={MetadataOptions.SLO_INFO, MetadataOptions.FEATURE_STATUS, MetadataOptions.EFFECTIVE_TIME},
     )
+    test_request_batch = GetFeaturesBatchRequest(
+        feature_service_name="test_feature_service",
+        request_data_list=[GetFeaturesRequestData(join_key_map, request_context_map)] * 10,
+        workspace_name="test-workspace",
+        metadata_options={MetadataOptions.SLO_INFO, MetadataOptions.FEATURE_STATUS, MetadataOptions.EFFECTIVE_TIME},
+        micro_batch_size=5,
+    )
+
+    tecton_client = TectonClient(url=url, api_key=api_key)
 
     @pytest.mark.parametrize(
         "file_name, expected_response",
@@ -128,21 +139,20 @@ class TestTectonClient:
         ],
     )
     def test_get_features(self, mocked: aioresponses, file_name: str, expected_response: dict) -> None:
-        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
+        TectonClient(TestTectonClient.url, TestTectonClient.api_key)
 
         with open(os.path.join(TestTectonClient.TEST_DATA_REL_PATH_SINGLE, file_name)) as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
-            response = tecton_client.get_features(self.test_request_normal)
+            response = self.tecton_client.get_features(self.test_request_normal)
 
         assert dict_equals({k: v.feature_value for k, v in response.feature_values.items()}, expected_response)
-        tecton_client.close()
 
     @pytest.mark.parametrize("metadata_path, expected_metadata", [("sample_response_metadata.json", expected_metadata)])
     def test_get_features_metadata(self, mocked: aioresponses, metadata_path: str, expected_metadata: list) -> None:
-        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
+        TectonClient(TestTectonClient.url, TestTectonClient.api_key)
         with open(os.path.join(TestTectonClient.TEST_DATA_REL_PATH_SINGLE, metadata_path)) as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
-            response = tecton_client.get_features(self.test_request_metadata)
+            response = self.tecton_client.get_features(self.test_request_metadata)
 
         assert response.slo_info is not None
         assert dict_equals(vars(response.slo_info), self.expected_slo_info)
@@ -155,7 +165,6 @@ class TestTectonClient:
         assert dict_equals(
             {k: v.feature_value for k, v in response.feature_values.items()}, self.expected_response_metadata
         )
-        tecton_client.close()
 
     @pytest.mark.parametrize(
         "exception, status_code, error_json",
@@ -230,15 +239,13 @@ class TestTectonClient:
     def test_get_features_error_response(
         self, mocked: aioresponses, exception: TectonServerException, status_code: int, error_json: dict
     ) -> None:
-        tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key)
         with pytest.raises(exception):
             mocked.post(
                 url=self.final_url,
                 status=status_code,
                 payload=error_json,
             )
-            tecton_client.get_features(self.test_request_normal)
-        tecton_client.close()
+            self.tecton_client.get_features(self.test_request_normal)
 
     def test_error_response_no_duplicate_codes(self) -> None:
         response_codes = set()
@@ -262,22 +269,24 @@ class TestTectonClient:
                 read_timeout=timedelta(seconds=15),
                 keepalive_expiry=timedelta(seconds=500),
             )
-            tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client_options=client_options)
+            local_tecton_client = TectonClient(
+                TestTectonClient.url, TestTectonClient.api_key, client_options=client_options
+            )
             assert client_options.connect_timeout.seconds == 10
             assert client_options.read_timeout.seconds == 15
             assert client_options.keepalive_expiry.seconds == 500
             assert client_options.max_connections == 10
         else:
-            tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
+            local_tecton_client = TectonClient(TestTectonClient.url, TestTectonClient.api_key, client=client)
 
         with open(os.path.join(TestTectonClient.TEST_DATA_REL_PATH_SINGLE, "sample_response_mixed.json")) as json_file:
             mocked.post(url=self.final_url, payload=json.load(json_file))
-            response = tecton_client.get_features(self.test_request_normal)
+            response = local_tecton_client.get_features(self.test_request_normal)
 
         assert dict_equals(
             {k: v.feature_value for k, v in response.feature_values.items()}, self.expected_response_mixed
         )
-        tecton_client.close()
+        local_tecton_client.close()
 
     def test_no_api_key(self) -> None:
         # Testing that no API key is provided as a parameter and the environment variable `TECTON_API_KEY` is not set
@@ -298,3 +307,36 @@ class TestTectonClient:
                 url="https://thisisaurl.ai", client_options=TectonClientOptions(max_connections=1), client=client
             )
         await client.close()
+
+    @pytest.mark.parametrize(
+        "file_name, feature_vector_len, feature_name, order_of_responses",
+        [
+            (
+                "sample_batch_response_long_slo.json",
+                14,
+                "user_distinct_merchant_transaction_count_30d.distinct_merchant_transaction_count_30d",
+                [672, 668, 697, 690, 688, 685, 676, 672, 668, 697, 690, 688, 685, 676],
+            ),
+        ],
+    )
+    def test_get_features_batch(
+        self, mocked: aioresponses, file_name: str, feature_vector_len: int, feature_name: str, order_of_responses: list
+    ) -> None:
+        with open(f"{TestTectonClient.TEST_DATA_REL_PATH_BATCH}{file_name}") as json_file:
+            mocked.post(url=self.batch_url, payload=json.load(json_file), repeat=True)
+            batch_response = self.tecton_client.get_features_batch(self.test_request_batch)
+
+            # Test that the number of feature values in each response corresponds to the individual
+            # feature vector length
+            assert all(
+                len(response.feature_values) == feature_vector_len for response in batch_response.batch_response_list
+            )
+
+            # Test that the order of responses is retained by comparing a random feature within each response
+            assert all(
+                response.feature_values[feature_name].feature_value == order_of_responses.pop(0)
+                for response in batch_response.batch_response_list
+            )
+
+    def pytest_sessionfinish(self) -> None:
+        self.tecton_client.close()
