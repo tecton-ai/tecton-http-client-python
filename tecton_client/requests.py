@@ -333,8 +333,8 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
     :class:`TectonClientOptions` and the size of the connection pool.
 
     :class:`GetFeaturesBatchRequest` uses either the /get-features or the /get-features-batch endpoint depending on the
-    configuration `micro_batch_size`. By default, the `micro_batch_size` is set to |DEFAULT_MICRO_BATCH_SIZE|.
-    It can be configured to any value in the range [|MIN_MICRO_BATCH_SIZE|, |MAX_MICRO_BATCH_SIZE|].
+    configuration `micro_batch_size`. By default, the `micro_batch_size` is set to {DEFAULT_MICRO_BATCH_SIZE}.
+    It can be configured to any value in the range [{MIN_MICRO_BATCH_SIZE}, {MAX_MICRO_BATCH_SIZE}].
 
     For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`
     of 1, the client enqueues `n` HTTP calls to be sent parallelly to the /get-features endpoint. The client waits
@@ -342,7 +342,7 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
     objects of size `n`.
 
     For a :class:`GetFeaturesBatchRequest` with a :class:`GetFeaturesRequestData` of size `n` and a `micro_batch_size`
-    of `k` where `k` is in the range [|MIN_MICRO_BATCH_SIZE|, |MAX_MICRO_BATCH_SIZE|], the client enqueues
+    of `k` where `k` is in the range [{MIN_MICRO_BATCH_SIZE}, {MAX_MICRO_BATCH_SIZE}], the client enqueues
     math.ceil(n/k) microbatch requests to be sent parallelly to the /get-features-batch endpoint, waits until all
     microbatch requests are complete or a specific time has elapsed and returns a List of :class:`GetFeaturesResponse`
     objects of size `n`.
@@ -387,7 +387,7 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
             metadata_options (Set[MetadataOptions]): Options for retrieving additional metadata about feature
                 values.
             micro_batch_size (int): (Optional) Number of requests to be sent in a single batch request. Defaults to
-                |DEFAULT_MICRO_BATCH_SIZE|.
+                {DEFAULT_MICRO_BATCH_SIZE}.
             timeout (Optional[timedelta]): (Optional) The maximum time the client waits for the batch requests to
                 complete before canceling the operation and returning the partial list of results. Defaults to None.
 
