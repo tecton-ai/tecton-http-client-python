@@ -11,6 +11,3 @@ MAX_MICRO_BATCH_SIZE: Final[int] = 5
 """int: The maximum micro batch size allowed while making a :class:`GetFeaturesBatchRequest`, currently set to 5."""
 DEFAULT_MICRO_BATCH_SIZE: Final[int] = 1
 """int: The default micro batch size while making a :class:`GetFeaturesBatchRequest`, currently set to 1."""
-
-DEFAULT_WORKSPACE_NAME: Final[str] = "prod"
-"""str: The default workspace name to use while making a :class:`GetFeatureServiceMetadataRequest`."""
