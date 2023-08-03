@@ -36,7 +36,7 @@ class MetadataOptions(str, Enum):
     """Include the data types of each feature in the vector"""
 
     SLO_INFO = "include_slo_info"
-    """Include information about the server response time"""
+    """Include SLO information in the response"""
 
     FEATURE_STATUS = "include_serving_status"
     """Include feature serving status information of the feature"""
@@ -68,6 +68,11 @@ class GetFeaturesRequestData:
                     For string values, the value should be a string.
                     For int values, the value should be a string of the decimal representation of the integer.
                     For float values, the value should be a number.
+
+    Examples:
+        >>> join_key_map = {"sample_key": "sample_value"}
+        >>> request_context_map = {"example_key_1": "example_value_1", "example_key_2": "example_value_2"}
+        >>> data = GetFeaturesRequestData(join_key_map=join_key_map, request_context_map=request_context_map)
     """
 
     def __init__(
@@ -109,6 +114,10 @@ class GetFeaturesRequestData:
             if request_context_map
             else None
         )
+
+    def __str__(self) -> str:
+        """Returns a string representation of the request data."""
+        return f"GetFeaturesRequestData({vars(self)})"
 
     @staticmethod
     def _get_processed_map(request_map: dict, allow_none: bool, allowed_types: set, map_type: str) -> dict:
@@ -278,11 +287,21 @@ class GetFeaturesRequest(AbstractGetFeaturesRequest):
 
         """
         super().__init__(workspace_name, feature_service_name, metadata_options)
-        self.request_data = request_data
+        if request_data:
+            self.request_data = request_data
+        else:
+            message = "Request Data cannot be empty or None."
+            raise InvalidParameterError(message)
 
     def to_json(self) -> dict:
         """Returns a JSON representation of the :class:`GetFeaturesRequest` object as a dictionary."""
         return _request_to_json(self, fields_to_remove=["ENDPOINT", "request_data"])
+
+    def __str__(self) -> str:
+        """Returns a string representation of the :class:`GetFeaturesRequest` object."""
+        string_representation = vars(self)
+        string_representation["request_data"] = self.request_data.__str__()
+        return f"GetFeaturesRequest({string_representation})"
 
 
 @dataclass
@@ -347,9 +366,8 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
 
 
     Attributes:
-        request_list (List[Union[GetFeaturesRequest, GetFeaturesMicroBatchRequest]]): List of
-            :class:`GetFeaturesRequest` objects or :class:`GetFeaturesMicroBatchRequest` objects, based on the
-            `micro_batch_size` configuration.
+        request_list (List[AbstractGetFeaturesRequest]): List of
+            :class:`AbstractGetFeaturesRequest` objects, based on the `micro_batch_size` configuration.
         ENDPOINT (str): Endpoint string for the get-features-batch API.
 
     Examples:
@@ -443,6 +461,12 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
     def to_json_list(self) -> List[dict]:
         """Returns a list of JSON representations for requests in the object as a list of dictionaries."""
         return [request.to_json() for request in self.request_list]
+
+    def __str__(self) -> str:
+        """Returns a string representation of the :class:`GetFeaturesBatchRequest` object."""
+        string_representation = vars(self)
+        string_representation["request_list"] = [str(request) for request in self.request_list]
+        return f"GetFeaturesBatchRequest({string_representation})"
 
 
 @dataclass

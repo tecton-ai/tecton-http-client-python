@@ -17,7 +17,7 @@ from tecton_client.exceptions import ForbiddenError
 from tecton_client.exceptions import GatewayTimeoutError
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import NotFoundError
-from tecton_client.exceptions import ResourcesExhaustedError
+from tecton_client.exceptions import ResourceExhaustedError
 from tecton_client.exceptions import ServiceUnavailableError
 from tecton_client.exceptions import TectonServerException
 from tecton_client.exceptions import UnauthorizedError
@@ -219,7 +219,7 @@ class TestTectonClient:
                 },
             ),
             (
-                ResourcesExhaustedError,
+                ResourceExhaustedError,
                 429,
                 {
                     "error": "GetFeatures exceeded the concurrent request limit, please retry later",
