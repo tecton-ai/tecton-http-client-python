@@ -8,6 +8,7 @@ from tecton_client.data_types import BoolType
 from tecton_client.data_types import DataType
 from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
+from tecton_client.data_types import NameAndType
 from tecton_client.data_types import StringType
 from tecton_client.data_types import StructField
 from tecton_client.data_types import StructType
@@ -190,3 +191,19 @@ class TestDataTypes:
                 feature_value=feature_value,
                 element_type=fields[0]["dataType"]["elementType"],
             )
+
+    @pytest.mark.parametrize(
+        "data_type",
+        [
+            BoolType(),
+            IntType(),
+            FloatType(),
+            StringType(),
+            ArrayType(IntType()),
+            StructType([StructField("field1", StringType()), StructField("field2", IntType())]),
+        ],
+    )
+    def test_name_and_type(self, data_type: DataType) -> None:
+        name_and_type_var = NameAndType(name="test", data_type=data_type)
+        assert name_and_type_var.name == "test"
+        assert type(name_and_type_var.data_type) == type(data_type)

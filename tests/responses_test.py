@@ -11,9 +11,12 @@ from tecton_client.data_types import ArrayType
 from tecton_client.data_types import BoolType
 from tecton_client.data_types import FloatType
 from tecton_client.data_types import IntType
+from tecton_client.data_types import StringType
 from tecton_client.data_types import StructType
+from tecton_client.responses import FeatureServiceType
 from tecton_client.responses import FeatureStatus
 from tecton_client.responses import GetFeaturesBatchResponse
+from tecton_client.responses import GetFeatureServiceMetadataResponse
 from tecton_client.responses import GetFeaturesResponse
 from tecton_client.responses import HTTPResponse
 from tecton_client.responses import SloIneligibilityReason
@@ -357,3 +360,66 @@ class TestResponse:
             response.feature_values[feature_name].feature_value == order_of_responses.pop(0)
             for response in batch_response.batch_response_list
         )
+
+    def assert_name_and_type_match(self, input_dict: dict, response_dict: dict) -> None:
+        assert len(input_dict) == len(response_dict)
+        for key, value in input_dict.items():
+            assert key in response_dict
+            assert isinstance(response_dict[key].data_type, value)
+
+    @pytest.mark.parametrize(
+        "file_name, feature_service_type, input_join_keys, input_rc_keys, feature_values, output_join_keys",
+        [
+            (
+                "sample_metadata_response.json",
+                FeatureServiceType.DEFAULT,
+                {"longitude": FloatType, "latitude": FloatType},
+                {},
+                {
+                    "average_rain.average_temperate_6hrs": ArrayType,
+                    "average_rain.precipitation_higher_than_average": BoolType,
+                },
+                {},
+            ),
+            (
+                "sample_metadata_response_long.json",
+                FeatureServiceType.DEFAULT,
+                {"user_id": StringType, "merchant": StringType},
+                {"amt": FloatType},
+                {
+                    "transaction_amount_is_higher_than_average.transaction_amount_is_higher_than_average": BoolType,
+                    "merchant_fraud_rate.is_fraud_mean_1d_1d": FloatType,
+                    "merchant_fraud_rate.is_fraud_mean_30d_1d": FloatType,
+                    "merchant_fraud_rate.is_fraud_mean_90d_1d": FloatType,
+                    "user_distinct_merchant_transaction_count_30d.distinct_merchant_transaction_count_30d": IntType,
+                    "user_transaction_amount_metrics.amt_mean_1d_10m": FloatType,
+                    "user_transaction_amount_metrics.amt_mean_1h_10m": FloatType,
+                    "user_transaction_amount_metrics.amt_mean_3d_10m": FloatType,
+                    "user_transaction_amount_metrics.amt_sum_1d_10m": FloatType,
+                    "user_transaction_amount_metrics.amt_sum_1h_10m": FloatType,
+                    "user_transaction_amount_metrics.amt_sum_3d_10m": FloatType,
+                    "user_transaction_counts.transaction_id_last_3_1d_1d": ArrayType,
+                },
+                {},
+            ),
+        ],
+    )
+    def test_feature_service_metadata_response(
+        self,
+        file_name: str,
+        feature_service_type: FeatureServiceType,
+        input_join_keys: dict,
+        input_rc_keys: dict,
+        feature_values: dict,
+        output_join_keys: dict,
+    ) -> None:
+        with open(os.path.join(TestResponse.TEST_DATA_ROOT, file_name)) as json_file:
+            json_dict = json.load(json_file)
+            http_response = HTTPResponse(result=json_dict, latency=timedelta(milliseconds=10))
+            response = GetFeatureServiceMetadataResponse(http_response=http_response)
+
+            assert response.feature_service_type == feature_service_type
+            self.assert_name_and_type_match(input_join_keys, response.input_join_keys)
+            self.assert_name_and_type_match(input_rc_keys, response.input_request_context_keys)
+            self.assert_name_and_type_match(feature_values, response.feature_values)
+            self.assert_name_and_type_match(output_join_keys, response.output_join_keys)
