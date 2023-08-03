@@ -21,6 +21,8 @@ This is a Python client library to make it easy to call the feature server endpo
    :caption: Contents:
 
    data_types
+   client_options
+   constants
    exceptions
    requests
    responses

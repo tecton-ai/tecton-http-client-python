@@ -128,10 +128,13 @@ If no options are passed in, defaults defined in <code class="xref py py-class d
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code>()</p></td>
 <td><p>Closes the client, releasing allocated resources and allowing connection reuse.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_features</span></code>(request)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_feature_service_metadata</span></code>(request)</p></td>
+<td><p>Makes a request to the /metadata endpoint and returns the response in the form of a <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeatureServiceMetadataResponse</span></code> object.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_features</span></code>(request)</p></td>
 <td><p>Makes a request to the /get-features endpoint and returns the response in the form of a <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code> object</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_features_batch</span></code>(request)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_features_batch</span></code>(request)</p></td>
 <td><p>Makes a batch request to retrieve a list of feature vectors and metadata for a given workspace and feature service, and returns the response in the form of a <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesBatchResponse</span></code> object.</p></td>
 </tr>
 </tbody>

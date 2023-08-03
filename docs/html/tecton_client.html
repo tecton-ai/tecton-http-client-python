@@ -107,6 +107,66 @@ as a Python object.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_feature_service_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GetFeatureServiceMetadataRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GetFeatureServiceMetadataResponse</span></span></span><a class="reference internal" href="_modules/tecton_client/tecton_client.html#TectonClient.get_feature_service_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Makes a request to the /metadata endpoint and returns the response in the form of a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeatureServiceMetadataResponse</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>GetFeatureServiceMetadataRequest</em>) – The <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeatureServiceMetadataRequest</span></code> object
+with the request parameters.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeatureServiceMetadataResponse</span></code> object representing the</dt><dd><p>response from the HTTP API with the requested information.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GetFeatureServiceMetadataResponse</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tecton_client</span> <span class="o">=</span> <span class="n">TectonClient</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">api_key</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metadata_request</span> <span class="o">=</span> <span class="n">GetFeatureServiceMetadataRequest</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">feature_service_name</span><span class="o">=</span><span class="s2">&quot;example_feature_service&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">workspace_name</span><span class="o">=</span><span class="s2">&quot;example_workspace&quot;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">metadata_response</span> <span class="o">=</span> <span class="n">tecton_client</span><span class="o">.</span><span class="n">get_feature_service_metadata</span><span class="p">(</span><span class="n">metadata_request</span><span class="p">)</span>
+<span class="go">The `metadata_response` object contains the metadata information requested as different</span>
+<span class="go">fields of the object.</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">metadata_response</span><span class="o">.</span><span class="n">feature_values</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">metadata_response</span><span class="o">.</span><span class="n">input_join_keys</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.TectonClientError.html#tecton_client.exceptions.TectonClientError" title="tecton_client.exceptions.TectonClientError"><strong>TectonClientError</strong></a> – If the client encounters an error while making the request.</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.UnauthorizedError.html#tecton_client.exceptions.UnauthorizedError" title="tecton_client.exceptions.UnauthorizedError"><strong>UnauthorizedError</strong></a> – If the response returned from the Tecton Server is 401 Unauthorized, it could be because
+    Tecton does not recognize the API Key in your request. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">API Key Documentation</a> for more information on how to create a Service Account with an API Key</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.ForbiddenError.html#tecton_client.exceptions.ForbiddenError" title="tecton_client.exceptions.ForbiddenError"><strong>ForbiddenError</strong></a> – If the response returned from the Tecton Server is 403 Forbidden, it could be because the
+    Service Account associated with your API Key does not have the necessary permissions to query
+    the feature service. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">Tecton Documentation</a> for more information.</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.NotFoundError.html#tecton_client.exceptions.NotFoundError" title="tecton_client.exceptions.NotFoundError"><strong>NotFoundError</strong></a> – If the response returned from the Tecton Server is 404 Not Found. Please check the exception
+    message for detailed information.</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.ResourcesExhaustedError.html#tecton_client.exceptions.ResourcesExhaustedError" title="tecton_client.exceptions.ResourcesExhaustedError"><strong>ResourcesExhaustedError</strong></a> – If the response returned from the Tecton Server is 429 Resources Exhausted. Please
+    check the exception message for detailed information.</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.ServiceUnavailableError.html#tecton_client.exceptions.ServiceUnavailableError" title="tecton_client.exceptions.ServiceUnavailableError"><strong>ServiceUnavailableError</strong></a> – If the response returned from the Tecton Server is 503 Service Unavailable, it
+    could be because Tecton is currently unable to process your request. Please retry later.</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.GatewayTimeoutError.html#tecton_client.exceptions.GatewayTimeoutError" title="tecton_client.exceptions.GatewayTimeoutError"><strong>GatewayTimeoutError</strong></a> – If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
+    that processing the request exceeded the 2 seconds timeout limit set by Tecton.
+    
+    For more detailed information on the errors, please refer to the error responses <a class="reference external" href="https://docs.tecton.ai/http-api#operation/GetFeaturesBatch">here</a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">get_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="generated/tecton_client.requests.GetFeaturesRequest.html#tecton_client.requests.GetFeaturesRequest" title="tecton_client.requests.GetFeaturesRequest"><span class="pre">GetFeaturesRequest</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse" title="tecton_client.responses.GetFeaturesResponse"><span class="pre">GetFeaturesResponse</span></a></span></span><a class="reference internal" href="_modules/tecton_client/tecton_client.html#TectonClient.get_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
 <dd><p>Makes a request to the /get-features endpoint and returns the response in the form of a
 <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code> object</p>
@@ -147,11 +207,13 @@ as a Python object.</p>
     2. An expected key is not found in the requestContextMap of the <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object
     3. Unexpected type for a key in the joinKeyMap passed in the <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object
     4. Unknown join key passed in the <code class="xref py py-class docutils literal notranslate"><span class="pre">GetFeaturesRequestData</span></code> object in the request</p></li>
-<li><p><a class="reference internal" href="generated/tecton_client.exceptions.UnauthorizedError.html#tecton_client.exceptions.UnauthorizedError" title="tecton_client.exceptions.UnauthorizedError"><strong>UnauthorizedError</strong></a> – If the response returned from the Tecton Server is 401 Unauthorized, it could be because
-    Tecton does not recognize the API Key in your request. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">API Key Documentation</a> for more information on how to create a Service Account with an API Key</p></li>
-<li><p><a class="reference internal" href="generated/tecton_client.exceptions.ForbiddenError.html#tecton_client.exceptions.ForbiddenError" title="tecton_client.exceptions.ForbiddenError"><strong>ForbiddenError</strong></a> – If the response returned from the Tecton Server is 403 Forbidden, it could be because the
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.UnauthorizedError.html#tecton_client.exceptions.UnauthorizedError" title="tecton_client.exceptions.UnauthorizedError"><strong>UnauthorizedError</strong></a> – <p>If the response returned from the Tecton Server is 401 Unauthorized, it could be because
+    Tecton does not recognize the API Key in your request. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">API Key Documentation</a> for more information on how to create a Service Account with an API Key</p>
+</p></li>
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.ForbiddenError.html#tecton_client.exceptions.ForbiddenError" title="tecton_client.exceptions.ForbiddenError"><strong>ForbiddenError</strong></a> – <p>If the response returned from the Tecton Server is 403 Forbidden, it could be because the
     Service Account associated with your API Key does not have the necessary permissions to query
-    the feature service. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">Tecton Documentation</a> for more information.</p></li>
+    the feature service. Please refer to the <a class="reference external" href="https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-to-the-http-api">Tecton Documentation</a> for more information.</p>
+</p></li>
 <li><p><a class="reference internal" href="generated/tecton_client.exceptions.NotFoundError.html#tecton_client.exceptions.NotFoundError" title="tecton_client.exceptions.NotFoundError"><strong>NotFoundError</strong></a> – If the response returned from the Tecton Server is 404 Not Found. Please check the exception
     message for detailed information.</p></li>
 <li><p><a class="reference internal" href="generated/tecton_client.exceptions.ResourcesExhaustedError.html#tecton_client.exceptions.ResourcesExhaustedError" title="tecton_client.exceptions.ResourcesExhaustedError"><strong>ResourcesExhaustedError</strong></a> – If the response returned from the Tecton Server is 429 Resources Exhausted. Some
@@ -161,10 +223,11 @@ as a Python object.</p>
         you may be requesting a hot key</p></li>
 <li><p><a class="reference internal" href="generated/tecton_client.exceptions.ServiceUnavailableError.html#tecton_client.exceptions.ServiceUnavailableError" title="tecton_client.exceptions.ServiceUnavailableError"><strong>ServiceUnavailableError</strong></a> – If the response returned from the Tecton Server is 503 Service Unavailable, it
     could be because Tecton is currently unable to process your request. Please retry later.</p></li>
-<li><p><a class="reference internal" href="generated/tecton_client.exceptions.GatewayTimeoutError.html#tecton_client.exceptions.GatewayTimeoutError" title="tecton_client.exceptions.GatewayTimeoutError"><strong>GatewayTimeoutError</strong></a> – If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
+<li><p><a class="reference internal" href="generated/tecton_client.exceptions.GatewayTimeoutError.html#tecton_client.exceptions.GatewayTimeoutError" title="tecton_client.exceptions.GatewayTimeoutError"><strong>GatewayTimeoutError</strong></a> – <p>If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates
     that processing the request exceeded the 2 seconds timeout limit set by Tecton.
     
-    For more detailed information on the errors, please refer to the error responses <a class="reference external" href="https://docs.tecton.ai/http-api#operation/GetFeatures">here</a>.</p></li>
+    For more detailed information on the errors, please refer to the error responses <a class="reference external" href="https://docs.tecton.ai/http-api#operation/GetFeatures">here</a>.</p>
+</p></li>
 </ul>
 </dd>
 </dl>
