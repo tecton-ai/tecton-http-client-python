@@ -116,7 +116,7 @@ class TectonClient:
                 the-http-api#creating-an-api-key-to-authenticate-to-the-http-api>`_ for more information.
             NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception
                 message for detailed information.
-            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Some
+            ResourceExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Some
                 of the possible reasons for the error are:
                 1. GetFeatures exceeded the concurrent request limit, please retry later
                 2. DynamoDB throttled the request. The request rate exceeds the AWS account's throughput limit, or
@@ -148,20 +148,22 @@ class TectonClient:
         Example:
             >>> tecton_client = TectonClient(url, api_key)
             >>> join_key_map = {"example_join_key": "example_join_value"}
-            >>> request_context_map = {"example_request_context": "example_string_value"}
-            >>> request_data = GetFeaturesRequestData(join_key_map, request_context_map)
+            >>> request_context_map_1 = {"example_request_context1": "example_string_value1"}
+            >>> request_context_map_2 = {"example_request_context2": "example_string_value2"}
+            >>> request_data_1 = GetFeaturesRequestData(join_key_map, request_context_map_1)
+            >>> request_data_2 = GetFeaturesRequestData(join_key_map, request_context_map_2)
             >>> batch_request = GetFeaturesBatchRequest(
             ...     feature_service_name="example_feature_service",
-            ...     request_data_list=[request_data, request_data],
+            ...     request_data_list=[request_data_1, request_data_2],
             ...     workspace_name="example_workspace",
-            ...     micro_batch_size=2
+            ...     micro_batch_size=1
             ... )
             >>> batch_response = tecton_client.get_features_batch(batch_request)
             `batch_response.response_list` returns a list of :class:`GetFeaturesResponse` objects representing a
             response for each request in the :class:`GetFeaturesBatchRequest` object.
             Each :class:`GetFeaturesResponse` object contains a dictionary of {feature_name: `FeatureValue`} pairs,
             which can be accessed using:
-            >>> for response in batch_response.response_list:
+            >>> for response in batch_response.batch_response_list:
             >>>     print([feature.feature_value for feature in response.feature_values.values()])
 
         Raises:
@@ -180,7 +182,7 @@ class TectonClient:
                 the-http-api#creating-an-api-key-to-authenticate-to-the-http-api>`_ for more information.
             NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception
                 message for detailed information.
-            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Please
+            ResourceExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Please
                 check the exception message for detailed information.
             ServiceUnavailableError: If the response returned from the Tecton Server is 503 Service Unavailable, it
                 could be because Tecton is currently unable to process your request. Please retry later.

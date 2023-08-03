@@ -100,7 +100,7 @@ class StructField:
         return self._data_type
 
     def __str__(self) -> str:
-        return f"Field({self._name}, {self._data_type})"
+        return f'Field("{self._name}", {self._data_type})'
 
 
 class StructType(DataType):

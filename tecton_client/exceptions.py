@@ -114,64 +114,43 @@ def INVALID_TYPE_KEY_VALUE(
 
 
 class BadRequestError(TectonServerException):
-    """Raised when the Tecton API returns a 400 Bad Request error.
-
-    Please refer to the message for more details on the error.
-    """
+    """Raised when the Tecton API returns a 400 Bad Request error."""
 
     STATUS_CODE = 400
 
 
 class UnauthorizedError(TectonServerException):
-    """Raised when the Tecton API returns a 401 Unauthorized error.
-
-    Please refer to the message for more details on the error.
-    """
+    """Raised when the Tecton API returns a 401 Unauthorized error."""
 
     STATUS_CODE = 401
 
 
 class ForbiddenError(TectonServerException):
-    """Raised when the Tecton API returns a 403 Forbidden error.
-
-    Please refer to the message for more details on the error.
-    """
+    """Raised when the Tecton API returns a 403 Forbidden error."""
 
     STATUS_CODE = 403
 
 
 class NotFoundError(TectonServerException):
-    """Raised when the Tecton API returns a 404 Not Found error.
-
-    Please refer to the message for more details on the error.
-    """
+    """Raised when the Tecton API returns a 404 Not Found error."""
 
     STATUS_CODE = 404
 
 
-class ResourcesExhaustedError(TectonServerException):
-    """Raised when the Tecton API returns a 429 Resources Exhausted error.
-
-    Please refer to the message for more details on the error.
-    """
+class ResourceExhaustedError(TectonServerException):
+    """Raised when the Tecton API returns a 429 Resources Exhausted error."""
 
     STATUS_CODE = 429
 
 
 class ServiceUnavailableError(TectonServerException):
-    """Raised when the Tecton API returns a 503 Service Unavailable error.
-
-    Please refer to the message for more details on the error.
-    """
+    """Raised when the Tecton API returns a 503 Service Unavailable error."""
 
     STATUS_CODE = 503
 
 
 class GatewayTimeoutError(TectonServerException):
-    """Raised when the Tecton API returns a 504 Gateway Timeout error.
-
-    Please refer to the message for more details on the error.
-    """
+    """Raised when the Tecton API returns a 504 Gateway Timeout error."""
 
     STATUS_CODE = 504
 

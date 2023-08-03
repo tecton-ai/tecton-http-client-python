@@ -168,6 +168,10 @@ class FeatureValue:
         self.data_type = get_data_type(data_type, element_type, fields)
         self.feature_value = Value(self.data_type, feature_value).value
 
+    def __str__(self) -> str:
+        """Return a string representation of the FeatureValue object."""
+        return f"{self.feature_namespace}.{self.feature_name}: {self.feature_value}"
+
 
 class SloIneligibilityReason(str, Enum):
     """Reasons due to which the Feature Serving Response may be ineligible for SLO."""
