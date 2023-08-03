@@ -209,37 +209,35 @@ class AbstractGetFeaturesRequest(TectonRequest):
         self.metadata_options = metadata_options.union(_defaults())
 
 
-def _request_to_json(
-    request: AbstractGetFeaturesRequest, fields_to_remove: List[str], is_batch_request: bool = False
-) -> dict:
-    """Returns a JSON representation of any :class:`AbstractGetFeaturesRequest` object as a dictionary.
+def _request_to_json(request: TectonRequest, fields_to_remove: List[str]) -> dict:
+    """Returns a JSON representation of any :class:`TectonRequest` object as a dictionary.
 
     Args:
-        request (AbstractGetFeaturesRequest): The :class:`AbstractGetFeaturesRequest` object to be converted to JSON.
+        request (TectonRequest): The :class:`TectonRequest` object to be converted to JSON.
         fields_to_remove (List[str]): List of fields to be removed from the JSON representation of the object.
-        is_batch_request (bool): Whether the request is a batch request or not. Defaults to False.
 
     Returns:
         dict: The JSON representation of the :class:`AbstractGetFeaturesRequest` object.
 
     """
     self_dict = {key: value for key, value in vars(request).items() if key not in fields_to_remove}
-    self_dict["metadata_options"] = (
-        {option.value: True for option in sorted(request.metadata_options, key=lambda x: x.value)}
-        if request.metadata_options
-        else {}
-    )
 
-    if is_batch_request:
-        self_dict["request_data"] = [
-            {k: v for k, v in vars(request_data).items() if v} for request_data in request.request_data
-        ]
-    else:
-        if request.request_data.join_key_map:
-            self_dict["join_key_map"] = request.request_data.join_key_map
-        if request.request_data.request_context_map:
-            self_dict["request_context_map"] = request.request_data.request_context_map
+    if isinstance(request, AbstractGetFeaturesRequest):
+        self_dict["metadata_options"] = (
+            {option.value: True for option in sorted(request.metadata_options, key=lambda x: x.value)}
+            if request.metadata_options
+            else {}
+        )
+        if isinstance(request, GetFeaturesRequest):
+            if request.request_data.join_key_map:
+                self_dict["join_key_map"] = request.request_data.join_key_map
+            if request.request_data.request_context_map:
+                self_dict["request_context_map"] = request.request_data.request_context_map
 
+        elif isinstance(request, GetFeaturesMicroBatchRequest):
+            self_dict["request_data"] = [
+                {k: v for k, v in vars(request_data).items() if v} for request_data in request.request_data
+            ]
     return {"params": self_dict}
 
 
@@ -321,7 +319,7 @@ class GetFeaturesMicroBatchRequest(AbstractGetFeaturesRequest):
 
     def to_json(self) -> dict:
         """Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object as a dictionary."""
-        return _request_to_json(self, fields_to_remove=["ENDPOINT"], is_batch_request=True)
+        return _request_to_json(self, fields_to_remove=["ENDPOINT"])
 
 
 @dataclass
@@ -445,3 +443,30 @@ class GetFeaturesBatchRequest(AbstractGetFeaturesRequest):
     def to_json_list(self) -> List[dict]:
         """Returns a list of JSON representations for requests in the object as a list of dictionaries."""
         return [request.to_json() for request in self.request_list]
+
+
+@dataclass
+class GetFeatureServiceMetadataRequest(TectonRequest):
+    """Class representing a request to the /feature-service-metadata endpoint.
+
+    Attributes:
+        ENDPOINT (str): Endpoint string for the feature-service/metadata API.
+
+    """
+
+    ENDPOINT: Final[str] = "/api/v1/feature-service/metadata"
+
+    def __init__(self, feature_service_name: str, workspace_name: str) -> None:
+        """Initializing the :class:`GetFeatureServiceMetadataRequest` object with the given parameters.
+
+        Args:
+            feature_service_name (str): Name of the Feature Service for which the metadata is being requested.
+            workspace_name (str): Name of the workspace in which the Feature Service is defined,
+                defaults to {DEFAULT_WORKSPACE_NAME}.
+
+        """
+        super().__init__(workspace_name=workspace_name, feature_service_name=feature_service_name)
+
+    def to_json(self) -> dict:
+        """Returns a JSON representation of the :class:`GetFeatureServiceMetadataRequest` object as a dictionary."""
+        return _request_to_json(self, fields_to_remove=["ENDPOINT"])

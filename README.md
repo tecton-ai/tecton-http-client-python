@@ -12,7 +12,7 @@ A simple Python client for the Feature Server HTTP API that helps customers inte
 
 * [Tecton Python Client API Reference](https://tecton-ai.github.io/tecton-http-client-python/html/index.html)
 
-[//]: # (* [Tecton Java Client Example Code]&#40;https://github.com/tecton-ai/TectonClientDemo/tree/main/src/main/java&#41;)
+* [Tecton Python Client Example Code](https://github.com/tecton-ai/tecton-http-client-python-demo/)
 
 
 ## Troubleshooting
@@ -21,72 +21,41 @@ A simple Python client for the Feature Server HTTP API that helps customers inte
 If you have any questions or need help, please [open an Issue](https://github.com/tecton-ai/tecton-http-client-python)
 or reach out to us on Slack!
 
-[//]: # ()
-[//]: # (## Contributing)
+## Installing the client
 
-[//]: # ()
-[//]: # (The Tecton Java client is open source and we welcome any contributions from our Tecton community.)
+The client can be installed using `pip`.
 
-[//]: # ()
-[//]: # (### Prerequisites)
+```bash
+pip install tecton-client
+```
 
-[//]: # ()
-[//]: # (* Java 8 or higher)
+The client can then be used as below:
 
-[//]: # (* Gradle)
 
-[//]: # (* [Google Java Format]&#40;https://github.com/google/google-java-format&#41; formatter &#40;can also use as a plugin in your IDE&#41;)
+```python
+tecton_client = TectonClient(url, api_key)
 
-[//]: # ()
-[//]: # (### Build the Project)
+get_features_request_data = GetFeaturesRequestData(
+    join_key_map={"user_id": "123", "merchant": "xyz"},
+    request_context_map={"amt": 500.00},
+)
 
-[//]: # ()
-[//]: # (The `tecton-http-client-java` project can be built using Gradle as follows:)
+get_features_request = GetFeaturesRequest(
+    workspace_name="<Your-workspace>",
+    feature_service_name="fraud_detection_feature_service",
+    request_data=get_features_request_data,
+)
 
-[//]: # ()
-[//]: # (`./gradlew clean build`)
+get_features_response = tecton_client.get_features(get_features_request)
 
-[//]: # ()
-[//]: # (## Basic end to end testing)
+print(
+    [feature.feature_value for feature in get_features_response.feature_values.values()]
+)
+```
 
-[//]: # ()
-[//]: # (In the demo client [repository]&#40;https://github.com/tecton-ai/TectonClientDemo&#41; update the `build.gradle` file with the)
-
-[//]: # (jar that you generate from this repo using `./gradlew clean build`.)
-
-[//]: # ()
-[//]: # (Change the dependencies target to this and point the files attribute to your java client jar:)
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # (dependencies {)
-
-[//]: # (    implementation files&#40;'libs/java-client-0.1.0-SNAPSHOT.jar'&#41;)
-
-[//]: # (    implementation 'com.google.code.gson:gson:2.2.4')
-
-[//]: # (    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0')
-
-[//]: # ()
-[//]: # (})
-
-[//]: # (```)
-
-[//]: # ()
-[//]: # (Update `tecton.properties` with your cluster url and run the Demo file to query the feature services needed.)
-
-[//]: # ()
-[//]: # (## Before Opening a PR)
-
-[//]: # ()
-[//]: # (* Please run pre-commit on your staged files to ensure that the changes are correctly formatted.)
-
-[//]: # (* Please run `./gradlew clean build` to ensure that your changes pass the build)
-
-[//]: # (* Please add unit tests if possible to test the new code changes)
+For more information, please refer to Tecton documentation on the Python Client Library.
 
 ## License
 
 The project is licensed
-under [Apache License 2.0](https://github.com/tecton-ai/tecton-http-client-java/blob/main/LICENSE.md)
+under [Apache License 2.0](https://github.com/tecton-ai/tecton-http-client-python/blob/main/LICENSE.md)
