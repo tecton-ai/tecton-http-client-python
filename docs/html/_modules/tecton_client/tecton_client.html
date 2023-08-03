@@ -42,6 +42,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client_options.html">Client Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../requests.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../responses.html">Responses</a></li>
@@ -84,8 +86,10 @@
 <span class="kn">from</span> <span class="nn">tecton_client.http_client</span> <span class="kn">import</span> <span class="n">HTTPRequest</span>
 <span class="kn">from</span> <span class="nn">tecton_client.http_client</span> <span class="kn">import</span> <span class="n">TectonHttpClient</span>
 <span class="kn">from</span> <span class="nn">tecton_client.requests</span> <span class="kn">import</span> <span class="n">GetFeaturesBatchRequest</span>
+<span class="kn">from</span> <span class="nn">tecton_client.requests</span> <span class="kn">import</span> <span class="n">GetFeatureServiceMetadataRequest</span>
 <span class="kn">from</span> <span class="nn">tecton_client.requests</span> <span class="kn">import</span> <span class="n">GetFeaturesRequest</span>
 <span class="kn">from</span> <span class="nn">tecton_client.responses</span> <span class="kn">import</span> <span class="n">GetFeaturesBatchResponse</span>
+<span class="kn">from</span> <span class="nn">tecton_client.responses</span> <span class="kn">import</span> <span class="n">GetFeatureServiceMetadataResponse</span>
 <span class="kn">from</span> <span class="nn">tecton_client.responses</span> <span class="kn">import</span> <span class="n">GetFeaturesResponse</span>
 <span class="kn">from</span> <span class="nn">tecton_client.utils</span> <span class="kn">import</span> <span class="n">asyncio_run</span>
 
@@ -272,6 +276,62 @@
         <span class="k">return</span> <span class="n">GetFeaturesBatchResponse</span><span class="p">(</span>
             <span class="n">responses_list</span><span class="o">=</span><span class="n">results</span><span class="p">,</span> <span class="n">request_latency</span><span class="o">=</span><span class="n">latency</span><span class="p">,</span> <span class="n">micro_batch_size</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">micro_batch_size</span>
         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="TectonClient.get_feature_service_metadata"><a class="viewcode-back" href="../../tecton_client.html#tecton_client.tecton_client.TectonClient.get_feature_service_metadata">[docs]</a>    <span class="k">def</span> <span class="nf">get_feature_service_metadata</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">GetFeatureServiceMetadataRequest</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetFeatureServiceMetadataResponse</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Makes a request to the /metadata endpoint and returns the response in the form of a</span>
+<span class="sd">        :class:`GetFeatureServiceMetadataResponse` object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            request (GetFeatureServiceMetadataRequest): The :class:`GetFeatureServiceMetadataRequest` object</span>
+<span class="sd">                with the request parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GetFeatureServiceMetadataResponse: The :class:`GetFeatureServiceMetadataResponse` object representing the</span>
+<span class="sd">                response from the HTTP API with the requested information.</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; tecton_client = TectonClient(url, api_key)</span>
+<span class="sd">            &gt;&gt;&gt; metadata_request = GetFeatureServiceMetadataRequest(</span>
+<span class="sd">            ...     feature_service_name=&quot;example_feature_service&quot;,</span>
+<span class="sd">            ...     workspace_name=&quot;example_workspace&quot;,</span>
+<span class="sd">            ... )</span>
+<span class="sd">            &gt;&gt;&gt; metadata_response = tecton_client.get_feature_service_metadata(metadata_request)</span>
+<span class="sd">            The `metadata_response` object contains the metadata information requested as different</span>
+<span class="sd">            fields of the object.</span>
+
+<span class="sd">            &gt;&gt;&gt; print(metadata_response.feature_values)</span>
+<span class="sd">            &gt;&gt;&gt; print(metadata_response.input_join_keys)</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TectonClientError: If the client encounters an error while making the request.</span>
+<span class="sd">            UnauthorizedError: If the response returned from the Tecton Server is 401 Unauthorized, it could be because</span>
+<span class="sd">                Tecton does not recognize the API Key in your request. Please refer to the `API Key Documentation</span>
+<span class="sd">                &lt;https://docs.tecton.ai/docs/beta/reading-feature-data/reading-feature-data-for-inference/\</span>
+<span class="sd">                reading-online-features-for-inference-using-the-http-api#creating-an-api-key-to-authenticate-\</span>
+<span class="sd">                to-the-http-api&gt;`_ for more information on how to create a Service Account with an API Key</span>
+<span class="sd">            ForbiddenError: If the response returned from the Tecton Server is 403 Forbidden, it could be because the</span>
+<span class="sd">                Service Account associated with your API Key does not have the necessary permissions to query</span>
+<span class="sd">                the feature service. Please refer to the `Tecton Documentation &lt;https://docs.tecton.ai/docs/beta/\</span>
+<span class="sd">                reading-feature-data/reading-feature-data-for-inference/reading-online-features-for-inference-using-\</span>
+<span class="sd">                the-http-api#creating-an-api-key-to-authenticate-to-the-http-api&gt;`_ for more information.</span>
+<span class="sd">            NotFoundError: If the response returned from the Tecton Server is 404 Not Found. Please check the exception</span>
+<span class="sd">                message for detailed information.</span>
+<span class="sd">            ResourcesExhaustedError: If the response returned from the Tecton Server is 429 Resources Exhausted. Please</span>
+<span class="sd">                check the exception message for detailed information.</span>
+<span class="sd">            ServiceUnavailableError: If the response returned from the Tecton Server is 503 Service Unavailable, it</span>
+<span class="sd">                could be because Tecton is currently unable to process your request. Please retry later.</span>
+<span class="sd">            GatewayTimeoutError: If the response returned from the Tecton Server is 504 Gateway Timeout, it indicates</span>
+<span class="sd">                that processing the request exceeded the 2 seconds timeout limit set by Tecton.</span>
+
+<span class="sd">                For more detailed information on the errors, please refer to the error responses `here</span>
+<span class="sd">                &lt;https://docs.tecton.ai/http-api#operation/GetFeaturesBatch&gt;`_.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">http_request</span> <span class="o">=</span> <span class="n">HTTPRequest</span><span class="p">(</span><span class="n">endpoint</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">ENDPOINT</span><span class="p">,</span> <span class="n">request_body</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+        <span class="n">http_response</span> <span class="o">=</span> <span class="n">asyncio_run</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tecton_http_client</span><span class="o">.</span><span class="n">execute_request</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="n">http_request</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">GetFeatureServiceMetadataResponse</span><span class="p">(</span><span class="n">http_response</span><span class="o">=</span><span class="n">http_response</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_closed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

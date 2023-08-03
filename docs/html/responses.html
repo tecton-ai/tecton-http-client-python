@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="tecton_client.responses.FeatureStatus" href="generated/tecton_client.responses.FeatureStatus.html" />
-    <link rel="prev" title="tecton_client.requests.GetFeaturesBatchRequest" href="generated/tecton_client.requests.GetFeaturesBatchRequest.html" /> 
+    <link rel="next" title="tecton_client.responses.FeatureServiceType" href="generated/tecton_client.responses.FeatureServiceType.html" />
+    <link rel="prev" title="tecton_client.requests.GetFeatureServiceMetadataRequest" href="generated/tecton_client.requests.GetFeatureServiceMetadataRequest.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,16 +45,20 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="client_options.html">Client Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exceptions.html">Exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requests.html">Requests</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Responses</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#tecton-client-responses-module">tecton_client.responses module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.FeatureServiceType.html">tecton_client.responses.FeatureServiceType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.FeatureStatus.html">tecton_client.responses.FeatureStatus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.FeatureValue.html">tecton_client.responses.FeatureValue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.SloInformation.html">tecton_client.responses.SloInformation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.SloIneligibilityReason.html">tecton_client.responses.SloIneligibilityReason</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesResponse.html">tecton_client.responses.GetFeaturesResponse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesBatchResponse.html">tecton_client.responses.GetFeaturesBatchResponse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/tecton_client.responses.GetFeatureServiceMetadataResponse.html">tecton_client.responses.GetFeatureServiceMetadataResponse</a></li>
 </ul>
 </li>
 </ul>
@@ -91,6 +95,25 @@
 <section id="tecton-client-responses-module">
 <h2>tecton_client.responses module<a class="headerlink" href="#tecton-client-responses-module" title="Permalink to this heading"></a></h2>
 <p>This module consists of classes that help represent the responses from the Tecton API.</p>
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">FeatureServiceType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#FeatureServiceType"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enum to represent the type of the feature service.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">DEFAULT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'DEFAULT'</span></em></dt>
+<dd><p>The feature service is a default feature service.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">WILDCARD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'WILDCARD'</span></em></dt>
+<dd><p>The feature service is a wildcard feature service.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">FeatureStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#FeatureStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
@@ -188,6 +211,72 @@ value as is in this response.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>datetime</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">GetFeatureServiceMetadataResponse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">http_response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HTTPResponse</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tecton_client/responses.html#GetFeatureServiceMetadataResponse"><span class="viewcode-link"><span class="pre">[source]</span></span></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Response object for GetFeatureServiceMetadata API call.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">feature_service_type</span></span></dt>
+<dd><p>The type of the feature service.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="generated/tecton_client.responses.FeatureServiceType.html#tecton_client.responses.FeatureServiceType" title="tecton_client.responses.FeatureServiceType">FeatureServiceType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">input_join_keys</span></span></dt>
+<dd><p>Dictionary of names mapping to <code class="xref py py-class docutils literal notranslate"><span class="pre">NameAndType</span></code> objects
+representing the input join keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, <a class="reference internal" href="generated/tecton_client.data_types.NameAndType.html#tecton_client.data_types.NameAndType" title="tecton_client.data_types.NameAndType">NameAndType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">input_request_context_keys</span></span></dt>
+<dd><p>Dictionary of names mapping to <code class="xref py py-class docutils literal notranslate"><span class="pre">NameAndType</span></code> objects
+representing the input request context keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, <a class="reference internal" href="generated/tecton_client.data_types.NameAndType.html#tecton_client.data_types.NameAndType" title="tecton_client.data_types.NameAndType">NameAndType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">feature_values</span></span></dt>
+<dd><p>Dictionary of names mapping to <code class="xref py py-class docutils literal notranslate"><span class="pre">NameAndType</span></code> objects
+representing the feature values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, <a class="reference internal" href="generated/tecton_client.data_types.NameAndType.html#tecton_client.data_types.NameAndType" title="tecton_client.data_types.NameAndType">NameAndType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">output_join_keys</span></span></dt>
+<dd><p>Dictionary of names mapping to <code class="xref py py-class docutils literal notranslate"><span class="pre">NameAndType</span></code> objects
+representing the output join keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, <a class="reference internal" href="generated/tecton_client.data_types.NameAndType.html#tecton_client.data_types.NameAndType" title="tecton_client.data_types.NameAndType">NameAndType</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -412,23 +501,29 @@ the feature was not SLO eligible. Only present if slo_eligible is False.</p>
 
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.FeatureStatus.html#tecton_client.responses.FeatureStatus" title="tecton_client.responses.FeatureStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureStatus</span></code></a>(value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.FeatureServiceType.html#tecton_client.responses.FeatureServiceType" title="tecton_client.responses.FeatureServiceType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureServiceType</span></code></a>(value)</p></td>
+<td><p>Enum to represent the type of the feature service.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.FeatureStatus.html#tecton_client.responses.FeatureStatus" title="tecton_client.responses.FeatureStatus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureStatus</span></code></a>(value)</p></td>
 <td><p>Enum to represent the serving status of a feature.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.FeatureValue.html#tecton_client.responses.FeatureValue" title="tecton_client.responses.FeatureValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureValue</span></code></a>(name, data_type, feature_value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.FeatureValue.html#tecton_client.responses.FeatureValue" title="tecton_client.responses.FeatureValue"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeatureValue</span></code></a>(name, data_type, feature_value)</p></td>
 <td><p>Class encapsulating all the data for a Feature value returned from a GetFeatures API call.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.SloInformation.html#tecton_client.responses.SloInformation" title="tecton_client.responses.SloInformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SloInformation</span></code></a>(slo_information)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.SloInformation.html#tecton_client.responses.SloInformation" title="tecton_client.responses.SloInformation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SloInformation</span></code></a>(slo_information)</p></td>
 <td><p>Class that represents SLO Information provided by Tecton when serving feature values.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.SloIneligibilityReason.html#tecton_client.responses.SloIneligibilityReason" title="tecton_client.responses.SloIneligibilityReason"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SloIneligibilityReason</span></code></a>(value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.SloIneligibilityReason.html#tecton_client.responses.SloIneligibilityReason" title="tecton_client.responses.SloIneligibilityReason"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SloIneligibilityReason</span></code></a>(value)</p></td>
 <td><p>Reasons due to which the Feature Serving Response may be ineligible for SLO.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse" title="tecton_client.responses.GetFeaturesResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code></a>([http_response, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesResponse.html#tecton_client.responses.GetFeaturesResponse" title="tecton_client.responses.GetFeaturesResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesResponse</span></code></a>([http_response, ...])</p></td>
 <td><p>Response object for GetFeatures API call.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesBatchResponse.html#tecton_client.responses.GetFeaturesBatchResponse" title="tecton_client.responses.GetFeaturesBatchResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesBatchResponse</span></code></a>(responses_list, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/tecton_client.responses.GetFeaturesBatchResponse.html#tecton_client.responses.GetFeaturesBatchResponse" title="tecton_client.responses.GetFeaturesBatchResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeaturesBatchResponse</span></code></a>(responses_list, ...)</p></td>
 <td><p>A class that represents the response from the HTTP API when fetching batch features.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/tecton_client.responses.GetFeatureServiceMetadataResponse.html#tecton_client.responses.GetFeatureServiceMetadataResponse" title="tecton_client.responses.GetFeatureServiceMetadataResponse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GetFeatureServiceMetadataResponse</span></code></a>(http_response)</p></td>
+<td><p>Response object for GetFeatureServiceMetadata API call.</p></td>
 </tr>
 </tbody>
 </table>
@@ -439,8 +534,8 @@ the feature was not SLO eligible. Only present if slo_eligible is False.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="generated/tecton_client.requests.GetFeaturesBatchRequest.html" class="btn btn-neutral float-left" title="tecton_client.requests.GetFeaturesBatchRequest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="generated/tecton_client.responses.FeatureStatus.html" class="btn btn-neutral float-right" title="tecton_client.responses.FeatureStatus" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="generated/tecton_client.requests.GetFeatureServiceMetadataRequest.html" class="btn btn-neutral float-left" title="tecton_client.requests.GetFeatureServiceMetadataRequest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/tecton_client.responses.FeatureServiceType.html" class="btn btn-neutral float-right" title="tecton_client.responses.FeatureServiceType" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

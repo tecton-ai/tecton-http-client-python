@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tecton_client.responses.SloIneligibilityReason &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
+  <title>tecton_client.responses.FeatureServiceType &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tecton_client.responses.GetFeaturesResponse" href="tecton_client.responses.GetFeaturesResponse.html" />
-    <link rel="prev" title="tecton_client.responses.SloInformation" href="tecton_client.responses.SloInformation.html" /> 
+    <link rel="next" title="tecton_client.responses.FeatureStatus" href="tecton_client.responses.FeatureStatus.html" />
+    <link rel="prev" title="Responses" href="../responses.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,15 +51,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../requests.html">Requests</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../responses.html">Responses</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../responses.html#tecton-client-responses-module">tecton_client.responses module</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tecton_client.responses.FeatureServiceType</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.FeatureServiceType"><code class="docutils literal notranslate"><span class="pre">FeatureServiceType</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.responses.FeatureStatus.html">tecton_client.responses.FeatureStatus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.responses.FeatureValue.html">tecton_client.responses.FeatureValue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.responses.SloInformation.html">tecton_client.responses.SloInformation</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">tecton_client.responses.SloIneligibilityReason</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#tecton_client.responses.SloIneligibilityReason"><code class="docutils literal notranslate"><span class="pre">SloIneligibilityReason</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="tecton_client.responses.SloIneligibilityReason.html">tecton_client.responses.SloIneligibilityReason</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.responses.GetFeaturesResponse.html">tecton_client.responses.GetFeaturesResponse</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.responses.GetFeaturesBatchResponse.html">tecton_client.responses.GetFeaturesBatchResponse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tecton_client.responses.GetFeatureServiceMetadataResponse.html">tecton_client.responses.GetFeatureServiceMetadataResponse</a></li>
 </ul>
 </li>
 </ul>
@@ -82,9 +84,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../responses.html">Responses</a></li>
-      <li class="breadcrumb-item active">tecton_client.responses.SloIneligibilityReason</li>
+      <li class="breadcrumb-item active">tecton_client.responses.FeatureServiceType</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/generated/tecton_client.responses.SloIneligibilityReason.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/generated/tecton_client.responses.FeatureServiceType.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -92,31 +94,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tecton-client-responses-sloineligibilityreason">
-<h1>tecton_client.responses.SloIneligibilityReason<a class="headerlink" href="#tecton-client-responses-sloineligibilityreason" title="Permalink to this heading"></a></h1>
+  <section id="tecton-client-responses-featureservicetype">
+<h1>tecton_client.responses.FeatureServiceType<a class="headerlink" href="#tecton-client-responses-featureservicetype" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="tecton_client.responses.SloIneligibilityReason">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">SloIneligibilityReason</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tecton_client/responses.html#SloIneligibilityReason"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.responses.SloIneligibilityReason" title="Permalink to this definition"></a></dt>
-<dd><p>Reasons due to which the Feature Serving Response may be ineligible for SLO.</p>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureServiceType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.responses.</span></span><span class="sig-name descname"><span class="pre">FeatureServiceType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tecton_client/responses.html#FeatureServiceType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.responses.FeatureServiceType" title="Permalink to this definition"></a></dt>
+<dd><p>Enum to represent the type of the feature service.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="tecton_client.responses.SloIneligibilityReason.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tecton_client.responses.SloIneligibilityReason.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="tecton_client.responses.FeatureServiceType.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tecton_client.responses.FeatureServiceType.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNKNOWN</span></code></p></td>
-<td><p>Reason is unknown.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFAULT</span></code></p></td>
+<td><p>The feature service is a default feature service.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DYNAMODB_RESPONSE_SIZE_LIMIT_EXCEEDED</span></code></p></td>
-<td><p>The 2MiB limit for DynamoDB response size was exceeded.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">REDIS_RESPONSE_SIZE_LIMIT_EXCEEDED</span></code></p></td>
-<td><p>The 2MiB limit for Redis response size was exceeded.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">REDIS_LATENCY_LIMIT_EXCEEDED</span></code></p></td>
-<td><p>The 25ms limit for Redis retrieval latency was exceeded.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">WILDCARD</span></code></p></td>
+<td><p>The feature service is a wildcard feature service.</p></td>
 </tr>
 </tbody>
 </table>
@@ -128,8 +124,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tecton_client.responses.SloInformation.html" class="btn btn-neutral float-left" title="tecton_client.responses.SloInformation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tecton_client.responses.GetFeaturesResponse.html" class="btn btn-neutral float-right" title="tecton_client.responses.GetFeaturesResponse" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../responses.html" class="btn btn-neutral float-left" title="Responses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tecton_client.responses.FeatureStatus.html" class="btn btn-neutral float-right" title="tecton_client.responses.FeatureStatus" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

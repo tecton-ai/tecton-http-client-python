@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tecton_client.data_types.BoolType &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
+  <title>tecton_client.data_types.NameAndType &mdash; Tecton HTTP API Client Python 0.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tecton_client.data_types.ArrayType" href="tecton_client.data_types.ArrayType.html" />
-    <link rel="prev" title="tecton_client.data_types.StringType" href="tecton_client.data_types.StringType.html" /> 
+    <link rel="next" title="Client Options" href="../client_options.html" />
+    <link rel="prev" title="tecton_client.data_types.StructType" href="tecton_client.data_types.StructType.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,13 +50,14 @@
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.data_types.IntType.html">tecton_client.data_types.IntType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.data_types.FloatType.html">tecton_client.data_types.FloatType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.data_types.StringType.html">tecton_client.data_types.StringType</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">tecton_client.data_types.BoolType</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#tecton_client.data_types.BoolType"><code class="docutils literal notranslate"><span class="pre">BoolType</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="tecton_client.data_types.BoolType.html">tecton_client.data_types.BoolType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.data_types.ArrayType.html">tecton_client.data_types.ArrayType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.data_types.StructField.html">tecton_client.data_types.StructField</a></li>
 <li class="toctree-l3"><a class="reference internal" href="tecton_client.data_types.StructType.html">tecton_client.data_types.StructType</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">tecton_client.data_types.NameAndType</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tecton_client.data_types.NameAndType"><code class="docutils literal notranslate"><span class="pre">NameAndType</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -84,9 +85,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../data_types.html">Data Types</a></li>
-      <li class="breadcrumb-item active">tecton_client.data_types.BoolType</li>
+      <li class="breadcrumb-item active">tecton_client.data_types.NameAndType</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/generated/tecton_client.data_types.BoolType.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/generated/tecton_client.data_types.NameAndType.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -94,21 +95,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tecton-client-data-types-booltype">
-<h1>tecton_client.data_types.BoolType<a class="headerlink" href="#tecton-client-data-types-booltype" title="Permalink to this heading"></a></h1>
+  <section id="tecton-client-data-types-nameandtype">
+<h1>tecton_client.data_types.NameAndType<a class="headerlink" href="#tecton-client-data-types-nameandtype" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="tecton_client.data_types.BoolType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.data_types.</span></span><span class="sig-name descname"><span class="pre">BoolType</span></span><a class="reference internal" href="../_modules/tecton_client/data_types.html#BoolType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.data_types.BoolType" title="Permalink to this definition"></a></dt>
-<dd><p>Class to represent datatype Boolean.</p>
+<dt class="sig sig-object py" id="tecton_client.data_types.NameAndType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tecton_client.data_types.</span></span><span class="sig-name descname"><span class="pre">NameAndType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tecton_client.data_types.DataType.html#tecton_client.data_types.DataType" title="tecton_client.data_types.DataType"><span class="pre">DataType</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/tecton_client/data_types.html#NameAndType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tecton_client.data_types.NameAndType" title="Permalink to this definition"></a></dt>
+<dd><p>Class to represent a name and data type pair.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="tecton_client.data_types.BoolType.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tecton_client.data_types.BoolType.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="tecton_client.data_types.NameAndType.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="tecton_client.data_types.DataType.html#tecton_client.data_types.DataType" title="tecton_client.data_types.DataType"><span class="pre">DataType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#tecton_client.data_types.NameAndType.__init__" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tecton_client.data_types.BoolType.__init__" title="tecton_client.data_types.BoolType.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tecton_client.data_types.NameAndType.__init__" title="tecton_client.data_types.NameAndType.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(name, data_type)</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_type</span></code></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -121,8 +133,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tecton_client.data_types.StringType.html" class="btn btn-neutral float-left" title="tecton_client.data_types.StringType" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tecton_client.data_types.ArrayType.html" class="btn btn-neutral float-right" title="tecton_client.data_types.ArrayType" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tecton_client.data_types.StructType.html" class="btn btn-neutral float-left" title="tecton_client.data_types.StructType" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../client_options.html" class="btn btn-neutral float-right" title="Client Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

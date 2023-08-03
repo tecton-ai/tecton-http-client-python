@@ -42,6 +42,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../data_types.html">Data Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../client_options.html">Client Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">Exceptions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../requests.html">Requests</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../responses.html">Responses</a></li>
@@ -286,37 +288,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata_options</span> <span class="o">=</span> <span class="n">metadata_options</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">_defaults</span><span class="p">())</span>
 
 
-<span class="k">def</span> <span class="nf">_request_to_json</span><span class="p">(</span>
-    <span class="n">request</span><span class="p">:</span> <span class="n">AbstractGetFeaturesRequest</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">is_batch_request</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of any :class:`AbstractGetFeaturesRequest` object as a dictionary.</span>
+<span class="k">def</span> <span class="nf">_request_to_json</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">TectonRequest</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of any :class:`TectonRequest` object as a dictionary.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        request (AbstractGetFeaturesRequest): The :class:`AbstractGetFeaturesRequest` object to be converted to JSON.</span>
+<span class="sd">        request (TectonRequest): The :class:`TectonRequest` object to be converted to JSON.</span>
 <span class="sd">        fields_to_remove (List[str]): List of fields to be removed from the JSON representation of the object.</span>
-<span class="sd">        is_batch_request (bool): Whether the request is a batch request or not. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: The JSON representation of the :class:`AbstractGetFeaturesRequest` object.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">self_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">request</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields_to_remove</span><span class="p">}</span>
-    <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;metadata_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)}</span>
-        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">metadata_options</span>
-        <span class="k">else</span> <span class="p">{}</span>
-    <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">is_batch_request</span><span class="p">:</span>
-        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">request_data</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span>
-        <span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span><span class="p">:</span>
-            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;join_key_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span>
-        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span><span class="p">:</span>
-            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_context_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">AbstractGetFeaturesRequest</span><span class="p">):</span>
+        <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;metadata_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">{</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="kc">True</span> <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">metadata_options</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)}</span>
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">metadata_options</span>
+            <span class="k">else</span> <span class="p">{}</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">GetFeaturesRequest</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span><span class="p">:</span>
+                <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;join_key_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">join_key_map</span>
+            <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span><span class="p">:</span>
+                <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_context_map&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span><span class="o">.</span><span class="n">request_context_map</span>
 
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">GetFeaturesMicroBatchRequest</span><span class="p">):</span>
+            <span class="n">self_dict</span><span class="p">[</span><span class="s2">&quot;request_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="p">}</span> <span class="k">for</span> <span class="n">request_data</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">request_data</span>
+            <span class="p">]</span>
     <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">self_dict</span><span class="p">}</span>
 
 
@@ -398,7 +398,7 @@
 
     <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeaturesMicroBatchRequest` object as a dictionary.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_request_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">],</span> <span class="n">is_batch_request</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_request_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">])</span>
 
 
 <div class="viewcode-block" id="GetFeaturesBatchRequest"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesBatchRequest">[docs]</a><span class="nd">@dataclass</span>
@@ -522,6 +522,33 @@
 <div class="viewcode-block" id="GetFeaturesBatchRequest.to_json_list"><a class="viewcode-back" href="../../requests.html#tecton_client.requests.GetFeaturesBatchRequest.to_json_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_json_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of JSON representations for requests in the object as a list of dictionaries.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">to_json</span><span class="p">()</span> <span class="k">for</span> <span class="n">request</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_list</span><span class="p">]</span></div></div>
+
+
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">GetFeatureServiceMetadataRequest</span><span class="p">(</span><span class="n">TectonRequest</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a request to the /feature-service-metadata endpoint.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        ENDPOINT (str): Endpoint string for the feature-service/metadata API.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ENDPOINT</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;/api/v1/feature-service/metadata&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">workspace_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializing the :class:`GetFeatureServiceMetadataRequest` object with the given parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            feature_service_name (str): Name of the Feature Service for which the metadata is being requested.</span>
+<span class="sd">            workspace_name (str): Name of the workspace in which the Feature Service is defined,</span>
+<span class="sd">                defaults to {DEFAULT_WORKSPACE_NAME}.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">workspace_name</span><span class="o">=</span><span class="n">workspace_name</span><span class="p">,</span> <span class="n">feature_service_name</span><span class="o">=</span><span class="n">feature_service_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a JSON representation of the :class:`GetFeatureServiceMetadataRequest` object as a dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_request_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fields_to_remove</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ENDPOINT&quot;</span><span class="p">])</span>
 </pre></div>
 
            </div>

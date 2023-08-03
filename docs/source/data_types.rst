@@ -21,3 +21,4 @@ tecton\_client.data\_types module
     ArrayType
     StructField
     StructType
+    NameAndType
