@@ -55,7 +55,7 @@
             "type": "string"
           }
         },
-        "status": "CACHED"
+        "status": "PRESENT"
       }
     ],
     "sloInfo": {

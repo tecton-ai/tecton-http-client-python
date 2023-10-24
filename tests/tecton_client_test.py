@@ -98,7 +98,7 @@ class TestTectonClient:
         (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00"),
         (IntType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
         (FloatType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
-        (ArrayType, FeatureStatus.CACHED, "2023-05-03T00:00:00"),
+        (ArrayType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
     ]
     expected_slo_info = {
         "dynamodb_response_size_bytes": None,
