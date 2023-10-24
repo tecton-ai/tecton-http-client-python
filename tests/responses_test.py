@@ -102,7 +102,7 @@ class TestResponse:
                     (FloatType, FeatureStatus.MISSING_DATA, "2023-05-03T00:00:00"),
                     (IntType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
                     (FloatType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
-                    (ArrayType, FeatureStatus.PRESENT, "2023-05-03T00:00:00"),
+                    (ArrayType, FeatureStatus.CACHED, "2023-05-03T00:00:00"),
                 ],
             )
         ],

@@ -102,6 +102,9 @@ class FeatureStatus(str, Enum):
     """The feature values were not found in the online store either because the join keys do not exist
     or the feature values are outside ttl."""
 
+    CACHED = "CACHED"
+    """The feature values were cached in the backend and retrieved from the cache."""
+
     UNKNOWN = "UNKNOWN"
     """An unknown status code occurred, most likely because an error occurred during feature retrieval."""
 
