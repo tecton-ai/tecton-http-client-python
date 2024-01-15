@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 
 import pytest
 from aioresponses import aioresponses
+from aioresponses.core import CallbackResult
 
 from tecton_client.exceptions import InvalidParameterError
 from tecton_client.exceptions import InvalidURLError
@@ -199,35 +200,47 @@ class TestHttpClient:
     @pytest.mark.asyncio
     @pytest.mark.parametrize("number_of_requests", [10, 50])
     async def test_parallel_requests_partial(self, mocked: aioresponses, number_of_requests: int) -> None:
-        for i in range(number_of_requests // 2):
-            mocked.post(
-                url=self.full_url,
-                payload={
-                    "result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}
-                },
-            )
-
-        async def delayed_callback(request_url: str, **kwargs: Union[str, bool, dict]) -> dict:
+        async def conditional_callback(request_url: str, **kwargs: Union[str, bool, dict]) -> dict:
             # This is the function that sends a mock response when the client sends a request
             # Here, `**kwargs` represents information such as the request data, headers etc. needed to parse a request
-            await asyncio.sleep(2)
-            return {"result": {"features": ["1", 11292.571748310578, "other", 35.6336, -99.2427, None, "5", "25"]}}
-
+            if kwargs["json"]["params"]["request_context_map"]["amt"] % 2 == 0:
+                await asyncio.sleep(2)
+            return CallbackResult(
+                status=200,
+                payload={
+                    "result": {
+                        "features": [
+                            "1",
+                            kwargs["json"]["params"]["request_context_map"]["amt"],
+                            "other",
+                            35.6336,
+                            -99.2427,
+                            None,
+                            "5",
+                            "25"
+                        ]
+                    }
+                }
+            )
         mocked.post(
             url=self.full_url,
-            callback=delayed_callback,
+            callback=conditional_callback,
             repeat=True,
-        )
+        )                
 
-        requests_list = [self.request] * number_of_requests
+        requests_list = []
+        for i in range(number_of_requests):
+            requests_list.append({"params": {"request_context_map": {"merch_long": 35.0, "amt": i, "merch_lat": 30.0}}})
         responses_list, latency = await self.http_client.execute_parallel_requests(
-            self.endpoint, requests_list, timedelta(seconds=1)
-        )
+            self.endpoint, requests_list, timedelta(seconds=1))
         assert len(responses_list) == len(requests_list)
+        assert latency < timedelta(seconds=1.5)
         assert all(isinstance(response.result, dict) for response in responses_list if response)
-
-        # Check whether half of the responses sent have timed out and returned None
-        assert responses_list.count(None) == len(requests_list) // 2
+        for i in range(number_of_requests):
+            if i % 2 == 0:
+                assert responses_list[i] is None
+            else:
+                assert responses_list[i].result == {"result":{"features": ["1", i, "other", 35.6336, -99.2427, None, "5", "25"]}}
 
     @pytest.mark.asyncio
     async def pytest_sessionfinish(self) -> None:
