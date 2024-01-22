@@ -178,9 +178,7 @@ class TectonHttpClient:
 
         # Execute the tasks in parallel and wait for them to complete or timeout
         start_time = time.time()
-
-        task_results = await asyncio.gather(*tasks,timeout=timeout, return_exceptions=True)
-
+        task_results = await asyncio.gather([asyncio.wait_for(task, timeout.total_seconds() if timeout else timeout) for task in tasks], return_exceptions=True)
         end_time = time.time()
 
         # Calculate the latency of the request
