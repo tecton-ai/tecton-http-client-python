@@ -178,31 +178,28 @@ class TectonHttpClient:
 
         # Execute the tasks in parallel and wait for them to complete or timeout
         start_time = time.time()
-        task_results = await asyncio.gather([asyncio.wait_for(task, timeout.total_seconds() if timeout else timeout) for task in tasks], return_exceptions=True)
+        done, pending = await asyncio.wait(tasks, timeout=timeout.total_seconds() if timeout else timeout)
         end_time = time.time()
 
         # Calculate the latency of the request
         latency = timedelta(seconds=(end_time - start_time))
 
-        # Capture results of the tasks:-
-        # If the task is in the done list, it either completes successfully or returns an exception from the server.
-        # If the task is successful, i.e. without an exception, return the result.
-        # Else, store None in case the task returned an exception or timed out.
-        results = [res if not isinstance(res, Exception) else None for res in task_results]
-
         # Get the list of exceptions thrown by the HTTP client
         thrown_exceptions = None
-        for res in task_results:
-            if isinstance(res, Exception):
-                thrown_exceptions = res
-                break
+        # Capture results of the tasks:-
+        # If the task is successful, i.e. without an exception, return the result.
+        # Else, store None in case the task returned an exception or timed out.
+        results = [task.result() if task in done and not task.exception() else None for task in tasks]
+
+        # Get the list of exceptions thrown by the HTTP client
+        thrown_exceptions = [task.exception() for task in done if task.exception()]
 
         # Close all the created tasks
         await self._close_tasks(tasks=pending)
 
         # If there are any exceptions thrown by the HTTP client, raise the first exception
         if thrown_exceptions:
-            raise thrown_exceptions
+            raise thrown_exceptions[0]
 
         return results, latency
 
