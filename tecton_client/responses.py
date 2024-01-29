@@ -449,7 +449,7 @@ class GetFeaturesBatchResponse:
         # For each micro-batch response, get each response object from the list of responses if it exists
         for micro_batch_response in micro_batch_response_list:
             if micro_batch_response:
-                self.batch_response_list+=micro_batch_response.response_list
+                self.batch_response_list += micro_batch_response.response_list
             else:
                 self.batch_response_list.append(None)
 
