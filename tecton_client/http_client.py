@@ -184,9 +184,8 @@ class TectonHttpClient:
         # Calculate the latency of the request
         latency = timedelta(seconds=(end_time - start_time))
 
-        # Get the list of exceptions thrown by the HTTP client
-        thrown_exceptions = None
         # Capture results of the tasks:-
+        # If the task is in the done list, it either completes successfully or returns an exception from the server.
         # If the task is successful, i.e. without an exception, return the result.
         # Else, store None in case the task returned an exception or timed out.
         results = [task.result() if task in done and not task.exception() else None for task in tasks]

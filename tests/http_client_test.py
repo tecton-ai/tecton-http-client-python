@@ -226,7 +226,7 @@ class TestHttpClient:
             url=self.full_url,
             callback=conditional_callback,
             repeat=True,
-        )                
+        )
 
         requests_list = []
         for i in range(number_of_requests):
