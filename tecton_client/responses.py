@@ -445,16 +445,13 @@ class GetFeaturesBatchResponse:
             else response
             for response in responses_list
         ]
-
+        self.batch_response_list = []
         # For each micro-batch response, get each response object from the list of responses if it exists
-        self.batch_response_list = [
-            response
-            for micro_batch_response in micro_batch_response_list
-            if micro_batch_response
-            for response in micro_batch_response.response_list
-        ]
-        # If the micro-batch response is None (i.e. the request timed out), add None to the batch response list
-        self.batch_response_list += [None] * micro_batch_response_list.count(None) * micro_batch_size
+        for micro_batch_response in micro_batch_response_list:
+            if micro_batch_response:
+                self.batch_response_list += micro_batch_response.response_list
+            else:
+                self.batch_response_list.append(None)
 
         batch_slo_info_list = [
             response.batch_slo_info for response in micro_batch_response_list if response and response.batch_slo_info
