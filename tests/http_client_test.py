@@ -217,11 +217,12 @@ class TestHttpClient:
                             -99.2427,
                             None,
                             "5",
-                            "25"
+                            "25",
                         ]
                     }
-                }
+                },
             )
+
         mocked.post(
             url=self.full_url,
             callback=conditional_callback,
@@ -232,7 +233,8 @@ class TestHttpClient:
         for i in range(number_of_requests):
             requests_list.append({"params": {"request_context_map": {"merch_long": 35.0, "amt": i, "merch_lat": 30.0}}})
         responses_list, latency = await self.http_client.execute_parallel_requests(
-            self.endpoint, requests_list, timedelta(seconds=1))
+            self.endpoint, requests_list, timedelta(seconds=1)
+        )
         assert len(responses_list) == len(requests_list)
         assert latency < timedelta(seconds=1.5)
         assert all(isinstance(response.result, dict) for response in responses_list if response)
@@ -240,7 +242,9 @@ class TestHttpClient:
             if i % 2 == 0:
                 assert responses_list[i] is None
             else:
-                assert responses_list[i].result == {"result":{"features": ["1", i, "other", 35.6336, -99.2427, None, "5", "25"]}}
+                assert responses_list[i].result == {
+                    "result": {"features": ["1", i, "other", 35.6336, -99.2427, None, "5", "25"]}
+                }
 
     @pytest.mark.asyncio
     async def pytest_sessionfinish(self) -> None:

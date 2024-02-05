@@ -170,9 +170,35 @@ class TestResponse:
 
     def test_batch_responses_with_timeout_micro_batch_1(self) -> None:
         http_responses_list = [
-            HTTPResponse(result={'result': {'features': [True]}, 'metadata': {'features': [{'name': 'transaction_amount_is_high.transaction_amount_is_high', 'dataType': {'type': 'boolean'}}]}}, latency=timedelta(milliseconds=10)),
+            HTTPResponse(
+                result={
+                    "result": {"features": [True]},
+                    "metadata": {
+                        "features": [
+                            {
+                                "name": "transaction_amount_is_high.transaction_amount_is_high",
+                                "dataType": {"type": "boolean"},
+                            }
+                        ]
+                    },
+                },
+                latency=timedelta(milliseconds=10),
+            ),
             None,
-            HTTPResponse(result={'result': {'features': [True]}, 'metadata': {'features': [{'name': 'transaction_amount_is_high.transaction_amount_is_high', 'dataType': {'type': 'boolean'}}]}}, latency=timedelta(milliseconds=10)),
+            HTTPResponse(
+                result={
+                    "result": {"features": [True]},
+                    "metadata": {
+                        "features": [
+                            {
+                                "name": "transaction_amount_is_high.transaction_amount_is_high",
+                                "dataType": {"type": "boolean"},
+                            }
+                        ]
+                    },
+                },
+                latency=timedelta(milliseconds=10),
+            ),
             None,
         ]
         batch_response = GetFeaturesBatchResponse(
@@ -181,7 +207,7 @@ class TestResponse:
         assert batch_response.batch_slo_info is None
         assert batch_response.request_latency == timedelta(milliseconds=10)
         for i in range(2):
-            assert batch_response.batch_response_list[2*i + 1] is None
+            assert batch_response.batch_response_list[2 * i + 1] is None
 
     @pytest.mark.parametrize(
         "file_names_list, micro_batch_size, number_of_responses, feature_vector_len, feature_name, order_of_responses",
