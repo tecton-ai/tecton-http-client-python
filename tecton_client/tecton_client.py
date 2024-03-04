@@ -270,3 +270,6 @@ class TectonClient:
 
         """
         asyncio_run(self._tecton_http_client.close())
+
+    def __del__(self):
+        self.close()
