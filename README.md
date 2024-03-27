@@ -33,24 +33,22 @@ The client can then be used as below:
 
 
 ```python
-tecton_client = TectonClient(url, api_key)
+from tecton_client import TectonClient
 
-get_features_request_data = GetFeaturesRequestData(
-    join_key_map={"user_id": "123", "merchant": "xyz"},
-    request_context_map={"amt": 500.00},
-)
+url = 'https://explore.tecton.ai/'
+workspace = 'prod'
+api_key = 'my-secret-key'
 
-get_features_request = GetFeaturesRequest(
-    workspace_name="<Your-workspace>",
-    feature_service_name="fraud_detection_feature_service",
-    request_data=get_features_request_data,
-)
+client1 = TectonClient(url=url,
+                       default_workspace_name=workspace,
+                       api_key=api_key)
 
-get_features_response = tecton_client.get_features(get_features_request)
+resp = client1.get_features(feature_service_name="fraud_detection_feature_service:v2",
+                             join_key_map={"user_id": "user_4407104885"},
+                             request_context_map={"amount": 500.00}
+                             )
 
-print(
-    [feature.feature_value for feature in get_features_response.feature_values.values()]
-)
+print(resp.result.features)
 ```
 
 For more information, please refer to Tecton documentation on the Python Client Library.
