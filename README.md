@@ -52,6 +52,27 @@ print(resp.result.features)
 
 For more information, please refer to Tecton documentation on the Python Client Library.
 
+## Filing Issues and Feature Requests
+
+### Python Client Issues
+If you encounter a problem specifically related to the Python client, we encourage you to file a bug report on our GitHub repository. To do so, please follow these steps:
+
+1. [File a new Github Issue](https://github.com/tecton-ai/tecton-http-client-python/issues/new/choose)
+2. Choose the correct template (Feature Request or Bug Report)
+3. Provide a clear and descriptive title for the issue.
+4. In the issue description, include the following details:
+   - Description of the problem.
+   - Steps to reproduce the issue.
+   - Any relevant error messages or stack traces.
+   - Versions of Python and the Python client you are using.
+
+### System-wide or Uncertain Issues
+If you're experiencing an issue that seems broader and may involve other components of the system, or if you're unsure about the source of the problem, we recommend following the instructions outlined in our [support documentation](https://docs.tecton.ai/creating-a-tecton-support-ticket). This will ensure that your concern is properly addressed by our support team.
+
+Please provide as much detail as possible when filing a support ticket to help us understand and resolve the issue efficiently.
+
+Thank you for helping us improve our platform!
+
 ## Contributing
 
 If you would like to contribute to the client, see [CONTRIBUTING.md](CONTRIBUTING.md)
