@@ -3,16 +3,13 @@ import json
 import httpx
 
 
-class TectonException(Exception):
-    """Base class for all Tecton specific exceptions."""
-
-
-class TectonHttpException(TectonException):
+class TectonHttpException(Exception):
     """Base class for exceptions raised when the Tecton API returns an error response."""
 
     STATUS_CODE = 0
 
-    def __init__(self, status_code, reason_phrase, message):
+    def __init__(self, status_code: int, reason_phrase: str, message: str):
+        """Create a TectonHttpException"""
         self.status_code: int
         self.message = f"{status_code} {reason_phrase}: {message}"
         super().__init__(self.message)
@@ -63,13 +60,14 @@ class GatewayTimeoutError(TectonHttpException):
 _HTTP_ERRORS: dict = {error.STATUS_CODE: error for error in TectonHttpException.__subclasses__()}
 
 
-def convert_exception(httpx_exception):
+def convert_exception(httpx_exception: httpx.HTTPStatusError) -> TectonHttpException:
+    """Convert a httpx.HTTPStatusError into a TectonHttpException for better message formatting"""
     status_code = httpx_exception.response.status_code
     exception_class = _HTTP_ERRORS.get(status_code)
     if exception_class:
-        message = json.loads(httpx_exception.response.content).get('message')
-        return NotFoundError(status_code=status_code,
-                            reason_phrase=httpx_exception.response.reason_phrase,
-                            message=message)
+        message = json.loads(httpx_exception.response.content).get("message")
+        return NotFoundError(
+            status_code=status_code, reason_phrase=httpx_exception.response.reason_phrase, message=message
+        )
     else:
-        return TectonHttpException(status_code, httpx_exception.response.reason_phrase, '')
+        return TectonHttpException(status_code, httpx_exception.response.reason_phrase, "")
