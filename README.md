@@ -52,6 +52,10 @@ print(resp.result.features)
 
 For more information, please refer to Tecton documentation on the Python Client Library.
 
+## Contributing
+
+If you would like to contribute to the client, see [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## License
 
 The project is licensed
