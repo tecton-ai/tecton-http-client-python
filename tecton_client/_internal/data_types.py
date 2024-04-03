@@ -6,15 +6,11 @@ from typing import Optional
 
 @dataclass
 class GetFeaturesResult:
-    """Temp"""
-
     features: list
 
 
 @dataclass
 class GetFeaturesResponse:
-    """Temp"""
-
     result: GetFeaturesResult
     metadata: Optional[Dict] = None
 
@@ -25,8 +21,6 @@ class GetFeaturesResponse:
 
 @dataclass
 class GetFeatureServiceMetadataResponse:
-    """Temp"""
-
     feature_service_type: str
     input_join_keys: List[dict]
     input_request_context_keys: List[dict]
@@ -34,7 +28,7 @@ class GetFeatureServiceMetadataResponse:
 
     @classmethod
     def from_dict(cls, resp: dict):
-        """temp"""
+        """Constructor to create a GetFeatureServiceMetadataResponse from the json resonse of api"""
         return GetFeatureServiceMetadataResponse(
             feature_service_type=resp["featureServiceType"],
             input_join_keys=resp["inputJoinKeys"],
@@ -44,8 +38,6 @@ class GetFeatureServiceMetadataResponse:
 
 
 class MetadataOptions:
-    """Temp"""
-
     include_names = "include_names"
     include_effective_times = "include_effective_times"
     include_data_types = "include_data_types"
@@ -54,7 +46,5 @@ class MetadataOptions:
 
 
 class RequestOptions:
-    """Temp"""
-
     read_from_cache = "readFromCache"
     write_to_cache = "writeToCache"

@@ -21,25 +21,12 @@ test = [
 ]
 
 
-
 [tool.hatch.version]
 path = "tecton_client/__about__.py"
 
 [project.urls]
 "Source" = "https://github.com/tecton-ai/tecton-http-client-python"
 "Documentation" = "https://tecton-ai.github.io/tecton-http-client-python/html/index.html"
-
-
-[tool.pylint."messages control"]
-disable = ["all"]
-enable = [
-    "abstract-method",
-    "bad-staticmethod-argument",
-    "consider-merging-isinstance",
-    "function-redefined",
-    "undefined-variable",
-    "unused-private-member",
-]
 
 [tool.ruff]
 # Configure the line-length so Ruff knows how long to make any lines it

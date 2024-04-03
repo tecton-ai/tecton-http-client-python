@@ -39,9 +39,9 @@ url = "https://explore.tecton.ai/"
 workspace = "prod"
 api_key = "my-secret-key"
 
-client1 = TectonClient(url=url, default_workspace_name=workspace, api_key=api_key)
+client = TectonClient(url=url, default_workspace_name=workspace, api_key=api_key)
 
-resp = client1.get_features(
+resp = client.get_features(
     feature_service_name="fraud_detection_feature_service:v2",
     join_key_map={"user_id": "user_4407104885"},
     request_context_map={"amount": 500.00},
