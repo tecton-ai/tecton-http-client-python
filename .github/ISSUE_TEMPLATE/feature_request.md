@@ -1,3 +1,9 @@
+---
+name: Feature Request
+about: Request feature to implement in this project
+labels: 'enhancement'
+---
+
 <!--
 NOTE: This repo is only for feature requests for the python tecton-client specifically. For feature requests for Tecton in general, please follow the instructions in the [Tecton Docs](https://docs.tecton.ai/creating-a-tecton-support-ticket)
 -->
