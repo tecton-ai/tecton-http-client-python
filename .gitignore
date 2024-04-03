@@ -13,3 +13,6 @@ docs/build/
 
 # Hatch generated files
 dist/
+
+# ignore virtualenvs
+*venv/
