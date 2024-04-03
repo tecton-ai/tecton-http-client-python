@@ -10,6 +10,10 @@ from httpx import HTTPStatusError
 
 from tecton_client._internal.data_types import GetFeatureServiceMetadataResponse
 from tecton_client._internal.data_types import GetFeaturesResponse
+from tecton_client._internal.utils import build_get_feature_service_metadata_request
+from tecton_client._internal.utils import build_get_features_request
+from tecton_client._internal.utils import get_default_headers
+from tecton_client._internal.utils import validate_request_args
 from tecton_client.exceptions import convert_exception
 
 
@@ -29,7 +33,18 @@ class TectonClient:
             client: An httpx.Client, allowing you to provide finer-grained customization on the request behavior,
                 such as default timeout or connection settings. See https://www.python-httpx.org/ for more info.
         """
-        super().__init__(url=url, api_key=api_key, default_workspace_name=default_workspace_name, client=client)
+        self.url = url
+        self.default_workspace_name = default_workspace_name
+        self._api_key = api_key
+        self._base_url = urljoin(url, "/api/v1/")
+
+        headers = get_default_headers(api_key)
+        if client is None:
+            self._client = httpx.Client(headers=headers)
+        else:
+            self._client = client
+            # add the headers to the existing client headers
+            self._client.headers.update(headers)
 
     def get_features(
         self,
@@ -43,8 +58,10 @@ class TectonClient:
         request_options: Optional[Dict[str, bool]] = None,
         allow_partial_results: bool = False,
     ) -> GetFeaturesResponse:
-        self._validate(feature_service_id, feature_service_name, workspace_name)
-        request_data = self._build_get_features_request(
+        validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)
+        if not workspace_name:
+            workspace_name = self.default_workspace_name
+        request_data = build_get_features_request(
             feature_service_id,
             feature_service_name,
             join_key_map,
@@ -70,8 +87,10 @@ class TectonClient:
         feature_service_id: Optional[str] = None,
         workspace_name: Optional[str] = None,
     ) -> GetFeatureServiceMetadataResponse:
-        self._validate(feature_service_id, feature_service_name, workspace_name)
-        request_data = self._build_get_feature_service_metadata_request(
+        validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)
+        if not workspace_name:
+            workspace_name = self.default_workspace_name
+        request_data = build_get_feature_service_metadata_request(
             feature_service_id=feature_service_id,
             feature_service_name=feature_service_name,
             workspace_name=workspace_name,
