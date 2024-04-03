@@ -62,14 +62,14 @@ class TectonClient:
         if not workspace_name:
             workspace_name = self.default_workspace_name
         request_data = build_get_features_request(
-            feature_service_id,
-            feature_service_name,
-            join_key_map,
-            request_context_map,
-            workspace_name,
-            metadata_options,
-            allow_partial_results,
-            request_options,
+            feature_service_id=feature_service_id,
+            feature_service_name=feature_service_name,
+            join_key_map=join_key_map,
+            request_context_map=request_context_map,
+            workspace_name=workspace_name,
+            metadata_options=metadata_options,
+            allow_partial_results=allow_partial_results,
+            request_options=request_options,
         )
         resp = self._client.post(url=urljoin(self._base_url, "feature-service/get-features"), json=request_data)
 
