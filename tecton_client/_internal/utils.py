@@ -1,3 +1,8 @@
+from typing import Any
+from typing import Dict
+from typing import Optional
+from typing import Union
+
 import httpx
 
 from tecton_client.__about__ import __version__ as tecton_version
@@ -12,14 +17,14 @@ def get_default_headers(api_key):
 
 
 def build_get_features_request(
-    feature_service_id,
-    feature_service_name,
-    join_key_map,
-    request_context_map,
-    workspace_name,
-    metadata_options,
-    allow_partial_results,
-    request_options,
+    feature_service_id: str,
+    feature_service_name: str,
+    join_key_map: Optional[Dict[str, Optional[Union[int, str]]]] = None,
+    request_context_map: Optional[Dict[str, Any]] = None,
+    metadata_options: Optional[Dict[str, bool]] = None,
+    workspace_name: Optional[str] = None,
+    request_options: Optional[Dict[str, bool]] = None,
+    allow_partial_results: bool = False,
 ):
     params = {
         "workspaceName": workspace_name,
@@ -48,7 +53,11 @@ def build_get_features_request(
     return request_data
 
 
-def build_get_feature_service_metadata_request(self, feature_service_id, feature_service_name, workspace_name):
+def build_get_feature_service_metadata_request(
+    feature_service_name: Optional[str] = None,
+    feature_service_id: Optional[str] = None,
+    workspace_name: Optional[str] = None,
+):
     return {
         "params": {
             "featureServiceName": feature_service_name,
@@ -58,7 +67,12 @@ def build_get_feature_service_metadata_request(self, feature_service_id, feature
     }
 
 
-def validate_request_args(feature_service_id, feature_service_name, workspace_name, default_workspace_name):
+def validate_request_args(
+    feature_service_name: Optional[str] = None,
+    feature_service_id: Optional[str] = None,
+    workspace_name: Optional[str] = None,
+    default_workspace_name: Optional[str] = None,
+):
     if not workspace_name and not default_workspace_name:
         msg = (
             "workspace_name not set. Parameter workspace_name must be set either in TectonClient "
