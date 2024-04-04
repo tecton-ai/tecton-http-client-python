@@ -17,7 +17,7 @@ def build_get_features_request(
     feature_service_name: str,
     join_key_map: Optional[Dict[str, Optional[Union[int, str]]]] = None,
     request_context_map: Optional[Dict[str, Any]] = None,
-    metadata_options: Optional[Dict[str, bool]] = None,
+    metadata_options: Optional[MetadataOptions] = None,
     workspace_name: Optional[str] = None,
     request_options: Optional[Dict[str, bool]] = None,
     allow_partial_results: bool = False,
@@ -30,21 +30,14 @@ def build_get_features_request(
         "requestContextMap": request_context_map or {},
         "allowPartialResults": allow_partial_results,
     }
-    if metadata_options:
-        params["metadataOptions"] = {
-            # these two default to True
-            "includeNames": metadata_options.get(MetadataOptions.include_names, True),
-            "includeDataTypes": metadata_options.get(MetadataOptions.include_data_types, True),
-            # the rest default to False
-            "includeEffectiveTimes": metadata_options.get(MetadataOptions.include_effective_times, False),
-            "includeSloInfo": metadata_options.get(MetadataOptions.include_slo_info, False),
-            "includeServingStatus": metadata_options.get(MetadataOptions.include_serving_status, False),
-        }
-    if request_options:
-        params["requestOptions"] = {
-            "readFromCache": request_options.get(RequestOptions.read_from_cache),
-            "writeToCache": request_options.get(RequestOptions.write_to_cache),
-        }
+    if not metadata_options:
+        # creates metadata options with defaults
+        metadata_options = MetadataOptions()
+    params["metadataOptions"] = metadata_options.to_request()
+    if not request_options:
+        # creates request options with defaults
+        request_options = RequestOptions()
+    params["requestOptions"] = request_options.to_request()
     request_data = {"params": params}
     return request_data
 

@@ -36,13 +36,39 @@ class GetFeatureServiceMetadataResponse:
 
 
 class MetadataOptions:
-    include_names = "include_names"
-    include_effective_times = "include_effective_times"
-    include_data_types = "include_data_types"
-    include_slo_info = "include_slo_info"
-    include_serving_status = "include_serving_status"
+    def __init__(
+        self,
+        include_names: bool = True,
+        include_data_types: bool = True,
+        include_effective_times: bool = False,
+        include_slo_info: bool = False,
+        include_serving_status: bool = False,
+    ):
+        self.include_names = include_names
+        self.include_data_types = include_data_types
+        self.include_effective_times = include_effective_times
+        self.include_slo_info = include_slo_info
+        self.include_serving_status = include_serving_status
+
+    def to_request(self):
+        """Format for inclusion in GetFeaturesRequest"""
+        return {
+            "includeNames": self.include_names,
+            "includeDataTypes": self.include_data_types,
+            "includeEffectiveTimes": self.include_effective_times,
+            "includeSloInfo": self.include_slo_info,
+            "includeServingStatus": self.include_serving_status,
+        }
 
 
 class RequestOptions:
-    read_from_cache = "readFromCache"
-    write_to_cache = "writeToCache"
+    def __init__(self, read_from_cache: bool = True, write_to_cache: bool = True):
+        self.read_from_cache = read_from_cache
+        self.write_to_cache = write_to_cache
+
+    def to_request(self):
+        """Format for inclusion in GetFeaturesRequest"""
+        return {
+            "readFromCache": self.read_from_cache,
+            "writeToCache": self.write_to_cache,
+        }

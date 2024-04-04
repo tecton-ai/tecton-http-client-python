@@ -5,7 +5,12 @@ from urllib.parse import urljoin
 import httpx
 from httpx import HTTPStatusError
 
-from tecton_client._internal.data_types import GetFeatureServiceMetadataResponse, GetFeaturesResponse
+from tecton_client._internal.data_types import (
+    GetFeatureServiceMetadataResponse,
+    GetFeaturesResponse,
+    MetadataOptions,
+    RequestOptions,
+)
 from tecton_client._internal.utils import (
     build_get_feature_service_metadata_request,
     build_get_features_request,
@@ -51,9 +56,9 @@ class AsyncTectonClient:
         feature_service_id: Optional[str] = None,
         join_key_map: Optional[Dict[str, Union[int, str, type(None)]]] = None,
         request_context_map: Optional[Dict[str, Any]] = None,
-        metadata_options: Optional[Dict[str, bool]] = None,
+        metadata_options: Optional[MetadataOptions] = None,
         workspace_name: Optional[str] = None,
-        request_options: Optional[Dict[str, bool]] = None,
+        request_options: Optional[RequestOptions] = None,
         allow_partial_results: bool = False,
     ) -> GetFeaturesResponse:
         validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)

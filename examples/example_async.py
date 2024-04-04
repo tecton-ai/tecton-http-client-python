@@ -17,7 +17,7 @@ async def call_api_ten_times():
             feature_service_name="fraud_detection_feature_service:v2",
             join_key_map={"user_id": "user_4407104885"},
             request_context_map={"amount": 500.00},
-            metadata_options={MetadataOptions.include_data_types: True},
+            metadata_options=MetadataOptions(include_data_types=True),
         )
     ] * 10
     responses = await asyncio.gather(*requests)
