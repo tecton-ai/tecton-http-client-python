@@ -38,7 +38,7 @@ class AsyncTectonClient:
 
         headers = get_default_headers(api_key)
         if client is None:
-            self._client = httpx.Client(headers=headers)
+            self._client = httpx.AsyncClient(headers=headers)
         else:
             self._client = client
             # add the headers to the existing client headers
@@ -69,7 +69,7 @@ class AsyncTectonClient:
             allow_partial_results=allow_partial_results,
             request_options=request_options,
         )
-        resp = self._client.post(url=urljoin(self._base_url, "feature-service/get-features"), json=request_data)
+        resp = await self._client.post(url=urljoin(self._base_url, "feature-service/get-features"), json=request_data)
 
         try:
             resp.raise_for_status()

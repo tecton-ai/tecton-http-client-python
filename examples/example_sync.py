@@ -11,7 +11,7 @@ client = TectonClient(url=my_url, default_workspace_name=workspace, api_key=my_a
 
 resp = client.get_features(
     feature_service_name="fraud_detection_feature_service:v2",
-    join_key_map={"user_id": "user_4407104885"},
+    join_key_map={"user_i": "user_4407104885"},
     request_context_map={"amount": 500.00},
     metadata_options={MetadataOptions.include_data_types: True},
 )
