@@ -1,8 +1,7 @@
 import asyncio
 import os
 
-from tecton_client import AsyncTectonClient
-from tecton_client import MetadataOptions
+from tecton_client import AsyncTectonClient, MetadataOptions
 
 my_url = "https://explore.tecton.ai/"
 workspace = "prod"

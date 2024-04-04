@@ -1,13 +1,9 @@
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Union
+from typing import Any, Dict, Optional, Union
 
 import httpx
 
 from tecton_client.__about__ import __version__ as tecton_version
-from tecton_client._internal.data_types import MetadataOptions
-from tecton_client._internal.data_types import RequestOptions
+from tecton_client._internal.data_types import MetadataOptions, RequestOptions
 
 
 def get_default_headers(api_key):

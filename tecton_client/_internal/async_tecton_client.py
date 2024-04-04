@@ -1,19 +1,17 @@
 import json
-from typing import Any
-from typing import Dict
-from typing import Optional
-from typing import Union
+from typing import Any, Dict, Optional, Union
 from urllib.parse import urljoin
 
 import httpx
 from httpx import HTTPStatusError
 
-from tecton_client._internal.data_types import GetFeatureServiceMetadataResponse
-from tecton_client._internal.data_types import GetFeaturesResponse
-from tecton_client._internal.utils import build_get_feature_service_metadata_request
-from tecton_client._internal.utils import build_get_features_request
-from tecton_client._internal.utils import get_default_headers
-from tecton_client._internal.utils import validate_request_args
+from tecton_client._internal.data_types import GetFeatureServiceMetadataResponse, GetFeaturesResponse
+from tecton_client._internal.utils import (
+    build_get_feature_service_metadata_request,
+    build_get_features_request,
+    get_default_headers,
+    validate_request_args,
+)
 from tecton_client.exceptions import convert_exception
 
 
