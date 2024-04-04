@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 import httpx
 from httpx import Headers
 
-from tecton_client import TectonClient
+from tecton_client import MetadataOptions, RequestOptions, TectonClient
 from tecton_client.exceptions import NotFoundError
 
 
@@ -91,6 +91,44 @@ class TestTectonClient(TestCase):
 
         workspace = self.mock_client._request_log[0]["params"]["workspaceName"]
         self.assertEquals(workspace, "override-workspace")
+
+    def test_get_features_encode(self):
+        # using just magic_mock here in order to assert on client.post.assert_called_with
+        mock_http_client = MagicMock()
+        mock_http_client.post.return_value.json.return_value = {"result": {"features": []}}
+        client = TectonClient(
+            url="https://fake.tecton.ai",
+            api_key="fake-api-key",
+            default_workspace_name="workspace",
+            client=mock_http_client,
+        )
+        client.get_features(
+            feature_service_name="fake-feature-service",
+            join_key_map={"user_id": "id123"},
+            metadata_options=MetadataOptions(include_effective_times=True, include_data_types=False),
+            request_options=RequestOptions(read_from_cache=False),
+        )
+        mock_http_client.post.assert_called_with(
+            "https://fake.tecton.ai/api/v1/feature-service/get-features",
+            json={
+                "params": {
+                    "workspaceName": "workspace",
+                    "featureServiceName": "fake-feature-service",
+                    "featureServiceId": None,
+                    "joinKeyMap": {"user_id": "id123"},
+                    "requestContextMap": {},
+                    "allowPartialResults": False,
+                    "metadataOptions": {
+                        "includeNames": True,
+                        "includeDataTypes": False,
+                        "includeEffectiveTimes": True,
+                        "includeSloInfo": False,
+                        "includeServingStatus": False,
+                    },
+                    "requestOptions": {"readFromCache": False, "writeToCache": True},
+                }
+            },
+        )
 
     def test_get_features_decode(self):
         test_client = httpx.Client(

@@ -13,7 +13,7 @@ class GetFeaturesResponse:
     metadata: Optional[Dict] = None
 
     @classmethod
-    def from_dict(cls, resp: dict) -> "GetFeaturesResponse":
+    def from_response(cls, resp: dict) -> "GetFeaturesResponse":
         return GetFeaturesResponse(result=GetFeaturesResult(**resp["result"]), metadata=resp.get("metadata"))
 
 
@@ -25,7 +25,7 @@ class GetFeatureServiceMetadataResponse:
     feature_values: List[dict]
 
     @classmethod
-    def from_dict(cls, resp: dict):
+    def from_response(cls, resp: dict):
         """Constructor to create a GetFeatureServiceMetadataResponse from the json resonse of api"""
         return GetFeatureServiceMetadataResponse(
             feature_service_type=resp["featureServiceType"],
@@ -50,7 +50,7 @@ class MetadataOptions:
         self.include_slo_info = include_slo_info
         self.include_serving_status = include_serving_status
 
-    def to_request(self):
+    def to_request(self) -> Dict[str, bool]:
         """Format for inclusion in GetFeaturesRequest"""
         return {
             "includeNames": self.include_names,
@@ -66,7 +66,7 @@ class RequestOptions:
         self.read_from_cache = read_from_cache
         self.write_to_cache = write_to_cache
 
-    def to_request(self):
+    def to_request(self) -> Dict[str, bool]:
         """Format for inclusion in GetFeaturesRequest"""
         return {
             "readFromCache": self.read_from_cache,

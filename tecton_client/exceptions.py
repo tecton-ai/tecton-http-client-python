@@ -1,5 +1,3 @@
-import json
-
 import httpx
 
 
@@ -65,8 +63,8 @@ def convert_exception(httpx_exception: httpx.HTTPStatusError) -> TectonHttpExcep
     status_code = httpx_exception.response.status_code
     exception_class = _HTTP_ERRORS.get(status_code)
     if exception_class:
-        message = json.loads(httpx_exception.response.content).get("message")
-        return NotFoundError(
+        message = httpx_exception.response.json().get("message")
+        return exception_class(
             status_code=status_code, reason_phrase=httpx_exception.response.reason_phrase, message=message
         )
     else:

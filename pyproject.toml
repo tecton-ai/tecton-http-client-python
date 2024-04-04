@@ -15,7 +15,7 @@ dynamic = ["version"]
 readme = "README.md"
 
 [project.optional-dependencies]
-test = [
+dev = [
   "pytest>=6.2.5",
   "pytest_httpx"
 ]

@@ -1,4 +1,3 @@
-import json
 from typing import Any, Dict, Optional, Union
 from urllib.parse import urljoin
 
@@ -40,6 +39,10 @@ class AsyncTectonClient:
         self.default_workspace_name = default_workspace_name
         self._api_key = api_key
         self._base_url = urljoin(url, "/api/v1/")
+        self._paths = {
+            "get_features": urljoin(self._base_url, "feature-service/get-features"),
+            "get_feature_service_metadata": urljoin(self._base_url, "feature-service/metadata"),
+        }
 
         headers = get_default_headers(api_key)
         if client is None:
@@ -74,14 +77,14 @@ class AsyncTectonClient:
             allow_partial_results=allow_partial_results,
             request_options=request_options,
         )
-        resp = await self._client.post(url=urljoin(self._base_url, "feature-service/get-features"), json=request_data)
+        resp = await self._client.post(url=self._paths["get_features"], json=request_data)
 
         try:
             resp.raise_for_status()
         except HTTPStatusError as exc:
             raise convert_exception(exc) from exc
 
-        return GetFeaturesResponse.from_dict(json.loads(resp.text))
+        return GetFeaturesResponse.from_response(resp.json())
 
     async def get_feature_service_metadata(
         self,
@@ -98,10 +101,10 @@ class AsyncTectonClient:
             feature_service_name=feature_service_name,
             workspace_name=workspace_name,
         )
-        resp = self._client.post(url=urljoin(self._base_url, "feature-service/metadata"), json=request_data)
+        resp = self._client.post(url=self._paths["get_feature_service_metadata"], json=request_data)
         try:
             resp.raise_for_status()
         except HTTPStatusError as exc:
             raise convert_exception(exc) from exc
 
-        return GetFeatureServiceMetadataResponse.from_dict(json.loads(resp.text))
+        return GetFeatureServiceMetadataResponse.from_response(resp.json())

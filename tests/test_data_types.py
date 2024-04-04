@@ -13,7 +13,7 @@ class TestDataTypes(TestCase):
         file_1 = TEST_DATA_DIR.joinpath("sample_response.json")
         with open(file_1) as f:
             resp = json.load(f)
-        resp = GetFeaturesResponse.from_dict(resp)
+        resp = GetFeaturesResponse.from_response(resp)
         self.assertEquals(resp.result.features, [["0"], None, [55.5, 57.88, 58.96, 57.66, None, 55.98]])
         self.assertDictEqual(
             resp.metadata,

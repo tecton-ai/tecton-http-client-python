@@ -19,7 +19,8 @@ async def call_api_ten_times():
             request_context_map={"amount": 500.00},
             metadata_options=MetadataOptions(include_data_types=True),
         )
-    ] * 10
+        for i in range(10)
+    ]
     responses = await asyncio.gather(*requests)
     for resp in responses:
         print(resp.result.features)
