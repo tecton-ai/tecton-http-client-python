@@ -33,10 +33,6 @@ path = "tecton_client/__about__.py"
 # modifies.
 line-length = 120
 target-version = "py38"
-lint.ignore = [
-  "E501", # E501 line length (we use black auto-formatter to handle line length)
-  "E741", #	ambiguous-variable-name
-]
 extend-select = ["I"]
 
 [tool.ruff.lint.pydocstyle]
