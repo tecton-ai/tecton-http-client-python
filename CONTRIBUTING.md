@@ -19,7 +19,7 @@ To set up the project for development:
 pip install pre-commit
 pre-commit install
 ```
-* Install dependencies: `pip install .[test]`
+* Install dependencies: `pip install -e .[test]`
 * Run tests to ensure everything is set up correctly: `pytest tests`
 
 ## Style Guildelines
