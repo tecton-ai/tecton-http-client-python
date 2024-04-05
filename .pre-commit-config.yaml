@@ -7,37 +7,16 @@ repos:
           - black==22.12.0
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     # Ruff version.
-    rev: "v0.0.265"
+    rev: "v0.3.0"
     hooks:
       - id: ruff
         # We use `--no-cache` to ensure that we always run based on what the
         # pre-commit tool provides us.
         args: [ --fix, --exit-non-zero-on-fix, --no-cache ]
-  - repo: https://github.com/pycqa/pylint
-    rev: v2.14.5
-    hooks:
-      - id: pylint
-  - repo: https://github.com/hadialqattan/pycln
-    rev: v2.4.0
-    hooks:
-      - id: pycln
-        args: [ --config=pyproject.toml ]
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.1.1
-    hooks:
-      - id: autoflake
-  - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.10.0
-    hooks:
-      - id: python-use-type-annotations
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
-        additional_dependencies: [ flake8-annotations ]
-        args:
-          - --max-line-length=120
-          - --ignore=ANN101,ANN102 # Ignoring annotation for self and cls
+      - id: ruff-format
+        # We use `--no-cache` to ensure that we always run based on what the
+        # pre-commit tool provides us.
+        args: [ --no-cache ]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
@@ -46,28 +25,3 @@ repos:
       - id: end-of-file-fixer
       - id: mixed-line-ending
       - id: trailing-whitespace
-  - repo: https://github.com/asottile/reorder-python-imports
-    rev: v3.9.0
-    hooks:
-    -   id: reorder-python-imports
-        args: [--py37-plus]
-  - repo: https://github.com/psf/black
-    rev: 23.1.0
-    hooks:
-      - id: black
-        args: [--line-length=120]
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0  # pick a git hash / tag to point to
-    hooks:
-      - id: pydocstyle
-        args:
-        - --convention=google
-        - --add-ignore=D100,D104,D105,D205,D415
-        exclude: tests/
-  - repo: https://github.com/jsh9/pydoclint
-    rev: 0.0.10
-    hooks:
-      - id: pydoclint
-        args:
-          - "--config=pyproject.toml"
-          - "--skip-checking-raises=true"
