@@ -17,15 +17,7 @@ jobs:
       run: python -m pip install --upgrade build
 
     - name: Set Release version
-      run: |
-        if [[ $GITHUB_REF_NAME =~ tecton-v(.*)$ ]]
-        then
-          echo "Setting version to {match[1]}"
-          hatch version {match[1]}
-        else:
-          echo "Tag $GITHUB_REF_NAME does not match expected pattern tecton-v*"
-          exit 1
-        fi
+      run: hatch version release
 
     - name: Build source distribution
       run: python -m build
