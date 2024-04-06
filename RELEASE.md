@@ -8,3 +8,4 @@ Keep the `+local` at the end of the local version; it will be removed during the
 4. Fill in information about what has changed
 5. Publish the release. This will automatically trigger a client deployment to pypi, using the version you
 chose for the tag.
+6. If this fails for some reason, delete the release, fix the issue, and publish the release again.

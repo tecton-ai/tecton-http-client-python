@@ -1,9 +1,8 @@
 name: build hatchling
 
 on:
-  push:
-    tags:
-    - tecton-v*
+  release:
+    types: [published]
 
 jobs:
   build:
