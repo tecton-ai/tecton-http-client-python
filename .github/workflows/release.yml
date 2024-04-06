@@ -1,4 +1,4 @@
-name: build hatchling
+name: publish tecton-client to pypi and attach artifacts to github release
 
 on:
   release:
@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Install build dependencies
-      run: python -m pip install --upgrade build
+      run: python -m pip install --upgrade build hatch
 
     - name: Set Release version
       run: hatch version release
@@ -24,10 +24,10 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: artifacts
-        path: /dist
+        path: ./dist
         if-no-files-found: error
 
-  publish:
+  publish-to-pypi:
     name: publish
     needs:
     - build
@@ -37,18 +37,44 @@ jobs:
       id-token: write
 
     steps:
-    - uses: actions/download-artifact@v4
+    - name: Download artifacts from build
+      uses: actions/download-artifact@v4
       with:
         name: artifacts
-        path: dist
-
-    - name: Add assets to current release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: dist/*
+        path: ./dist
 
     - name: Push build artifacts to PyPI
       uses: pypa/gh-action-pypi-publish@v1.8.14
       with:
         # TODO point this to real pypi once we are confident the pipeline works
         repository-url: https://test.pypi.org/legacy/
+
+
+  add-to-github-release:
+    name: sign the artifacts and add them to the github release
+    needs:
+    - publish-to-pypi
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # for softprops/action-gh-release
+      id-token: write # for sigstore signing
+
+    steps:
+    - name: Download artifacts from build
+      uses: actions/download-artifact@v4
+      with:
+        name: artifacts
+        path: ./dist
+
+    - name: Sign the dists with Sigstore
+      uses: sigstore/gh-action-sigstore-python@v1.2.3
+      with:
+        inputs: >-
+          ./dist/*.tar.gz
+          ./dist/*.whl
+
+    - name: Add assets to current release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: ./dist/*
