@@ -6,6 +6,8 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import tecton_client
+
 project = "Tecton Client"
 copyright = "2024, tecton.ai"
 author = "tecton.ai"
