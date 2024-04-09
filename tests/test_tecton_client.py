@@ -114,7 +114,6 @@ class TestTectonClient(TestCase):
                 "params": {
                     "workspaceName": "workspace",
                     "featureServiceName": "fake-feature-service",
-                    "featureServiceId": None,
                     "joinKeyMap": {"user_id": "id123"},
                     "requestContextMap": {},
                     "allowPartialResults": False,

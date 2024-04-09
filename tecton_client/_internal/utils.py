@@ -13,7 +13,6 @@ def get_default_headers(api_key):
 
 
 def build_get_features_request(
-    feature_service_id: str,
     feature_service_name: str,
     join_key_map: Optional[Dict[str, Optional[Union[int, str]]]] = None,
     request_context_map: Optional[Dict[str, Any]] = None,
@@ -25,7 +24,6 @@ def build_get_features_request(
     params = {
         "workspaceName": workspace_name,
         "featureServiceName": feature_service_name,
-        "featureServiceId": feature_service_id,
         "joinKeyMap": join_key_map or {},
         "requestContextMap": request_context_map or {},
         "allowPartialResults": allow_partial_results,
@@ -58,7 +56,6 @@ def build_get_feature_service_metadata_request(
 
 def validate_request_args(
     feature_service_name: Optional[str] = None,
-    feature_service_id: Optional[str] = None,
     workspace_name: Optional[str] = None,
     default_workspace_name: Optional[str] = None,
 ):
@@ -68,6 +65,6 @@ def validate_request_args(
             "initialization or in get_features"
         )
         raise ValueError(msg)
-    if not (feature_service_id or feature_service_name) or (feature_service_id and feature_service_name):
-        msg = "must pass exactly one of feature_service_name or feature_service_id"
+    if not feature_service_name:
+        msg = "feature_service_name must be provided"
         raise ValueError(msg)

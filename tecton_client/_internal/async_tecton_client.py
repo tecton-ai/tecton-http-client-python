@@ -67,9 +67,6 @@ class AsyncTectonClient:
             # add the headers to the existing client headers
             self._client.headers.update(headers)
 
-    # TODO(mary): Consider using override? Seems like there are two distinct ways to use this method.
-    # NOTE(mary): Prefer to capitalize FCO type, e.g. "Feature Service" instead of "feature service". Consider them proper nouns.
-    # Note(mary): Don't include implementation details like 'For int64 keys, the value should be encoded as a string.'
     async def get_features(
         self,
         *,
@@ -79,7 +76,6 @@ class AsyncTectonClient:
         metadata_options: Optional[MetadataOptions] = None,
         workspace_name: Optional[str] = None,
         request_options: Optional[RequestOptions] = None,
-        feature_service_id: Optional[str] = None,
         allow_partial_results: bool = False,
     ) -> GetFeaturesResponse:
         """Get feature values from a Feature Service.
@@ -91,24 +87,17 @@ class AsyncTectonClient:
             metadata_options: Options for including additional metadata as part of response. Useful for debugging, but
                 may affect performance.
             workspace_name: Workspace name where feature_service is deployed. Overrides AsyncTectonClient.default_workspace_name.
-
-            # TODO(mary): What is this? Provide more info? (Advanced)?
-            request_options: Request level options to control feature server behavior.
-
-            feature_service_id: (Advanced) The id of the Feature Service to fetch from. This may be used instead of
-                feature_service_name. Note that the Feature Service id is not stable and may change on "destructive"
-                changes to the Feature Service. See ... for guidance on when to use feature_service_id.
-            allow_partial_results: (Advanced) Whether incomplete results should be returned when the
-                Online Feature Store size limit has been exceeded for this request.
-                If this is not true, then the response will be an error in this case.
-                This is an advanced option and should only be set after consulting with the Tecton team.
+            request_options: (Advanced) Request level options to control feature server caching behavior.
+            allow_partial_results: (Advanced) Whether incomplete results should be returned when the Online
+                Feature Store size limit has been exceeded for this request. If this is not true, then the response
+                will be an error in this case. This is an advanced option and should only be set after consulting with
+                the Tecton team.
 
         """
-        validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)
+        validate_request_args(feature_service_name, workspace_name, self.default_workspace_name)
         if not workspace_name:
             workspace_name = self.default_workspace_name
         request_data = build_get_features_request(
-            feature_service_id=feature_service_id,
             feature_service_name=feature_service_name,
             join_key_map=join_key_map,
             request_context_map=request_context_map,
@@ -130,23 +119,18 @@ class AsyncTectonClient:
         self,
         *,
         feature_service_name: Optional[str] = None,
-        feature_service_id: Optional[str] = None,
         workspace_name: Optional[str] = None,
     ) -> GetFeatureServiceMetadataResponse:
         """Get metadata about a Feature Service.
 
         Args:
-            feature_service_name: Preferred way to specify a feature service.
-                Exactly one of this field and feature_service_id must be set.
-            feature_service_id: Alternate way to specify a feature service.
-                Exactly one of this field and feature_service_name must be set.
-            workspace_name: Workspace name where feature_service is deployed. Overrides Client.default_workspace_name.
+            feature_service_name: The name of the Feature Service to fetch metadata of.
+            workspace_name: Workspace name where feature_service is deployed. Overrides AsyncTectonClient.default_workspace_name.
         """
-        validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)
+        validate_request_args(feature_service_name, workspace_name, self.default_workspace_name)
         if not workspace_name:
             workspace_name = self.default_workspace_name
         request_data = build_get_feature_service_metadata_request(
-            feature_service_id=feature_service_id,
             feature_service_name=feature_service_name,
             workspace_name=workspace_name,
         )
