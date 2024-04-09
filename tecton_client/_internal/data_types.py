@@ -10,6 +10,8 @@ class GetFeaturesResult:
         features: List of raw feature values returned by the service.
     """
 
+    # List? Little inconsistent about using List/Dict vs list/dict.
+    # TODO(mary): Should we use immutable types? E.g. Sequence/Tuple Mapping/MappingProxyType instead List/Dict? Maybe overkill.
     features: list
 
 
@@ -27,6 +29,7 @@ class GetFeaturesResponse:
     result: GetFeaturesResult
     metadata: Optional[Dict] = None
 
+    # TODO(mary): Should we do better than Any here? We could define Tecton feature type as: FeatureType = Union[str, int, float, List, Dict]?
     def get_features_dict(self) -> Dict[str, Any]:
         """Return the feature values as a dictionary mapping name to value, and converting str to int64 if needed"""
         if self.metadata is None or self.metadata.get("features") is None:

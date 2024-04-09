@@ -20,7 +20,11 @@ from tecton_client.exceptions import convert_exception
 
 
 class TectonClient:
-    """A lightweight http client for interacting with features in Tecton. For the full sdk, use tecton-sdk"""
+    """A lightweight http client for fetching features from Tecton in production applications
+
+    For feature development and interacting with the rest of your Tecton deployment, use the Tecton SDK
+    (`pip install tecton`) and not this client library.
+    """
 
     def __init__(
         self, url: str, api_key: str, default_workspace_name: Optional[str] = None, client: httpx.Client = None
