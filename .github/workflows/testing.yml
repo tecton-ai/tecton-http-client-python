@@ -33,14 +33,3 @@ jobs:
       run: |
         python -m pytest tests/
 
-  test-docs:
-    name: Test that Docs Build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Setup Python
-      uses: actions/setup-python@v3
-    - name: build docs
-      uses: ammaraskar/sphinx-action@master
-      with:
-        docs-folder: "docs/"

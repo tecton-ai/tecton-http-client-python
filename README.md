@@ -5,14 +5,13 @@ A simple Python client for the Feature Server HTTP API that helps customers inte
 
 ## Documentation
 
+* [Tecton Python Client API Reference](https://tecton-ai.github.io/tecton-http-client-python/html/index.html)
 
-* [Fetching Online Features](https://docs.tecton.ai/latest/examples/fetch-real-time-features.html)
+* [Tecton Python Client Example Code](/examples)
 
 * [FeatureServer API Reference](https://docs.tecton.ai/rest-swagger/docs.html)
 
-* [Tecton Python Client API Reference](https://tecton-ai.github.io/tecton-http-client-python/html/index.html)
-
-* [Tecton Python Client Example Code](https://github.com/tecton-ai/tecton-http-client-python-demo/)
+* [Fetching Online Features](https://docs.tecton.ai/latest/examples/fetch-real-time-features.html)
 
 
 ## Troubleshooting
@@ -47,7 +46,7 @@ resp = client.get_features(
     request_context_map={"amount": 500.00},
 )
 
-print(resp.result.features)
+print(resp.get_features_dict())
 ```
 
 For more information, please refer to Tecton documentation on the Python Client Library.
