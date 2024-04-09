@@ -19,7 +19,7 @@ class GetFeaturesResponse:
 
     Attributes:
         result: The raw data returned by the FeatureService; includes just the feature values.
-            For a mapping of feature names to values, use get_feature_dict()
+            For a mapping of feature names to values, use get_features_dict()
         metadata: Any metadata returned. Control what metadata is returned from service using `metadata_options`
             parameter of `get_features`.
     """
