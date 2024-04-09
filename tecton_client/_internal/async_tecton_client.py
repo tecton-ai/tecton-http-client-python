@@ -18,14 +18,6 @@ from tecton_client._internal.utils import (
 )
 from tecton_client.exceptions import convert_exception
 
-# TODO(mary): Generally weird indentation/spacing in here. E.g.:
-"""
-            allow_partial_results: Whether incomplete results should be returned when the
-                Online Feature Store size limit has been exceeded for this request.
-                If this is not true, then the response will be an error in this case.
-                This is an advanced option and should only be set after consulting with the Tecton team.
-"""
-
 
 class AsyncTectonClient:
     """A lightweight http client for fetching features from Tecton in production applications.
@@ -33,7 +25,24 @@ class AsyncTectonClient:
     For feature development and interacting with the rest of your Tecton deployment, use the Tecton SDK
     (`pip install tecton`) and not this client library.
 
-    # TODO(mary): Show example usage here? Or under get_features?
+    Examples:
+
+    .. code-block:: python
+
+        import asyncio
+
+        async_client = AsyncTectonClient(
+            url="http://explore.tecton.ai", api_key="my_key", default_workspace_name="prod"
+        )
+        asyncio.run(
+            async_client.get_features(
+                feature_service_name="fraud_detection_feature_service:v2",
+                join_key_map={"user_id": "user_4407104885"},
+                request_context_map={"amount": 500.00},
+                metadata_options=MetadataOptions(include_data_types=True),
+            )
+        )
+
     """
 
     def __init__(

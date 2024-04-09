@@ -6,7 +6,9 @@ labels: 'bug'
 ---
 
 <!--
-NOTE: This repo is only for issues with the python tecton-client specifically. If you're experiencing an issue that seems broader and may involve other components of the system, or if you're unsure about the source of the problem, we recommend following the instructions outlined in our [support documentation](https://docs.tecton.ai/creating-a-tecton-support-ticket). This will ensure that your concern is properly addressed by our support team.
+NOTE: This repo is only for issues with the python tecton-client specifically. For better support, we recommend
+following the instructions outlined in our [support documentation](https://docs.tecton.ai/creating-a-tecton-support-ticket).
+This will ensure that your concern is properly addressed by our support team.
 -->
 
 ## Summary

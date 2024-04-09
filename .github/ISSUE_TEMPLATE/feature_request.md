@@ -5,7 +5,9 @@ labels: 'enhancement'
 ---
 
 <!--
-NOTE: This repo is only for feature requests for the python tecton-client specifically. For feature requests for Tecton in general, please follow the instructions in the [Tecton Docs](https://docs.tecton.ai/creating-a-tecton-support-ticket)
+NOTE: This repo is only for issues with the python tecton-client specifically. For better support, we recommend
+following the instructions outlined in our [support documentation](https://docs.tecton.ai/creating-a-tecton-support-ticket).
+This will ensure that your feature request is properly addressed by our support team.
 -->
 
 ### Please describe your feature request:
