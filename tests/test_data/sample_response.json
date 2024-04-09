@@ -3,7 +3,8 @@
     "features": [
       ["0"],
       null,
-      [55.5, 57.88, 58.96, 57.66, null, 55.98]
+      [55.5, 57.88, 58.96, 57.66, null, 55.98],
+      ["0", "1", null, "3", "4", "5"]
     ]
   },
   "metadata": {
@@ -32,6 +33,15 @@
           "type": "array",
           "elementType": {
             "type": "float64"
+          }
+        }
+      },
+      {
+        "name":"average_rain.fake_example",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
           }
         }
       }
