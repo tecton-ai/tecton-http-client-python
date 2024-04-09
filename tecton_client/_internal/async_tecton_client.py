@@ -19,12 +19,12 @@ from tecton_client._internal.utils import (
 from tecton_client.exceptions import convert_exception
 
 # TODO(mary): Generally weird indentation/spacing in here. E.g.:
-'''
+"""
             allow_partial_results: Whether incomplete results should be returned when the
                 Online Feature Store size limit has been exceeded for this request.
                 If this is not true, then the response will be an error in this case.
                 This is an advanced option and should only be set after consulting with the Tecton team.
-'''
+"""
 
 
 class AsyncTectonClient:
@@ -37,7 +37,11 @@ class AsyncTectonClient:
     """
 
     def __init__(
-        self, url: str, api_key: str, default_workspace_name: Optional[str] = None, client: Optional[httpx.AsyncClient] = None
+        self,
+        url: str,
+        api_key: str,
+        default_workspace_name: Optional[str] = None,
+        client: Optional[httpx.AsyncClient] = None,
     ):
         """Constructor for the client.
 
