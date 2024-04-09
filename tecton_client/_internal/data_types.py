@@ -50,7 +50,9 @@ class GetFeaturesResponse:
 
     def _get_feature_value(self, data_type, raw_feature_value):
         """Convert response value from str to int if the data type is int64"""
-        if data_type.get("type") == "int64":
+        if raw_feature_value is None:
+            return raw_feature_value
+        elif data_type.get("type") == "int64":
             return int(raw_feature_value)
         elif data_type.get("type") == "array" and data_type.get("elementType") == "int64":
             return map(int, raw_feature_value)

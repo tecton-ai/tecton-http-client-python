@@ -16,6 +16,9 @@ resp = client.get_features(
     metadata_options=MetadataOptions(include_data_types=True),
 )
 
+print("A nicely formatted output")
+print(resp.get_features_dict())
+
 print("Full response: ")
 print(resp)
 features = resp.result.features
