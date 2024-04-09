@@ -25,7 +25,7 @@ class TectonClient:
     def __init__(
         self, url: str, api_key: str, default_workspace_name: Optional[str] = None, client: httpx.Client = None
     ):
-        """Constructor for the client
+        """A lightweight http client for interacting with features in Tecton. For the full sdk, use tecton-sdk
 
         Args:
             url: base url to your tecton cluster. Ex: http://explore.tecton.ai
@@ -64,6 +64,29 @@ class TectonClient:
         request_options: Optional[RequestOptions] = None,
         allow_partial_results: bool = False,
     ) -> GetFeaturesResponse:
+        """Get feature values from a feature service
+
+        Args:
+            feature_service_name: Preferred way to specify a feature service.
+                Exactly one of this field and feature_service_id must be set.
+            feature_service_id: Alternate way to specify a feature service.
+                Exactly one of this field and feature_service_name must be set.
+            join_key_map: Join keys used for Batch and Stream FeatureViews.
+                The key of this map is the join key name and the value is the join key value for this request.
+                For int64 keys, the value should be encoded as a string.
+            request_context_map: Request context used for OnDemand FeatureViews.
+                The key of this map is the request context key name and the value is the request context value for this request.
+                For int64 keys, the value should be encoded as a string.
+            metadata_options: Options for including additional metadata as part of response. Useful for debugging, but
+                may affect performance.
+            workspace_name: Workspace name where feature_service is deployed. Overrides Client.default_workspace_name.
+            request_options: Request level options to control feature server behavior
+            allow_partial_results: Whether incomplete results should be returned when the
+                Online Feature Store size limit has been exceeded for this request.
+                If this is not true, then the response will be an error in this case.
+                This is an advanced option and should only be set after consulting with the Tecton team.
+
+        """
         validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)
         if not workspace_name:
             workspace_name = self.default_workspace_name
@@ -93,6 +116,15 @@ class TectonClient:
         feature_service_id: Optional[str] = None,
         workspace_name: Optional[str] = None,
     ) -> GetFeatureServiceMetadataResponse:
+        """Get metadata about a feature service
+
+        Args:
+            feature_service_name: Preferred way to specify a feature service.
+                Exactly one of this field and feature_service_id must be set.
+            feature_service_id: Alternate way to specify a feature service.
+                Exactly one of this field and feature_service_name must be set.
+            workspace_name: Workspace name where feature_service is deployed. Overrides Client.default_workspace_name.
+        """
         validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)
         if not workspace_name:
             workspace_name = self.default_workspace_name
