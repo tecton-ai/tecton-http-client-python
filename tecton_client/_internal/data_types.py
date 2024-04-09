@@ -10,7 +10,7 @@ class GetFeaturesResult:
         features: List of raw feature values returned by the service.
     """
 
-    features: list
+    features: List
 
 
 @dataclass

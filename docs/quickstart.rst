@@ -9,6 +9,18 @@ Installation
 
    pip install tecton-client
 
+API Key
+=======
+
+To interact with your service, you will need an api key. To get a key:
+
+1. Sign into you Tecton Workspace (ex: https://explore.tecton.ai/ )
+2. Go to the "Accounts & Access" section
+3. Select "Service Accounts"
+4. Select "Create Service Account"
+5. Choose an account name and description, and then select "Register Account and Generate API Key"
+6. Copy the api key value and store it somewhere safe.
+
 Usage
 =====
 
