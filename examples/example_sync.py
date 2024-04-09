@@ -5,7 +5,7 @@ from tecton_client._internal.tecton_client import TectonClient
 
 my_url = "https://explore.tecton.ai/"
 workspace = "prod"
-my_api_key = os.environ.get("TECTON_API_KEY")
+my_api_key = 'ada955cefef2e6e003c9a7477d514d4d'
 
 client = TectonClient(url=my_url, default_workspace_name=workspace, api_key=my_api_key)
 
@@ -23,6 +23,8 @@ print("Just the feature values: ")
 print(features)
 print("The names of the features: ")
 print(resp.metadata.keys())
+
+resp.get_features_dict()
 
 resp = client.get_feature_service_metadata(feature_service_name="fraud_detection_feature_service:v2")
 
