@@ -14,7 +14,8 @@ class TestDataTypes(TestCase):
         with open(file_1) as f:
             resp = json.load(f)
         resp = GetFeaturesResponse.from_response(resp)
-        self.assertEquals(resp.result.features, [["0"], None, [55.5, 57.88, 58.96, 57.66, None, 55.98]])
+        self.assertEquals(resp.result.features,
+                          [["0"], None, [55.5, 57.88, 58.96, 57.66, None, 55.98], ['0', '1', None, '3', '4', '5']])
         self.assertDictEqual(
             resp.metadata,
             {
@@ -30,6 +31,10 @@ class TestDataTypes(TestCase):
                     {
                         "dataType": {"elementType": {"type": "float64"}, "type": "array"},
                         "name": "average_rain.average_temperate_6hrs",
+                    },
+                    {
+                        "dataType": {"elementType": {"type": "int64"}, "type": "array"},
+                        "name": "average_rain.fake_example",
                     },
                 ]
             },
