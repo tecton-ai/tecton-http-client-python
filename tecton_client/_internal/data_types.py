@@ -1,25 +1,77 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
 class GetFeaturesResult:
+    """The raw feature values returned by the service.
+
+    Attributes:
+        features: List of raw feature values returned by the service.
+    """
+
     features: list
 
 
 @dataclass
 class GetFeaturesResponse:
+    """Response from get_feature_service_metadata.
+
+    Attributes:
+        result: The raw data returned by the FeatureService; includes just the feature values.
+            For a mapping of feature names to values, use get_features_dict()
+        metadata: Any metadata returned. Control what metadata is returned from service using `metadata_options`
+            parameter of `get_features`.
+    """
+
     result: GetFeaturesResult
     metadata: Optional[Dict] = None
 
+    def get_features_dict(self) -> Dict[str, Any]:
+        """Return the feature values as a dictionary mapping name to value, and converting str to int64 if needed"""
+        if self.metadata is None or self.metadata.get("features") is None:
+            raise ValueError(
+                "Metadata is not included in response. To use get_features_dict, "
+                "MetadataOptions include_names and include_data_types must be set to True."
+            )
+        features_metadata = self.metadata["features"]
+        # check that both name and datatypes are present
+        if features_metadata[0].get("name") is None:
+            raise ValueError("To use get_features_dict MetadataOptions include_names must be set to True.")
+        if features_metadata[0].get("dataType") is None:
+            raise ValueError("To use get_features_dict MetadataOptions include_data_types must be set to True.")
+        return {
+            metadata["name"]: self._get_feature_value(metadata["dataType"], raw_feature_value)
+            for metadata, raw_feature_value in zip(features_metadata, self.result.features)
+        }
+
+    def _get_feature_value(self, data_type, raw_feature_value):
+        """Convert response value from str to int if the data type is int64"""
+        if data_type.get("type") == "int64":
+            return int(raw_feature_value)
+        elif data_type.get("type") == "array" and data_type.get("elementType") == "int64":
+            return map(int, raw_feature_value)
+        else:
+            return raw_feature_value
+
     @classmethod
     def from_response(cls, resp: dict) -> "GetFeaturesResponse":
+        """Internal method for converting response of Service into an object"""
         return GetFeaturesResponse(result=GetFeaturesResult(**resp["result"]), metadata=resp.get("metadata"))
 
 
 @dataclass
 class GetFeatureServiceMetadataResponse:
-    feature_service_type: str
+    """Response from get_feature_service_metadata.
+
+    Attributes:
+        input_join_keys: The expected fields to be passed in the joinKeyMap parameter.
+        input_request_context_keys: The expected fields to be passed in the requestContextMap parameter.
+        feature_values: The fields to be returned in the features list in GetFeaturesResponse or QueryFeaturesResponse.
+            The order of returned features will match the order returned by GetFeaturesResponse or QueryFeaturesResponse.
+
+    """
+
     input_join_keys: List[dict]
     input_request_context_keys: List[dict]
     feature_values: List[dict]
@@ -28,7 +80,6 @@ class GetFeatureServiceMetadataResponse:
     def from_response(cls, resp: dict):
         """Constructor to create a GetFeatureServiceMetadataResponse from the json resonse of api"""
         return GetFeatureServiceMetadataResponse(
-            feature_service_type=resp["featureServiceType"],
             input_join_keys=resp["inputJoinKeys"],
             input_request_context_keys=resp["inputRequestContextKeys"],
             feature_values=resp["featureValues"],
@@ -36,6 +87,8 @@ class GetFeatureServiceMetadataResponse:
 
 
 class MetadataOptions:
+    """Passed into metadata_options on get_features, controls what metadata is returned as part of the response."""
+
     def __init__(
         self,
         include_names: bool = True,
@@ -44,6 +97,15 @@ class MetadataOptions:
         include_slo_info: bool = False,
         include_serving_status: bool = False,
     ):
+        """
+        Args:
+            include_names: Include the name of each feature in the response
+            include_data_types: Include the data type of each feature in the response
+            include_effective_times: Include the effective times of the feature values in the response.
+            include_slo_info: Include the SLO information as well as the Batch SLO Information in the response.
+            include_serving_status: Include feature statuses in the response.
+
+        """
         self.include_names = include_names
         self.include_data_types = include_data_types
         self.include_effective_times = include_effective_times
@@ -62,7 +124,15 @@ class MetadataOptions:
 
 
 class RequestOptions:
+    """Passed into request_options on get_features, request level options to control feature server behavior."""
+
     def __init__(self, read_from_cache: bool = True, write_to_cache: bool = True):
+        """this
+
+        Args:
+            read_from_cache: Disable if you want to skip the cache and read from the online store. Defaults to True.
+            write_to_cache: Disable if you want to skip writing to the cache. Defaults to True.
+        """
         self.read_from_cache = read_from_cache
         self.write_to_cache = write_to_cache
 

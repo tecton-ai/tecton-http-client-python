@@ -34,3 +34,18 @@ class TestDataTypes(TestCase):
                 ]
             },
         )
+
+    def test_GetFeaturesResponse_get_features_dict(self):
+        self.maxDiff = 10000
+        file_1 = TEST_DATA_DIR.joinpath("sample_response.json")
+        with open(file_1) as f:
+            resp = json.load(f)
+        resp = GetFeaturesResponse.from_response(resp)
+        self.assertDictEqual(
+            resp.get_features_dict(),
+            {
+                "average_rain.average_temperate_6hrs": [55.5, 57.88, 58.96, 57.66, None, 55.98],
+                "average_rain.cloud_type": None,
+                "average_rain.rain_in_last_24_hrs": ["0"],
+            },
+        )

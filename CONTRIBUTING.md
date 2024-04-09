@@ -27,3 +27,13 @@ pre-commit install
 Style and formatting is enforced using a tool called [pre-commit](https://pre-commit.com/). This can be installed locally and run over your changes prior to opening a PR, and will also be run as part of the CI approval process before a change is merged.
 
 You can find the full list of formatting requirements specified in the .[pre-commit-config.yaml](./.pre-commit-config.yaml) at the top level directory.
+
+## Docs
+
+Docs can be built using the command:
+
+```commandline
+pip install docs/requirements.txt
+sphinx-build -M html docs/ docs/_build
+```
+You can then view the docs by opening `docs/_build/html/index.html` in a browser.
