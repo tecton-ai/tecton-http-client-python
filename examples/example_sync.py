@@ -1,9 +1,11 @@
+import os
+
 from tecton_client._internal.data_types import MetadataOptions
 from tecton_client._internal.tecton_client import TectonClient
 
 my_url = "https://explore.tecton.ai/"
 workspace = "prod"
-my_api_key = "ada955cefef2e6e003c9a7477d514d4d"
+my_api_key = os.environ.get("TECTON_API_KEY")
 
 client = TectonClient(url=my_url, default_workspace_name=workspace, api_key=my_api_key)
 
