@@ -124,7 +124,6 @@ class TectonClient:
         self,
         *,
         feature_service_name: Optional[str] = None,
-        feature_service_id: Optional[str] = None,
         workspace_name: Optional[str] = None,
     ) -> GetFeatureServiceMetadataResponse:
         """Get metadata about a Feature Service.
@@ -133,11 +132,10 @@ class TectonClient:
             feature_service_name: The name of the Feature Service to fetch metadata of.
             workspace_name: Workspace name where feature_service is deployed. Overrides AsyncTectonClient.default_workspace_name.
         """
-        validate_request_args(feature_service_id, feature_service_name, workspace_name, self.default_workspace_name)
+        validate_request_args(feature_service_name, workspace_name, self.default_workspace_name)
         if not workspace_name:
             workspace_name = self.default_workspace_name
         request_data = build_get_feature_service_metadata_request(
-            feature_service_id=feature_service_id,
             feature_service_name=feature_service_name,
             workspace_name=workspace_name,
         )

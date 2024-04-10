@@ -42,13 +42,11 @@ def build_get_features_request(
 
 def build_get_feature_service_metadata_request(
     feature_service_name: Optional[str] = None,
-    feature_service_id: Optional[str] = None,
     workspace_name: Optional[str] = None,
 ):
     return {
         "params": {
             "featureServiceName": feature_service_name,
-            "featureServiceId": feature_service_id,
             "workspaceName": workspace_name,
         }
     }

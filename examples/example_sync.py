@@ -1,7 +1,6 @@
 import os
 
-from tecton_client._internal.data_types import MetadataOptions
-from tecton_client._internal.tecton_client import TectonClient
+from tecton_client import MetadataOptions, TectonClient
 
 my_url = "https://explore.tecton.ai/"
 workspace = "prod"
