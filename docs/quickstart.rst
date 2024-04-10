@@ -68,7 +68,7 @@ and manage them within an async function or an event loop.
 .. code-block:: python
 
    import asyncio
-   from tecton_client import AsycTectonClient
+   from tecton_client import AsyncTectonClient
 
    client = AsycTectonClient(
        url="https://explore.tecton.ai/",
@@ -87,3 +87,25 @@ and manage them within an async function or an event loop.
 
 
    asyncio.run(fetch_data())
+
+
+If you are running this in a Jupyter notebook, you can call the async functions directly without `asyncio.run`:
+
+.. code-block:: python
+
+   import asyncio
+   from tecton_client import AsyncTectonClient
+
+   client = AsycTectonClient(
+       url="https://explore.tecton.ai/",
+       api_key="my-api-key",
+       default_workspace_name="prod",
+   )
+
+   print(
+       client.get_features(
+           feature_service_name="fraud_detection_feature_service:v2",
+           join_key_map={"user_id": "user_4407104885"},
+           request_context_map={"amount": 500.00},
+       )
+   )
