@@ -1,6 +1,6 @@
 {
   "result": {
-    "features": [{"this": "123"}, [["1", "2"], ["123", "15"]], ["fake-string", "12", 123], "100"]
+    "features": [{"this": "123"}, [["123", null], null, []], ["fake-string", "12", 123], "100"]
   },
   "metadata": {
     "features": [

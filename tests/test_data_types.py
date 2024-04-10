@@ -68,7 +68,8 @@ class TestDataTypes(TestCase):
             resp.get_features_dict(),
             {
                 "schema.map": {"this": 123},
-                "schema.two_dimensional_array": [[1, 2], [123, 15]],
+                # Test null in nested array, null in top level array and empty array.
+                "schema.two_dimensional_array": [[123, None], None, []],
                 "schema.simple_struct": {"string_field": "fake-string", "int64_field": 12, "float64_field": 123},
                 "schema.dist_km": 100,
             },
