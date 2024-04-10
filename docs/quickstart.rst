@@ -70,7 +70,7 @@ and manage them within an async function or an event loop.
    import asyncio
    from tecton_client import AsyncTectonClient
 
-   client = AsycTectonClient(
+   client = AsyncTectonClient(
        url="https://explore.tecton.ai/",
        api_key="my-api-key",
        default_workspace_name="prod",
@@ -96,7 +96,7 @@ If you are running this in a Jupyter notebook, you can call the async functions 
    import asyncio
    from tecton_client import AsyncTectonClient
 
-   client = AsycTectonClient(
+   client = AsyncTectonClient(
        url="https://explore.tecton.ai/",
        api_key="my-api-key",
        default_workspace_name="prod",
