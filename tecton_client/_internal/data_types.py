@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
-
-_SPECIAL_NUMBER_STRINGS = {"Infinity", "-Infinity", "NaN"}
+from typing import Any, Dict, List, Optional, Union
 
 
 @dataclass
@@ -47,40 +45,35 @@ class GetFeaturesResponse:
             for metadata, raw_feature_value in zip(features_metadata, self.result.features)
         }
 
-    def _get_feature_value(self, data_type_info, raw_feature_value):
+    @staticmethod
+    def _get_feature_value(data_type_info: dict, raw_feature_value: Optional[Union[int, float, str, list, dict]]):
         """Convert response value from str to int if the data type is int64"""
         data_type = data_type_info.get("type")
         if raw_feature_value is None:
-            value = None
+            return None
         elif data_type == "int64":
-            value = self._convert_int64(raw_feature_value)
+            return int(raw_feature_value)
         elif data_type == "array":
             element_type = data_type_info.get("elementType")
-            value = [self._get_feature_value(element_type, value) for value in raw_feature_value]
+            return [GetFeaturesResponse._get_feature_value(element_type, value) for value in raw_feature_value]
         elif data_type == "map":
             # apply the unpacking function to the keys and values separately
             key_type = data_type_info.get("keyType")
             value_type = data_type_info.get("valueType")
-            value = {
-                self._get_feature_value(key_type, key): self._get_feature_value(value_type, value)
+            return {
+                GetFeaturesResponse._get_feature_value(key_type, key): GetFeaturesResponse._get_feature_value(
+                    value_type, value
+                )
                 for key, value in raw_feature_value.items()
             }
         elif data_type == "struct":
             field_meta_list = data_type_info.get("fields")
-            value = {
-                field_meta.get("name"): self._get_feature_value(field_meta.get("dataType"), field_value)
+            return {
+                field_meta.get("name"): GetFeaturesResponse._get_feature_value(field_meta.get("dataType"), field_value)
                 for field_meta, field_value in zip(field_meta_list, raw_feature_value)
             }
         else:
-            value = raw_feature_value
-        return value
-
-    def _convert_int64(self, value):
-        # Certain strings like "Infinity" should not be converted, but returned as-is
-        if value is None or value in _SPECIAL_NUMBER_STRINGS:
-            return value
-        else:
-            return int(value)
+            return raw_feature_value
 
     @classmethod
     def from_response(cls, resp: dict) -> "GetFeaturesResponse":
