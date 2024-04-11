@@ -93,16 +93,16 @@ class GetFeatureServiceMetadataResponse:
 
     """
 
-    input_join_keys: List[dict]
-    input_request_context_keys: List[dict]
+    input_join_keys: Optional[List[dict]]
+    input_request_context_keys: Optional[List[dict]]
     feature_values: List[dict]
 
     @classmethod
     def from_response(cls, resp: dict):
-        """Constructor to create a GetFeatureServiceMetadataResponse from the json resonse of api"""
+        """Constructor to create a GetFeatureServiceMetadataResponse from the json response of api"""
         return GetFeatureServiceMetadataResponse(
-            input_join_keys=resp["inputJoinKeys"],
-            input_request_context_keys=resp["inputRequestContextKeys"],
+            input_join_keys=resp.get("inputJoinKeys"),
+            input_request_context_keys=resp.get("inputRequestContextKeys"),
             feature_values=resp["featureValues"],
         )
 
