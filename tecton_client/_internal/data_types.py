@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 
 @dataclass
@@ -45,14 +45,33 @@ class GetFeaturesResponse:
             for metadata, raw_feature_value in zip(features_metadata, self.result.features)
         }
 
-    def _get_feature_value(self, data_type, raw_feature_value):
+    @staticmethod
+    def _get_feature_value(data_type_info: dict, raw_feature_value: Optional[Union[int, float, str, list, dict]]):
         """Convert response value from str to int if the data type is int64"""
+        data_type = data_type_info.get("type")
         if raw_feature_value is None:
-            return raw_feature_value
-        elif data_type.get("type") == "int64":
+            return None
+        elif data_type == "int64":
             return int(raw_feature_value)
-        elif data_type.get("type") == "array" and data_type.get("elementType") == "int64":
-            return map(int, raw_feature_value)
+        elif data_type == "array":
+            element_type = data_type_info.get("elementType")
+            return [GetFeaturesResponse._get_feature_value(element_type, value) for value in raw_feature_value]
+        elif data_type == "map":
+            # apply the unpacking function to the keys and values separately
+            key_type = data_type_info.get("keyType")
+            value_type = data_type_info.get("valueType")
+            return {
+                GetFeaturesResponse._get_feature_value(key_type, key): GetFeaturesResponse._get_feature_value(
+                    value_type, value
+                )
+                for key, value in raw_feature_value.items()
+            }
+        elif data_type == "struct":
+            field_meta_list = data_type_info.get("fields")
+            return {
+                field_meta.get("name"): GetFeaturesResponse._get_feature_value(field_meta.get("dataType"), field_value)
+                for field_meta, field_value in zip(field_meta_list, raw_feature_value)
+            }
         else:
             return raw_feature_value
 

@@ -129,6 +129,33 @@ class TestTectonClient(TestCase):
             },
         )
 
+    def test_get_feature_service_metadata_encode(self):
+        # using just magic_mock here in order to assert on client.post.assert_called_with
+        mock_http_client = MagicMock()
+        mock_http_client.post.return_value.json.return_value = {
+            "inputJoinKeys": [],
+            "inputRequestContextKeys": [],
+            "featureValues": [],
+        }
+        client = TectonClient(
+            url="https://fake.tecton.ai",
+            api_key="fake-api-key",
+            default_workspace_name="workspace",
+            client=mock_http_client,
+        )
+        client.get_feature_service_metadata(
+            feature_service_name="fake-feature-service",
+        )
+        mock_http_client.post.assert_called_with(
+            url="https://fake.tecton.ai/api/v1/feature-service/metadata",
+            json={
+                "params": {
+                    "workspaceName": "workspace",
+                    "featureServiceName": "fake-feature-service",
+                }
+            },
+        )
+
     def test_get_features_decode(self):
         test_client = httpx.Client(
             transport=httpx.MockTransport(lambda request: httpx.Response(200, json={"result": {"features": []}}))

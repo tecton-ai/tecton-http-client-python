@@ -1,0 +1,65 @@
+{
+  "result": {
+    "features": [{"this": "123"}, [["123", null], null, []], ["fake-string", "12", 123], "100"]
+  },
+  "metadata": {
+    "features": [
+    {
+      "name": "schema.map",
+      "dataType": {
+        "type": "map",
+        "keyType": {
+          "type": "string"
+        },
+        "valueType": {
+          "type": "int64"
+        }
+      }
+    },
+    {
+      "name": "schema.two_dimensional_array",
+      "dataType": {
+        "type": "array",
+        "elementType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
+          }
+        }
+      }
+    },
+    {
+      "name": "schema.simple_struct",
+      "dataType": {
+        "type": "struct",
+        "fields": [
+          {
+            "name": "string_field",
+            "dataType": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "int64_field",
+            "dataType": {
+              "type": "int64"
+            }
+          },
+          {
+            "name": "float64_field",
+            "dataType": {
+              "type": "float64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "schema.dist_km",
+      "dataType": {
+        "type": "int64"
+      }
+    }
+  ]
+}
+}
