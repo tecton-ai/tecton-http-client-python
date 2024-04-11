@@ -83,7 +83,7 @@ class AsyncTectonClient:
     async def get_features(
         self,
         *,
-        feature_service_name: Optional[str] = None,
+        feature_service_name: str,
         join_key_map: Optional[Dict[str, Union[int, str, type(None)]]] = None,
         request_context_map: Optional[Dict[str, Any]] = None,
         metadata_options: Optional[MetadataOptions] = None,
@@ -131,7 +131,7 @@ class AsyncTectonClient:
     async def get_feature_service_metadata(
         self,
         *,
-        feature_service_name: Optional[str] = None,
+        feature_service_name: str,
         workspace_name: Optional[str] = None,
     ) -> GetFeatureServiceMetadataResponse:
         """Get metadata about a Feature Service.
