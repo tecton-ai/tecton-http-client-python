@@ -45,9 +45,6 @@ jobs:
 
     - name: Push build artifacts to PyPI
       uses: pypa/gh-action-pypi-publish@v1.8.14
-      with:
-        # TODO point this to real pypi once we are confident the pipeline works
-        repository-url: https://test.pypi.org/legacy/
 
 
   add-to-github-release:
