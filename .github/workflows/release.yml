@@ -27,6 +27,27 @@ jobs:
         path: ./dist
         if-no-files-found: error
 
+  build-docs:
+    name: Build the Docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - name: Install dependencies
+        run: |
+          pip install sphinx sphinx_rtd_theme
+      - name: Install tecton_client
+        run: |
+          pip install .
+      - name: Sphinx build
+        run: |
+          sphinx-build docs docs/build
+          - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./docs/build/html
+
   publish-to-pypi:
     name: publish
     needs:
@@ -48,6 +69,31 @@ jobs:
       with:
         # TODO point this to real pypi once we are confident the pipeline works
         repository-url: https://test.pypi.org/legacy/
+
+  publish-docs:
+    name: publish
+    needs:
+      - build-docs
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    steps:
+      - name: Download artifacts from build
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: ./build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./build
 
 
   add-to-github-release:
