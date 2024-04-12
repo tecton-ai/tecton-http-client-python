@@ -46,7 +46,6 @@ jobs:
     - name: Push build artifacts to PyPI
       uses: pypa/gh-action-pypi-publish@v1.8.14
 
-
   add-to-github-release:
     name: sign the artifacts and add them to the github release
     needs:

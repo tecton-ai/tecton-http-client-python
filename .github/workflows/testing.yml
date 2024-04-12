@@ -4,10 +4,9 @@ name: pytest
 
 on:
   push:
-    branches:
-      - '**'
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -32,3 +31,16 @@ jobs:
     - name: Test with pytest
       run: |
         python -m pytest tests/
+
+  build-docs:
+    name: verify-docs-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+      - name: Install dependencies
+        run: |
+          pip install -e ".[docs]"
+      - name: Sphinx build
+        run: |
+          sphinx-build docs docs/build
