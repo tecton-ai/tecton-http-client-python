@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 
+FeatureType = Union[None, int, float, str, List, Dict]
+
+# Raw features values have not yet been parsed using type metadata. For example, Int64 features are encoded as strings
+# and Struct features are encoded as a list of values instead of a dictionary.
+RawFeatureValue = Union[None, int, float, str, List, Dict]
 
 @dataclass
 class GetFeaturesResult:
@@ -10,7 +15,7 @@ class GetFeaturesResult:
         features: List of raw feature values returned by the service.
     """
 
-    features: List
+    features: List[RawFeatureValue]
 
 
 @dataclass
@@ -27,7 +32,7 @@ class GetFeaturesResponse:
     result: GetFeaturesResult
     metadata: Optional[Dict] = None
 
-    def get_features_dict(self) -> Dict[str, Any]:
+    def get_features_dict(self) -> Dict[str, FeatureType]:
         """Return the feature values as a dictionary mapping name to value, and converting str to int64 if needed"""
         if self.metadata is None or self.metadata.get("features") is None:
             raise ValueError(
@@ -46,7 +51,7 @@ class GetFeaturesResponse:
         }
 
     @staticmethod
-    def _get_feature_value(data_type_info: dict, raw_feature_value: Optional[Union[int, float, str, list, dict]]):
+    def _get_feature_value(data_type_info: dict, raw_feature_value: RawFeatureValue) -> FeatureType:
         """Convert response value from str to int if the data type is int64"""
         data_type = data_type_info.get("type")
         if raw_feature_value is None:
