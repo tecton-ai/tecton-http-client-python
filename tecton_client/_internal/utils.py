@@ -1,4 +1,5 @@
 from typing import Any, Dict, Optional, Union
+from urllib.parse import urlparse
 
 import httpx
 
@@ -66,3 +67,9 @@ def validate_request_args(
     if not feature_service_name:
         msg = "feature_service_name must be provided"
         raise ValueError(msg)
+
+
+def validate_url(url: str):
+    parse_result = urlparse(url)
+    if parse_result.scheme not in ("http", "https"):
+        raise ValueError("Invalid URL: Must begin with http:// or https://")
