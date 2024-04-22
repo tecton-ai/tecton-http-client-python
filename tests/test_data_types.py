@@ -14,7 +14,7 @@ class TestDataTypes(TestCase):
         with open(file_1) as f:
             resp = json.load(f)
         resp = GetFeaturesResponse.from_response(resp)
-        self.assertEquals(
+        self.assertEqual(
             resp.result.features,
             [["0"], None, [55.5, 57.88, 58.96, 57.66, None, 55.98], ["0", "1", None, "3", "4", None]],
         )
@@ -76,20 +76,20 @@ class TestDataTypes(TestCase):
         )
 
     def test_get_feature_value_simple_types(self):
-        self.assertEquals(GetFeaturesResponse._get_feature_value({"type": "string"}, "thing"), "thing")
-        self.assertEquals(GetFeaturesResponse._get_feature_value({"type": "string"}, "thing"), "thing")
-        self.assertEquals(GetFeaturesResponse._get_feature_value({"type": "int64"}, "1"), 1)
-        self.assertEquals(GetFeaturesResponse._get_feature_value({"type": "float64"}, 1), 1)
-        self.assertEquals(GetFeaturesResponse._get_feature_value({"type": "float64"}, "NaN"), "NaN")
+        self.assertEqual(GetFeaturesResponse._get_feature_value({"type": "string"}, "thing"), "thing")
+        self.assertEqual(GetFeaturesResponse._get_feature_value({"type": "string"}, "thing"), "thing")
+        self.assertEqual(GetFeaturesResponse._get_feature_value({"type": "int64"}, "1"), 1)
+        self.assertEqual(GetFeaturesResponse._get_feature_value({"type": "float64"}, 1), 1)
+        self.assertEqual(GetFeaturesResponse._get_feature_value({"type": "float64"}, "NaN"), "NaN")
 
     def test_get_feature_value_array(self):
-        self.assertEquals(
+        self.assertEqual(
             GetFeaturesResponse._get_feature_value({"type": "array", "elementType": {"type": "int64"}}, []), []
         )
-        self.assertEquals(
+        self.assertEqual(
             GetFeaturesResponse._get_feature_value({"type": "array", "elementType": {"type": "int64"}}, None), None
         )
-        self.assertEquals(
+        self.assertEqual(
             GetFeaturesResponse._get_feature_value(
                 {"type": "array", "elementType": {"type": "int64"}}, ["1", None, "2"]
             ),
@@ -97,7 +97,7 @@ class TestDataTypes(TestCase):
         )
 
     def test_get_feature_value_nested_array(self):
-        self.assertEquals(
+        self.assertEqual(
             GetFeaturesResponse._get_feature_value(
                 {"type": "array", "elementType": {"type": "array", "elementType": {"type": "int64"}}},
                 [["1", "2", None], None, []],
@@ -106,7 +106,7 @@ class TestDataTypes(TestCase):
         )
 
     def test_get_feature_value_map(self):
-        self.assertEquals(
+        self.assertEqual(
             GetFeaturesResponse._get_feature_value(
                 {
                     "type": "map",
@@ -119,7 +119,7 @@ class TestDataTypes(TestCase):
         )
 
     def test_get_feature_value_struct(self):
-        self.assertEquals(
+        self.assertEqual(
             GetFeaturesResponse._get_feature_value(
                 {
                     "type": "struct",
