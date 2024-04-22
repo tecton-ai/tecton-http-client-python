@@ -44,7 +44,7 @@ class TestTectonClient(TestCase):
             url="https://fake.tecton.ai", api_key="fake-api-key", default_workspace_name="workspace", client=mock_client
         )
         mock_httpx_constructor.assert_not_called()
-        self.assertEquals(
+        self.assertEqual(
             mock_client.headers,
             {"authorization": "Tecton-key fake-api-key", "user-agent": "tecton-http-python-client 0.1.0test"},
         )
@@ -61,7 +61,7 @@ class TestTectonClient(TestCase):
             workspace_name="override-workspace",
         )
         workspace = self.mock_client._request_log[0]["params"]["workspaceName"]
-        self.assertEquals(workspace, "override-workspace")
+        self.assertEqual(workspace, "override-workspace")
 
     def test_default_workspace(self):
         client = TectonClient(
@@ -73,7 +73,7 @@ class TestTectonClient(TestCase):
 
         client.get_features(feature_service_name="fake-feature-service", join_key_map={"user_id": "id123"})
         workspace = self.mock_client._request_log[0]["params"]["workspaceName"]
-        self.assertEquals(workspace, "fake-workspace")
+        self.assertEqual(workspace, "fake-workspace")
 
     def test_override_workspace(self):
         client = TectonClient(
@@ -90,7 +90,7 @@ class TestTectonClient(TestCase):
         )
 
         workspace = self.mock_client._request_log[0]["params"]["workspaceName"]
-        self.assertEquals(workspace, "override-workspace")
+        self.assertEqual(workspace, "override-workspace")
 
     def test_get_features_encode(self):
         # using just magic_mock here in order to assert on client.post.assert_called_with
@@ -164,7 +164,7 @@ class TestTectonClient(TestCase):
             url="https://fake.tecton.ai", api_key="fake-api-key", default_workspace_name="workspace", client=test_client
         )
         resp = client.get_features(feature_service_name="fake-feature-service", join_key_map={"user_id": "id123"})
-        self.assertEquals(resp.result.features, [])
+        self.assertEqual(resp.result.features, [])
 
     def test_raise_error(self):
         test_client = httpx.Client(

@@ -147,7 +147,7 @@ class AsyncTectonClient:
             feature_service_name=feature_service_name,
             workspace_name=workspace_name,
         )
-        resp = self._client.post(url=self._paths["get_feature_service_metadata"], json=request_data)
+        resp = await self._client.post(url=self._paths["get_feature_service_metadata"], json=request_data)
         try:
             resp.raise_for_status()
         except HTTPStatusError as exc:

@@ -7,7 +7,6 @@ my_url = "https://explore.tecton.ai/"
 workspace = "prod"
 my_api_key = os.environ.get("TECTON_API_KEY")
 
-
 async_client = AsyncTectonClient(url=my_url, api_key=my_api_key, default_workspace_name=workspace)
 
 
@@ -24,6 +23,17 @@ async def call_api_ten_times():
     responses = await asyncio.gather(*requests)
     for resp in responses:
         print(resp.result.features)
+
+    # also call get_feature_service_metadata
+    requests = [
+        async_client.get_feature_service_metadata(
+            feature_service_name="fraud_detection_feature_service:v2",
+        )
+        for i in range(10)
+    ]
+    responses = await asyncio.gather(*requests)
+    for resp in responses:
+        print(resp)
 
 
 asyncio.run(call_api_ten_times())
