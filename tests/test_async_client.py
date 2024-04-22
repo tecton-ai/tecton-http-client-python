@@ -25,7 +25,7 @@ class TestTectonClient(IsolatedAsyncioTestCase):
         self.mock_client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
         self.mock_client._request_log = _request_log
 
-    @patch("tecton_client._internal.utils.tecton_version", "0.1.0test")
+    @patch("tecton_client._internal.utils.tecton_client_version", "0.1.0test")
     def test_client_construction(self):
         mock_httpx_constructor = self.mockPatch("httpx.AsyncClient", autospec=True)
         AsyncTectonClient(url="https://fake.tecton.ai", api_key="fake-api-key", default_workspace_name="workspace")
@@ -35,7 +35,7 @@ class TestTectonClient(IsolatedAsyncioTestCase):
             )
         )
 
-    @patch("tecton_client._internal.utils.tecton_version", "0.1.0test")
+    @patch("tecton_client._internal.utils.tecton_client_version", "0.1.0test")
     def test_client_construction_custom_client(self):
         mock_httpx_constructor = self.mockPatch("httpx.AsyncClient", autospec=True)
         mock_client = MagicMock()
