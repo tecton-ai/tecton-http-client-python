@@ -1,11 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 FeatureType = Union[None, int, float, str, List, Dict]
 
 # Raw features values have not yet been parsed using type metadata. For example, Int64 features are encoded as strings
 # and Struct features are encoded as a list of values instead of a dictionary.
 RawFeatureValue = Union[None, int, float, str, List, Dict]
+
 
 @dataclass
 class GetFeaturesResult:
