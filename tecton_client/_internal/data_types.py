@@ -123,6 +123,7 @@ class MetadataOptions:
         include_effective_times: bool = False,
         include_slo_info: bool = False,
         include_serving_status: bool = False,
+        include_all: bool = False,
     ):
         """
         Args:
@@ -131,13 +132,21 @@ class MetadataOptions:
             include_effective_times: Include the effective times of the feature values in the response.
             include_slo_info: Include the SLO information as well as the Batch SLO Information in the response.
             include_serving_status: Include feature statuses in the response.
+            include_all: Include all metadata options
 
         """
-        self.include_names = include_names
-        self.include_data_types = include_data_types
-        self.include_effective_times = include_effective_times
-        self.include_slo_info = include_slo_info
-        self.include_serving_status = include_serving_status
+        if include_all:
+            self.include_names = True
+            self.include_data_types = True
+            self.include_effective_times = True
+            self.include_slo_info = True
+            self.include_serving_status = True
+        else:
+            self.include_names = include_names
+            self.include_data_types = include_data_types
+            self.include_effective_times = include_effective_times
+            self.include_slo_info = include_slo_info
+            self.include_serving_status = include_serving_status
 
     def to_request(self) -> Dict[str, bool]:
         """Format for inclusion in GetFeaturesRequest"""
