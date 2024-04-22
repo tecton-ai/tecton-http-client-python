@@ -15,7 +15,8 @@ readme = "README.md"
 [project.optional-dependencies]
 dev = [
   "pytest>=6.2.5",
-  "pytest_httpx"
+  "pytest_httpx",
+  "pytest-asyncio"
 ]
 docs = [
   "alabaster==0.7.16",
