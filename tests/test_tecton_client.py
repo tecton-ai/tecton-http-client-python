@@ -147,7 +147,7 @@ class TestTectonClient(TestCase):
         client.get_features(
             feature_service_name="fake-feature-service",
             join_key_map={"user_id": "id123"},
-            metadata_options=MetadataOptions(include_all=True),
+            metadata_options=MetadataOptions.all(),
             request_options=RequestOptions(read_from_cache=False),
         )
         mock_http_client.post.assert_called_with(
