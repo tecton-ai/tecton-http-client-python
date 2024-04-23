@@ -38,6 +38,8 @@ class GetFeaturesResponse:
             For a mapping of feature names to values, use get_features_dict()
         metadata: Any metadata returned. Control what metadata is returned from service using `metadata_options`
             parameter of `get_features`.
+        slo_info: SLO and Serving time information. This is useful for debugging latency. Note: This will only be
+            included if MetadataOption.include_slo_info is set to True in get_features(), otherwise it will be None.
     """
 
     result: GetFeaturesResult
