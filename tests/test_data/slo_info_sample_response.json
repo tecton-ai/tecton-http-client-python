@@ -1,0 +1,58 @@
+{
+  "result": {
+    "features": [
+      ["0"],
+      null,
+      [55.5, 57.88, 58.96, 57.66, null, 55.98],
+      ["0", "1", null, "3", "4", null]
+    ]
+  },
+  "metadata": {
+    "features": [
+      {
+        "name":"average_rain.rain_in_last_24_hrs",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
+          }
+        }
+      },
+      {
+        "name":"average_rain.cloud_type",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "string"
+          }
+        }
+      },
+      {
+        "name":"average_rain.average_temperate_6hrs",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "float64"
+          }
+        }
+      },
+      {
+        "name":"average_rain.fake_example",
+        "dataType": {
+          "type": "array",
+          "elementType": {
+            "type": "int64"
+          }
+        }
+      }
+    ],
+    "sloInfo": {
+      "sloEligible": true,
+      "sloServerTimeSeconds": 0.01,
+      "dynamodbResponseSizeBytes": 2048,
+      "serverTimeSeconds": 0.02,
+      "storeMaxLatency": 0.03,
+      "storeResponseSizeBytes": 4096
+    }
+  }
+}

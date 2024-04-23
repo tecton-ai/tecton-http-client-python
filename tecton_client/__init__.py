@@ -1,9 +1,8 @@
 from tecton_client._internal.async_tecton_client import AsyncTectonClient
-from tecton_client._internal.data_types import (
+from tecton_client._internal.request_utils import MetadataOptions, RequestOptions
+from tecton_client._internal.response_utils import (
     GetFeatureServiceMetadataResponse,
     GetFeaturesResponse,
-    MetadataOptions,
-    RequestOptions,
 )
 from tecton_client._internal.tecton_client import TectonClient
 

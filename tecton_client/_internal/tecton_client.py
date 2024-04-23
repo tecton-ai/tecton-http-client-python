@@ -4,11 +4,10 @@ from urllib.parse import urljoin
 import httpx
 from httpx import HTTPStatusError
 
-from tecton_client._internal.data_types import (
+from tecton_client._internal.request_utils import MetadataOptions, RequestOptions
+from tecton_client._internal.response_utils import (
     GetFeatureServiceMetadataResponse,
     GetFeaturesResponse,
-    MetadataOptions,
-    RequestOptions,
 )
 from tecton_client._internal.utils import (
     build_get_feature_service_metadata_request,

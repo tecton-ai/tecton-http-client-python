@@ -3,11 +3,12 @@ import pathlib
 from unittest import TestCase
 
 from tecton_client import GetFeaturesResponse
+from tecton_client._internal.response_utils import SLOInfo
 
 TEST_DATA_DIR = pathlib.Path(__file__).parent.joinpath("test_data")
 
 
-class TestDataTypes(TestCase):
+class TestResponses(TestCase):
     def test_GetFeaturesResponse_from_dict(self):
         self.maxDiff = 10000
         file_1 = TEST_DATA_DIR.joinpath("sample_response.json")
@@ -75,6 +76,32 @@ class TestDataTypes(TestCase):
             },
         )
 
+    def test_GetFeaturesResponse_slo_info_null(self):
+        file_1 = TEST_DATA_DIR.joinpath("sample_response.json")
+        with open(file_1) as f:
+            resp = json.load(f)
+        resp = GetFeaturesResponse.from_response(resp)
+        self.assertIsNone(resp.slo_info)
+
+    def test_GetFeaturesResponse_slo_info(self):
+        file_1 = TEST_DATA_DIR.joinpath("slo_info_sample_response.json")
+        with open(file_1) as f:
+            resp = json.load(f)
+        resp = GetFeaturesResponse.from_response(resp)
+        self.assertEqual(
+            resp.slo_info,
+            SLOInfo(
+                slo_eligible=True,
+                slo_server_time_seconds=0.01,
+                dynamodb_response_size_bytes=2048,
+                server_time_seconds=0.02,
+                store_max_latency=0.03,
+                store_response_size_bytes=4096,
+            ),
+        )
+
+
+class TestGetFeatureValue(TestCase):
     def test_get_feature_value_simple_types(self):
         self.assertEqual(GetFeaturesResponse._get_feature_value({"type": "string"}, "thing"), "thing")
         self.assertEqual(GetFeaturesResponse._get_feature_value({"type": "string"}, "thing"), "thing")
