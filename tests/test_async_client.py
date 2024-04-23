@@ -96,7 +96,7 @@ class TestTectonClient(IsolatedAsyncioTestCase):
         # using just magic_mock here in order to assert on client.post.assert_called_with
         mock_response = MagicMock()
         mock_response.json.return_value = {"result": {"features": []}}
-        mock_http_client = AsyncMock()
+        mock_http_client = MagicMock(post=AsyncMock())
         mock_http_client.post.return_value = mock_response
         client = AsyncTectonClient(
             url="https://fake.tecton.ai",

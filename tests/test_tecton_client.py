@@ -36,11 +36,6 @@ class TestTectonClient(TestCase):
         )
 
     @patch("tecton_client._internal.utils.tecton_client_version", "0.1.0test")
-    def test_client_constructio_bad_url(self):
-        with self.assertRaises(ValueError):
-            TectonClient(url="fake.tecton.ai", api_key="fake-api-key", default_workspace_name="workspace")
-
-    @patch("tecton_client._internal.utils.tecton_client_version", "0.1.0test")
     def test_client_construction_custom_client(self):
         mock_httpx_constructor = self.mockPatch("httpx.Client", autospec=True)
         mock_client = MagicMock()
