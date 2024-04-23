@@ -3,6 +3,7 @@ from tecton_client._internal.request_utils import MetadataOptions, RequestOption
 from tecton_client._internal.response_utils import (
     GetFeatureServiceMetadataResponse,
     GetFeaturesResponse,
+    SLOInfo,
 )
 from tecton_client._internal.tecton_client import TectonClient
 
@@ -13,4 +14,5 @@ __all__ = [
     "GetFeatureServiceMetadataResponse",
     "MetadataOptions",
     "RequestOptions",
+    "SLOInfo",
 ]

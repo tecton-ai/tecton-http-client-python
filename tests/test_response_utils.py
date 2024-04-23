@@ -92,8 +92,8 @@ class TestResponses(TestCase):
             resp.slo_info,
             SLOInfo(
                 slo_eligible=True,
+                slo_ineligibility_reasons=None,
                 slo_server_time_seconds=0.01,
-                dynamodb_response_size_bytes=2048,
                 server_time_seconds=0.02,
                 store_max_latency=0.03,
                 store_response_size_bytes=4096,

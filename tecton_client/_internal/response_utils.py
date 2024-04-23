@@ -21,9 +21,23 @@ class GetFeaturesResult:
 
 @dataclass
 class SLOInfo:
+    """SLO and Serving time information. This is useful for debugging latency. Note: This will only be
+            included if MetadataOption.include_slo_info is set to True in get_features(), otherwise it will be None.
+
+    Attributes:
+        slo_eligible: Whether the request was eligible for the latency SLO.
+        slo_ineligibility_reasons: If slo_eligible is False, indicates the reason why.
+        slo_server_time_seconds: The latency, in seconds of this request. This is the value that will be used for the
+            latency SLI.
+        server_time_seconds: The latency, in seconds, of this request as measured by the server. This includes the
+            total time spent in the feature server including online transforms and store latency.
+        store_max_latency: The maximum latency observed by the request from the online store in seconds.
+        store_response_size_bytes: Total online store response size in bytes.
+    """
+
     slo_eligible: bool
+    slo_ineligibility_reasons: Optional[List[str]]
     slo_server_time_seconds: float
-    dynamodb_response_size_bytes: int
     server_time_seconds: float
     store_max_latency: float
     store_response_size_bytes: int
@@ -101,8 +115,8 @@ class GetFeaturesResponse:
         if resp.get("metadata", {}).get("sloInfo") is not None:
             slo_info = SLOInfo(
                 slo_eligible=raw_slo_info.get("sloEligible"),
+                slo_ineligibility_reasons=raw_slo_info.get("sloIneligibilityReasons"),
                 slo_server_time_seconds=raw_slo_info.get("sloServerTimeSeconds"),
-                dynamodb_response_size_bytes=raw_slo_info.get("dynamodbResponseSizeBytes"),
                 server_time_seconds=raw_slo_info.get("serverTimeSeconds"),
                 store_max_latency=raw_slo_info.get("storeMaxLatency"),
                 store_response_size_bytes=raw_slo_info.get("storeResponseSizeBytes"),
