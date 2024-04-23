@@ -14,7 +14,6 @@ from tecton_client._internal.utils import (
     build_get_features_request,
     get_default_headers,
     validate_request_args,
-    validate_url,
 )
 from tecton_client.exceptions import convert_exception
 
@@ -64,7 +63,6 @@ class AsyncTectonClient:
             client: An httpx.Client, allowing you to provide finer-grained customization on the request behavior,
                 such as default timeout or connection settings. See https://www.python-httpx.org/ for more info.
         """
-        validate_url(url)
         self.url = url
         self.default_workspace_name = default_workspace_name
         self._api_key = api_key
