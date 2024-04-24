@@ -2,13 +2,13 @@ from typing import Any, Dict, Optional, Union
 
 import httpx
 
-from tecton_client.__about__ import __version__ as tecton_version
-from tecton_client._internal.data_types import MetadataOptions, RequestOptions
+from tecton_client.__about__ import __version__ as tecton_client_version
+from tecton_client._internal.request_utils import MetadataOptions, RequestOptions
 
 
 def get_default_headers(api_key):
     return httpx.Headers(
-        {"Authorization": "Tecton-key " + api_key, "User-Agent": "tecton-http-python-client " + tecton_version}
+        {"Authorization": "Tecton-key " + api_key, "User-Agent": "tecton-http-python-client " + tecton_client_version}
     )
 
 

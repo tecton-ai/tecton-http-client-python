@@ -4,11 +4,10 @@ from urllib.parse import urljoin
 import httpx
 from httpx import HTTPStatusError
 
-from tecton_client._internal.data_types import (
+from tecton_client._internal.request_utils import MetadataOptions, RequestOptions
+from tecton_client._internal.response_utils import (
     GetFeatureServiceMetadataResponse,
     GetFeaturesResponse,
-    MetadataOptions,
-    RequestOptions,
 )
 from tecton_client._internal.utils import (
     build_get_feature_service_metadata_request,
@@ -30,6 +29,7 @@ class AsyncTectonClient:
     .. code-block:: python
 
         import asyncio
+        from tecton_client import AsyncTectonClient, MetadataOptions
 
         async_client = AsyncTectonClient(
             url="http://explore.tecton.ai", api_key="my_key", default_workspace_name="prod"

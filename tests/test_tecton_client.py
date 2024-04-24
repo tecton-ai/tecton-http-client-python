@@ -25,7 +25,7 @@ class TestTectonClient(TestCase):
         self.mock_client = httpx.Client(transport=httpx.MockTransport(handler))
         self.mock_client._request_log = _request_log
 
-    @patch("tecton_client._internal.utils.tecton_version", "0.1.0test")
+    @patch("tecton_client._internal.utils.tecton_client_version", "0.1.0test")
     def test_client_construction(self):
         mock_httpx_constructor = self.mockPatch("httpx.Client", autospec=True)
         TectonClient(url="https://fake.tecton.ai", api_key="fake-api-key", default_workspace_name="workspace")
@@ -35,7 +35,7 @@ class TestTectonClient(TestCase):
             )
         )
 
-    @patch("tecton_client._internal.utils.tecton_version", "0.1.0test")
+    @patch("tecton_client._internal.utils.tecton_client_version", "0.1.0test")
     def test_client_construction_custom_client(self):
         mock_httpx_constructor = self.mockPatch("httpx.Client", autospec=True)
         mock_client = MagicMock()
@@ -123,6 +123,43 @@ class TestTectonClient(TestCase):
                         "includeEffectiveTimes": True,
                         "includeSloInfo": False,
                         "includeServingStatus": False,
+                    },
+                    "requestOptions": {"readFromCache": False, "writeToCache": True},
+                }
+            },
+        )
+
+    def test_get_features_metadata_all(self):
+        # using just magic_mock here in order to assert on client.post.assert_called_with
+        mock_http_client = MagicMock()
+        mock_http_client.post.return_value.json.return_value = {"result": {"features": []}}
+        client = TectonClient(
+            url="https://fake.tecton.ai",
+            api_key="fake-api-key",
+            default_workspace_name="workspace",
+            client=mock_http_client,
+        )
+        client.get_features(
+            feature_service_name="fake-feature-service",
+            join_key_map={"user_id": "id123"},
+            metadata_options=MetadataOptions.all(),
+            request_options=RequestOptions(read_from_cache=False),
+        )
+        mock_http_client.post.assert_called_with(
+            "https://fake.tecton.ai/api/v1/feature-service/get-features",
+            json={
+                "params": {
+                    "workspaceName": "workspace",
+                    "featureServiceName": "fake-feature-service",
+                    "joinKeyMap": {"user_id": "id123"},
+                    "requestContextMap": {},
+                    "allowPartialResults": False,
+                    "metadataOptions": {
+                        "includeNames": True,
+                        "includeDataTypes": True,
+                        "includeEffectiveTimes": True,
+                        "includeSloInfo": True,
+                        "includeServingStatus": True,
                     },
                     "requestOptions": {"readFromCache": False, "writeToCache": True},
                 }
