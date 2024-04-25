@@ -5,7 +5,7 @@ A simple Python client for the Feature Server HTTP API that helps customers inte
 
 ## Documentation
 
-* [Tecton Python Client API Reference](https://tecton-ai.github.io/tecton-http-client-python/html/index.html)
+* [Tecton Python Client API Reference](https://tecton-ai.github.io/tecton-http-client-python/index.html)
 
 * [Tecton Python Client Example Code](/examples)
 
