@@ -123,6 +123,8 @@ class TestTectonClient(TestCase):
                         "includeEffectiveTimes": True,
                         "includeSloInfo": False,
                         "includeServingStatus": False,
+                        "includeFeatureDescriptions": False,
+                        "includeFeatureTags": False,
                     },
                     "requestOptions": {"readFromCache": False, "writeToCache": True},
                 }
@@ -160,6 +162,8 @@ class TestTectonClient(TestCase):
                         "includeEffectiveTimes": True,
                         "includeSloInfo": True,
                         "includeServingStatus": True,
+                        "includeFeatureDescriptions": True,
+                        "includeFeatureTags": True,
                     },
                     "requestOptions": {"readFromCache": False, "writeToCache": True},
                 }
