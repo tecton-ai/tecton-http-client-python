@@ -12,6 +12,8 @@ class MetadataOptions:
         include_effective_times: Include the effective times of the feature values in the response.
         include_slo_info: Include the SLO information as well as the Batch SLO Information in the response.
         include_serving_status: Include feature statuses in the response.
+        include_feature_descriptions: Include user-defined feature descriptions in the response.
+        include_feature_tags: Include user-defined feature tags in the response.
     """
 
     include_names: bool = True
@@ -19,6 +21,8 @@ class MetadataOptions:
     include_effective_times: bool = False
     include_slo_info: bool = False
     include_serving_status: bool = False
+    include_feature_descriptions: bool = False
+    include_feature_tags: bool = False
 
     @classmethod
     def all(cls):
@@ -28,6 +32,8 @@ class MetadataOptions:
             include_effective_times=True,
             include_slo_info=True,
             include_serving_status=True,
+            include_feature_descriptions=True,
+            include_feature_tags=True,
         )
 
     def to_request(self) -> Dict[str, bool]:
@@ -38,6 +44,8 @@ class MetadataOptions:
             "includeEffectiveTimes": self.include_effective_times,
             "includeSloInfo": self.include_slo_info,
             "includeServingStatus": self.include_serving_status,
+            "includeFeatureDescriptions": self.include_feature_descriptions,
+            "includeFeatureTags": self.include_feature_tags,
         }
 
 
