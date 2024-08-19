@@ -125,6 +125,8 @@ class TestTectonClient(IsolatedAsyncioTestCase):
                         "includeEffectiveTimes": True,
                         "includeSloInfo": False,
                         "includeServingStatus": False,
+                        "includeFeatureDescriptions": False,
+                        "includeFeatureTags": False,
                     },
                     "requestOptions": {"readFromCache": False, "writeToCache": True},
                 }
