@@ -8,7 +8,7 @@
 
 
 project = "Tecton Client"
-copyright = "2024, tecton.ai"
+copyright = "2025, tecton.ai"
 author = "tecton.ai"
 
 # -- General configuration ---------------------------------------------------
