@@ -78,7 +78,7 @@ and manage them within an async function or an event loop.
 
 
    async def fetch_data():
-       resp = client.get_features(
+       resp = async_client.get_features(
            feature_service_name="fraud_detection_feature_service:v2",
            join_key_map={"user_id": "user_4407104885"},
            request_context_map={"amount": 500.00},
