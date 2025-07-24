@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 
 @dataclass
@@ -40,7 +40,7 @@ class MetadataOptions:
     def to_request(self) -> Dict[str, bool]:
         """Format for inclusion in GetFeaturesRequest"""
         request_dict = {}
-        
+
         if self.include_names is not None:
             request_dict["includeNames"] = self.include_names
         if self.include_data_types is not None:
@@ -55,7 +55,7 @@ class MetadataOptions:
             request_dict["includeFeatureDescriptions"] = self.include_feature_descriptions
         if self.include_feature_tags is not None:
             request_dict["includeFeatureTags"] = self.include_feature_tags
-            
+
         return request_dict
 
 
@@ -80,7 +80,7 @@ class RequestOptions:
     def to_request(self) -> Dict[str, Any]:
         """Format for inclusion in GetFeaturesRequest"""
         request_dict = {}
-        
+
         if self.read_from_cache is not None:
             request_dict["readFromCache"] = self.read_from_cache
         if self.write_to_cache is not None:
@@ -91,5 +91,5 @@ class RequestOptions:
             request_dict["latencyBudgetMs"] = self.latency_budget_ms
         if self.coerce_null_counts_to_zero is not None:
             request_dict["coerceNullCountsToZero"] = self.coerce_null_counts_to_zero
-            
+
         return request_dict
