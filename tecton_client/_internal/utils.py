@@ -18,7 +18,7 @@ def build_get_features_request(
     request_context_map: Optional[Dict[str, Any]] = None,
     metadata_options: Optional[MetadataOptions] = None,
     workspace_name: Optional[str] = None,
-    request_options: Optional[Dict[str, bool]] = None,
+    request_options: Optional[RequestOptions] = None,
     allow_partial_results: bool = False,
 ):
     params = {
