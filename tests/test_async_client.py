@@ -120,15 +120,10 @@ class TestTectonClient(IsolatedAsyncioTestCase):
                     "requestContextMap": {},
                     "allowPartialResults": False,
                     "metadataOptions": {
-                        "includeNames": True,
                         "includeDataTypes": False,
                         "includeEffectiveTimes": True,
-                        "includeSloInfo": False,
-                        "includeServingStatus": False,
-                        "includeFeatureDescriptions": False,
-                        "includeFeatureTags": False,
                     },
-                    "requestOptions": {"readFromCache": False, "writeToCache": True},
+                    "requestOptions": {"readFromCache": False},
                 }
             },
         )
