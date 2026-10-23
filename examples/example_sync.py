@@ -28,5 +28,5 @@ print(resp.metadata.keys())
 
 resp = client.get_feature_service_metadata(feature_service_name="fraud_detection_feature_service:v2")
 
-print("Just metadata about the feature servie: ")
+print("Just metadata about the feature service: ")
 print(resp)

@@ -38,7 +38,7 @@ class NotFoundError(TectonHttpException):
 
 
 class ResourceExhaustedError(TectonHttpException):
-    """Raised when the Tecton API returns a 429 Resources Exhausted error."""
+    """Raised when the Tecton API returns a 429 Resource Exhausted error."""
 
     STATUS_CODE = 429
 
